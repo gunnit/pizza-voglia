@@ -1,0 +1,14 @@
+{
+  "name": "pizza-voglia",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Sito di Pizza Voglia — Quinto di Valpantena (VR)",
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 5173 --bind 127.0.0.1",
+    "test:smoke": "node tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}

@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="it" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pizza Voglia — Pizzeria a Quinto di Valpantena (Verona) · al taglio, tonda, alla pala</title>
+  <meta name="description" content="Pizza Voglia a Quinto di Valpantena (VR): pizza al taglio, tonda da asporto e alla pala. Impasto al 75% di idratazione, tante farine, cotta al momento. Chiama e ordina: 366 220 5988.">
+  <meta name="theme-color" content="#f6efe3">
+  <meta name="format-detection" content="telephone=no">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:site_name" content="Pizza Voglia">
+  <meta property="og:title" content="Pizza Voglia — Leggera. Croccante. Fatta qui.">
+  <meta property="og:description" content="Pizzeria a Quinto di Valpantena (Verona): al taglio, tonda da asporto e alla pala. Impasto al 75% di idratazione. 4,8★ su 81 recensioni Google.">
+  <meta property="og:url" content="https://pizza-voglia.it/">
+  <meta property="og:image" content="https://pizza-voglia.it/assets/img/pizza-top-1600.webp">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="1600">
+  <meta property="og:image:alt" content="Pizza margherita vista dall’alto">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23f6efe3' stroke='%231d1915' stroke-width='2.5'/%3E%3Ccircle cx='20' cy='32' r='5.5' fill='%23c8341f'/%3E%3Ccircle cx='32' cy='32' r='5.5' fill='%233f7a3a'/%3E%3Ccircle cx='44' cy='32' r='5.5' fill='%23c98a3d'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="image" href="../../assets/img/pizza-top-800.webp" media="(max-width: 700px)">
+  <link rel="preload" as="image" href="../../assets/img/pizza-top-1600.webp" imagesrcset="../../assets/img/pizza-top-800.webp 800w, ../../assets/img/pizza-top-1600.webp 1600w" imagesizes="(min-width: 960px) 38vw, 80vw" media="(min-width: 701px)">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@300..700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    /* Progressive enhancement: mark JS on, and never leave content hidden if main.js can't take over. */
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    window.__pvFailsafe = setTimeout(function () { document.documentElement.classList.add('is-ready', 'is-static'); }, 3500);
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "Pizza Voglia",
+    "alternateName": "Pizzavoglia",
+    "url": "https://pizza-voglia.it",
+    "telephone": "+39 366 220 5988",
+    "servesCuisine": "Pizza",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Via Valpantena 46",
+      "addressLocality": "Quinto di Valpantena, Verona",
+      "postalCode": "37142",
+      "addressRegion": "VR",
+      "addressCountry": "IT"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 45.4933179, "longitude": 11.0191 },
+    "hasMap": "https://maps.google.com/?cid=11664370951363129552",
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "11:00", "closes": "13:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "17:30", "closes": "20:30" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday", "Sunday"], "opens": "17:00", "closes": "20:30" }
+    ],
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "81", "bestRating": "5", "worstRating": "1" },
+    "sameAs": [
+      "https://www.instagram.com/pizzavoglia_denis/",
+      "https://www.facebook.com/Pizzvoglia/"
+    ]
+  }
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script type="module" src="main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Salta al contenuto</a>
+  <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+  <a class="opts-pill" href="../index.html" aria-label="Torna alla galleria delle opzioni di design">← Opzioni</a>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" data-intro="nav">
+    <a class="brand" href="#top" aria-label="Pizza Voglia — torna all’inizio">
+      <span class="brand__name">Pizza <em>Voglia</em></span>
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    </a>
+    <nav class="nav__links" aria-label="Principale">
+      <ul>
+        <li><a href="#menu" data-nav="menu">Menu</a></li>
+        <li><a href="#storia" data-nav="storia">Storia</a></li>
+        <li><a href="#recensioni" data-nav="recensioni">Recensioni</a></li>
+        <li><a href="#dove" data-nav="dove">Dove siamo</a></li>
+      </ul>
+    </nav>
+    <a class="nav__phone" href="tel:+393662205988">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+      <span><span class="sr-only">Chiama e ordina: </span>366 220 5988</span>
+    </a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu-overlay">
+      <span class="nav__toggle-label" data-open-label="Chiudi">Menu</span>
+      <span class="nav__toggle-icon" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </header>
+
+  <!-- ============ MOBILE OVERLAY ============ -->
+  <div class="overlay" id="menu-overlay" data-lenis-prevent hidden>
+    <div class="overlay__inner">
+      <p class="overlay__kicker">Indice</p>
+      <nav aria-label="Indice mobile">
+        <ol class="overlay__links">
+          <li><a href="#storia"><span class="overlay__n">N°01</span><span class="overlay__t">La storia</span></a></li>
+          <li><a href="#menu"><span class="overlay__n">N°02</span><span class="overlay__t">Menu</span></a></li>
+          <li><a href="#recensioni"><span class="overlay__n">N°03</span><span class="overlay__t">Recensioni</span></a></li>
+          <li><a href="#buffet"><span class="overlay__n">N°04</span><span class="overlay__t"><em>Aperitivi &amp; buffet</em></span></a></li>
+          <li><a href="#dove"><span class="overlay__n">N°05</span><span class="overlay__t">Dove siamo</span></a></li>
+        </ol>
+      </nav>
+      <div class="overlay__foot">
+        <a class="btn btn--primary" href="tel:+393662205988">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+          Chiama e ordina
+        </a>
+        <p class="status" data-open-status><span class="status__dot" aria-hidden="true"></span><span class="status__text">Orari: Lun–Ven 11:00–13:30 · 17:30–20:30 · Sab–Dom 17:00–20:30</span></p>
+        <p class="overlay__meta">Via Valpantena 46 · Quinto di Valpantena (VR)<br><a href="tel:+393662205988">366 220 5988</a></p>
+        <ul class="socials">
+          <li><a href="https://www.instagram.com/pizzavoglia_denis/" target="_blank" rel="noopener">Instagram<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+          <li><a href="https://www.facebook.com/Pizzvoglia/" target="_blank" rel="noopener">Facebook<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <main id="contenuto" tabindex="-1">
+
+    <!-- ============ HERO ============ -->
+    <div class="hero-wrap" id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__bg" aria-hidden="true">
+          <div class="hero__sun"></div>
+          <div class="hero__beam"></div>
+          <div class="hero__beam hero__beam--core"></div>
+        </div>
+
+        <div class="hero__top">
+          <p class="overline" data-intro="fade"><span class="overline__rule" aria-hidden="true"></span>Quinto di Valpantena · Verona</p>
+        </div>
+
+        <div class="stage">
+          <div class="stage__o">
+            <h1 class="wordmark" id="hero-title">
+              <span class="sr-only">Pizza Voglia, pizzeria a Quinto di Valpantena (Verona)</span>
+              <span class="w w--pizza" aria-hidden="true" data-depth=".16"><span class="w__m"><span class="w__i" data-intro="word">Pizza</span></span></span>
+              <span class="w w--voglia" aria-hidden="true" data-depth=".55"><span class="w__m"><span class="w__i" data-intro="word">Voglia</span></span></span>
+            </h1>
+
+            <div class="pizza-shadow" aria-hidden="true"><div class="pizza-shadow__in" data-intro="shadow"></div></div>
+            <div class="pizza">
+              <div class="pizza__tilt">
+                <div class="pizza__in" data-intro="pizza">
+                  <picture>
+                    <source media="(max-width: 700px)" srcset="../../assets/img/pizza-top-800.webp" type="image/webp">
+                    <img class="pizza__img" src="../../assets/img/pizza-top-1600.webp" srcset="../../assets/img/pizza-top-800.webp 800w, ../../assets/img/pizza-top-1600.webp 1600w" sizes="(min-width: 960px) 38vw, 80vw" width="1600" height="1600" alt="Pizza margherita vista dall’alto: pomodoro, mozzarella fusa e foglie di basilico su un cornicione dorato" fetchpriority="high" decoding="async">
+                  </picture>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ingredients: far layer (behind the pizza) -->
+            <div class="ing ing--far" data-depth=".3" style="--x:.62;--y:-.62;--s:.075;--xw:-1.12;--yw:-.62;--sw:.075;--rot:-12deg;--blur:1.8px;--bob:9px;--spin:8deg;--dur:7.5s;--del:-1.2s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/olive.webp" alt="" width="253" height="285" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--far" data-depth=".28" style="--x:.6;--y:.32;--s:.08;--xw:.74;--yw:-.74;--sw:.08;--rot:18deg;--blur:1.6px;--bob:7px;--spin:-6deg;--dur:8.2s;--del:-3s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/garlic.webp" alt="" width="265" height="327" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--far" data-depth=".35" style="--x:-.58;--y:.26;--s:.09;--xw:-.86;--yw:-.06;--sw:.09;--rot:32deg;--blur:2px;--bob:10px;--spin:10deg;--dur:6.8s;--del:-.4s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/basil-leaf.webp" alt="" width="310" height="408" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--far ing--w-only" data-depth=".3" style="--x:0;--y:0;--s:0;--xw:1.1;--yw:.06;--sw:.085;--rot:-20deg;--blur:2.2px;--bob:8px;--spin:-9deg;--dur:9s;--del:-5s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/tomato-half.webp" alt="" width="315" height="311" decoding="async"></div></div>
+            </div>
+
+            <!-- Ingredients: mid layer (between the pizza and “Voglia”) -->
+            <div class="ing ing--mid" data-depth=".8" style="--x:-.5;--y:-.16;--s:.17;--xw:-.6;--yw:-.12;--sw:.19;--rot:-8deg;--bob:12px;--spin:6deg;--dur:6.4s;--del:-2.2s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/tomato.webp" alt="" width="302" height="394" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid" data-depth=".9" style="--x:.47;--y:-.38;--s:.19;--xw:.6;--yw:-.52;--sw:.23;--rot:14deg;--bob:14px;--spin:-8deg;--dur:7.2s;--del:-.8s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/basil-sprig.webp" alt="" width="385" height="366" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid" data-depth=".75" style="--x:-.46;--y:.44;--s:.15;--xw:-.42;--yw:.52;--sw:.17;--rot:-18deg;--bob:10px;--spin:7deg;--dur:8s;--del:-4.1s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/mozzarella-torn.webp" alt="" width="376" height="366" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid" data-depth=".7" style="--x:.53;--y:.1;--s:.14;--xw:.82;--yw:.02;--sw:.16;--rot:22deg;--bob:11px;--spin:-7deg;--dur:6.9s;--del:-1.7s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/mushroom.webp" alt="" width="351" height="345" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid" data-depth=".85" style="--x:-.6;--y:-.46;--s:.12;--xw:-.98;--yw:-.4;--sw:.15;--rot:10deg;--bob:9px;--spin:12deg;--dur:7.7s;--del:-6s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/salame.webp" alt="" width="383" height="384" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid" data-depth="1" style="--x:.42;--y:.62;--s:.17;--xw:-.24;--yw:.66;--sw:.2;--rot:-35deg;--bob:13px;--spin:9deg;--dur:6.2s;--del:-3.3s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/chili.webp" alt="" width="367" height="433" decoding="async"></div></div>
+            </div>
+            <div class="ing ing--mid ing--w-only" data-depth=".65" style="--x:0;--y:0;--s:0;--xw:1.08;--yw:.5;--sw:.15;--rot:8deg;--bob:10px;--spin:-6deg;--dur:8.6s;--del:-2.6s">
+              <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/broccoli.webp" alt="" width="360" height="387" decoding="async"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Near layer: big out-of-focus ingredients (always below the copy) -->
+        <div class="near" aria-hidden="true">
+          <div class="ing ing--near" data-depth="1.9" style="--nx:101vw;--ny:36vh;--ns:26vmin;--nxw:95vw;--nyw:23vh;--nsw:24vmin;--rot:-24deg;--blur:5px;--bob:16px;--spin:8deg;--dur:9s;--del:-2s">
+            <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/basil-leaf.webp" alt="" width="310" height="408" decoding="async"></div></div>
+          </div>
+          <div class="ing ing--near" data-depth="1.7" style="--nx:-1vw;--ny:50vh;--ns:24vmin;--nxw:4vw;--nyw:27vh;--nsw:18vmin;--rot:12deg;--blur:4px;--bob:14px;--spin:-6deg;--dur:10s;--del:-6s">
+            <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/mozzarella-slice.webp" alt="" width="361" height="370" decoding="async"></div></div>
+          </div>
+          <div class="ing ing--near" data-depth="2.2" style="--nx:101vw;--ny:61vh;--ns:21vmin;--nxw:72vw;--nyw:99vh;--nsw:17vmin;--rot:30deg;--blur:6px;--bob:18px;--spin:10deg;--dur:8.4s;--del:-1s">
+            <div class="ing__p"><div class="ing__i" data-intro="ing"><img src="../../assets/img/ing/tomato-half.webp" alt="" width="315" height="311" decoding="async"></div></div>
+          </div>
+        </div>
+
+        <canvas class="hero__dust" aria-hidden="true"></canvas>
+
+        <div class="hero__aside">
+          <a class="gchip" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener" data-intro="fade">
+            <span class="gchip__star" aria-hidden="true">★</span>
+            <span class="gchip__score">4,8</span>
+            <span class="gchip__sep" aria-hidden="true">·</span>
+            <span class="gchip__count">81 recensioni</span>
+            <span class="sr-only"> su Google (si apre in una nuova scheda)</span>
+          </a>
+          <p class="status" data-open-status data-intro="fade"><span class="status__dot" aria-hidden="true"></span><span class="status__text">Lun–Ven 11:00–13:30 · 17:30–20:30</span></p>
+          <p class="hero__formats" data-intro="fade">Al taglio <span aria-hidden="true">·</span> Tonda <span aria-hidden="true">·</span> Alla pala</p>
+        </div>
+
+        <div class="hero__bottom">
+          <p class="hero__tagline">
+            <span class="ln"><span class="ln__i" data-intro="line">Leggera.</span></span>
+            <span class="ln"><span class="ln__i" data-intro="line">Croccante.</span></span>
+            <span class="ln"><span class="ln__i" data-intro="line"><em>Fatta qui.</em></span></span>
+          </p>
+          <p class="hero__sub" data-intro="fade">Impasto al 75% di idratazione, tante farine, cotta al momento. Denis fa pizza dal 2002.</p>
+          <div class="hero__ctas" data-intro="fade">
+            <a class="btn btn--primary" href="tel:+393662205988">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+              Chiama e ordina
+            </a>
+            <a class="btn btn--ghost" href="#menu">Sfoglia il menu
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            </a>
+          </div>
+          <a class="gchip gchip--mobile" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener" data-intro="fade">
+            <span class="gchip__star" aria-hidden="true">★</span>
+            <span class="gchip__score">4,8</span>
+            <span class="gchip__sep" aria-hidden="true">·</span>
+            <span class="gchip__count">81 recensioni</span>
+            <span class="sr-only"> su Google (si apre in una nuova scheda)</span>
+          </a>
+        </div>
+
+        <div class="hero__cue" aria-hidden="true"><div class="hero__cue-in" data-intro="fade"><span>Scorri</span><i></i></div></div>
+      </section>
+    </div>
+
+    <!-- ============ N°01 — LA STORIA ============ -->
+    <section class="storia" id="storia" aria-labelledby="storia-title">
+      <header class="storia__head wrap">
+        <p class="kicker" data-reveal><span class="kicker__n">N°01</span><span class="kicker__rule" aria-hidden="true"></span><span>La storia</span></p>
+        <h2 class="display storia__title" id="storia-title">
+          <span class="ln"><span class="ln__i" data-line>Dal 2002,</span></span>
+          <span class="ln"><span class="ln__i" data-line><em>le mani in pasta.</em></span></span>
+        </h2>
+        <p class="lead storia__lead" data-reveal>Pizza Voglia è la pizzeria di Denis a Quinto di Valpantena: un locale rinnovato, un impasto nuovo e tante proposte che cambiano spesso. Quattro capitoli per conoscerla.</p>
+      </header>
+
+      <div class="hx">
+        <div class="hx__sticky">
+          <ol class="hx__track">
+            <li class="panel panel--1">
+              <div class="panel__meta"><span>01</span><span class="panel__of">/ 04</span><span class="panel__rule" aria-hidden="true"></span><span>Il pizzaiolo</span></div>
+              <p class="panel__big" aria-hidden="true">2002</p>
+              <div class="panel__copy">
+                <h3 class="panel__title"><span class="sr-only">2002 — </span>Denis inizia a <em>fare pizza.</em></h3>
+                <p>Da allora la pizza è il suo mestiere. Oggi la trovi qui, in Via Valpantena 46: un locale rinnovato, con tavolini dentro e fuori per mangiare sul posto.</p>
+              </div>
+              <div class="panel__art" aria-hidden="true">
+                <img class="art art--tomato" data-hx-speed="1.4" data-speed=".6" src="../../assets/img/ing/tomato.webp" alt="" width="302" height="394" loading="lazy" decoding="async">
+                <img class="art art--sprig" data-hx-speed="-0.6" data-speed="-.3" src="../../assets/img/ing/basil-sprig.webp" alt="" width="385" height="366" loading="lazy" decoding="async">
+                <img class="art art--garlic" data-hx-speed="2.2" data-speed="1" src="../../assets/img/ing/garlic.webp" alt="" width="265" height="327" loading="lazy" decoding="async">
+              </div>
+            </li>
+
+            <li class="panel panel--2">
+              <div class="panel__meta"><span>02</span><span class="panel__of">/ 04</span><span class="panel__rule" aria-hidden="true"></span><span>L’impasto</span></div>
+              <div class="panel__big panel__big--ring" aria-hidden="true">
+                <svg class="ring" viewBox="0 0 200 200" focusable="false">
+                  <circle class="ring__track" cx="100" cy="100" r="92"/>
+                  <circle class="ring__arc" cx="100" cy="100" r="92" pathLength="100"/>
+                </svg>
+                <span class="panel__num" data-count="75">75</span><span class="panel__pct">%</span>
+              </div>
+              <div class="panel__copy">
+                <h3 class="panel__title"><span class="sr-only">75% — </span>L’idratazione del <em>nuovo impasto.</em></h3>
+                <p>Tanta acqua nell’impasto per una pizza leggera e croccante: la senti al primo morso, e non pesa.</p>
+              </div>
+              <div class="panel__art" aria-hidden="true">
+                <img class="art art--mozz" data-hx-speed="1.2" data-speed=".5" src="../../assets/img/ing/mozzarella-torn.webp" alt="" width="376" height="366" loading="lazy" decoding="async">
+                <img class="art art--leaf" data-hx-speed="-1" data-speed="-.4" src="../../assets/img/ing/basil-leaf.webp" alt="" width="310" height="408" loading="lazy" decoding="async">
+              </div>
+            </li>
+
+            <li class="panel panel--3">
+              <div class="panel__meta"><span>03</span><span class="panel__of">/ 04</span><span class="panel__rule" aria-hidden="true"></span><span>I formati</span></div>
+              <p class="panel__big panel__big--words" aria-hidden="true">Farine <em>&amp;</em><br>impasti</p>
+              <div class="panel__copy">
+                <h3 class="panel__title"><span class="sr-only">Farine e impasti — </span>Tante farine, <em>tre formati.</em></h3>
+                <ol class="formats">
+                  <li><span class="formats__n">I.</span><span class="formats__t">Al taglio</span><span class="formats__d">a peso, sempre pronta in vetrina</span></li>
+                  <li><span class="formats__n">II.</span><span class="formats__t">Tonda</span><span class="formats__d">da asporto, cotta al momento</span></li>
+                  <li><span class="formats__n">III.</span><span class="formats__t">Alla pala</span><span class="formats__d">lunga, da condividere</span></li>
+                </ol>
+              </div>
+              <div class="panel__art" aria-hidden="true">
+                <img class="art art--pizza" data-hx-speed=".5" data-speed=".25" src="../../assets/img/pizza-top-800.webp" alt="" width="800" height="800" loading="lazy" decoding="async">
+                <img class="art art--olive" data-hx-speed="2" data-speed=".9" src="../../assets/img/ing/olive.webp" alt="" width="253" height="285" loading="lazy" decoding="async">
+              </div>
+            </li>
+
+            <li class="panel panel--4">
+              <div class="panel__meta"><span>04</span><span class="panel__of">/ 04</span><span class="panel__rule" aria-hidden="true"></span><span>La valle</span></div>
+              <p class="panel__big panel__big--words" aria-hidden="true">Del<br><em>territorio</em></p>
+              <div class="panel__copy">
+                <h3 class="panel__title"><span class="sr-only">Del territorio — </span>Broccoli di Novaglie, <em>Monte Veronese.</em></h3>
+                <p>Tra le proposte speciali entrano i sapori della valle: broccoli di Novaglie, Monte Veronese, taralli e mozzarella. Chiedi in pizzeria cosa c’è oggi in vetrina.</p>
+              </div>
+              <div class="panel__art" aria-hidden="true">
+                <img class="art art--slice" data-hx-speed=".7" data-speed=".3" src="../../assets/img/slice-1200.webp" srcset="../../assets/img/slice-600.webp 600w, ../../assets/img/slice-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 70vw" alt="" width="1200" height="865" loading="lazy" decoding="async">
+                <img class="art art--broccoli" data-hx-speed="1.8" data-speed=".8" src="../../assets/img/ing/broccoli.webp" alt="" width="360" height="387" loading="lazy" decoding="async">
+              </div>
+            </li>
+          </ol>
+          <div class="hx__progress" aria-hidden="true">
+            <span class="hx__count"><span class="hx__current">01</span> / 04</span>
+            <span class="hx__bar"><span class="hx__fill"></span></span>
+            <span class="hx__hint">Continua a scorrere</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ N°02 — MENU ============ -->
+    <section class="menu" id="menu" aria-labelledby="menu-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--split">
+          <div>
+            <p class="kicker" data-reveal><span class="kicker__n">N°02</span><span class="kicker__rule" aria-hidden="true"></span><span>Menu</span></p>
+            <h2 class="display" id="menu-title">
+              <span class="ln"><span class="ln__i" data-line>Al taglio, tonda,</span></span>
+              <span class="ln"><span class="ln__i" data-line><em>alla pala.</em></span></span>
+            </h2>
+          </div>
+          <div class="sec-head__aside">
+            <p class="lead" data-reveal>Dalla vetrina del taglio alle tonde da asporto, fino alla speciale del territorio. Niente prezzi qui: passa in pizzeria o chiamaci.</p>
+            <p class="note" data-reveal><span class="note__mark" aria-hidden="true">✻</span><span><strong>Menu indicativo</strong> — le pizze cambiano spesso: chiedi in pizzeria le proposte del giorno.</span></p>
+          </div>
+        </header>
+
+        <div class="menu__grid">
+          <aside class="menu__index" aria-label="Categorie del menu">
+            <p class="menu__index-title">Indice</p>
+            <ol data-lenis-prevent-horizontal>
+              <li><a href="#m-taglio" data-cat="m-taglio"><span>01</span>Al taglio</a></li>
+              <li><a href="#m-tonde" data-cat="m-tonde"><span>02</span>Tonde da asporto</a></li>
+              <li><a href="#m-speciale" data-cat="m-speciale"><span>03</span>La speciale</a></li>
+              <li><a href="#m-forno" data-cat="m-forno"><span>04</span>Dal forno</a></li>
+              <li><a href="#m-buffet" data-cat="m-buffet"><span>05</span>Aperitivi &amp; buffet</a></li>
+            </ol>
+            <a class="btn btn--primary btn--sm" href="tel:+393662205988">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+              Chiama e ordina
+            </a>
+          </aside>
+
+          <div class="menu__body">
+            <section class="cat" id="m-taglio" aria-labelledby="m-taglio-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">01</span>
+                <h3 class="cat__title" id="m-taglio-t">Al taglio</h3>
+                <p class="cat__note">a peso, sempre pronta in vetrina</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro, mozzarella, basilico</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Rossa all’origano</p><p class="dish__desc">pomodoro, origano, un filo d’olio</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Patate e rosmarino</p><p class="dish__desc">patate, rosmarino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Verdure di stagione</p><p class="dish__desc">le verdure del momento</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Salame piccante</p><p class="dish__desc">pomodoro, mozzarella, salame piccante</p></li>
+              </ul>
+            </section>
+
+            <section class="cat" id="m-tonde" aria-labelledby="m-tonde-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">02</span>
+                <h3 class="cat__title" id="m-tonde-t">Tonde da asporto</h3>
+                <p class="cat__note">stese e cotte al momento</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Marinara</p><p class="dish__desc">pomodoro, aglio, origano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro, mozzarella, basilico</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Diavola</p><p class="dish__desc">pomodoro, mozzarella, salame piccante</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Capricciosa</p><p class="dish__desc">pomodoro, mozzarella, prosciutto cotto, funghi, carciofi, olive</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Quattro formaggi</p><p class="dish__desc">mozzarella e formaggi misti</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prosciutto e funghi</p><p class="dish__desc">pomodoro, mozzarella, prosciutto cotto, funghi</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Bufala</p><p class="dish__desc">pomodoro, mozzarella di bufala, basilico</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Ortolana <span class="tag tag--veg">vegetariana</span></p><p class="dish__desc">pomodoro, mozzarella, verdure</p></li>
+              </ul>
+            </section>
+
+            <article class="cat spread" id="m-speciale" aria-labelledby="m-speciale-t">
+              <div class="spread__grid">
+                <div class="spread__page spread__page--img">
+                  <figure class="spread__fig">
+                    <div class="spread__mask" data-mask>
+                      <img src="../../assets/img/slice-1200.webp" srcset="../../assets/img/slice-600.webp 600w, ../../assets/img/slice-1200.webp 1200w" sizes="(min-width: 1100px) 36vw, 90vw" width="1200" height="865" alt="Trancio di pizza al taglio con broccoli, scaglie di formaggio e taralli" loading="lazy" decoding="async">
+                    </div>
+                    <figcaption><span>Fig. 1</span> La Valpantena, al taglio.</figcaption>
+                  </figure>
+                  <img class="spread__ing spread__ing--a" data-speed=".9" src="../../assets/img/ing/broccoli.webp" alt="" width="360" height="387" loading="lazy" decoding="async" aria-hidden="true">
+                  <img class="spread__ing spread__ing--b" data-speed="-.5" src="../../assets/img/ing/basil-leaf.webp" alt="" width="310" height="408" loading="lazy" decoding="async" aria-hidden="true">
+                </div>
+                <div class="spread__page spread__page--text">
+                  <header class="cat__head cat__head--spread">
+                    <span class="cat__n" aria-hidden="true">03</span>
+                    <p class="cat__note">La speciale del territorio</p>
+                  </header>
+                  <h3 class="spread__title" id="m-speciale-t"><em>Valpantena</em></h3>
+                  <p class="spread__ings">broccoli di Novaglie <span aria-hidden="true">·</span> taralli <span aria-hidden="true">·</span> Monte Veronese <span aria-hidden="true">·</span> mozzarella</p>
+                  <p class="dropcap">Nasce dalla valle che ci ospita. I broccoli di Novaglie, il carattere del Monte Veronese, la croccantezza dei taralli e la morbidezza della mozzarella: quattro ingredienti per una pizza che sa di casa, morso dopo morso.</p>
+                  <p class="spread__aside">È una delle nostre proposte speciali: chiedi in pizzeria quando la trovi in vetrina.</p>
+                  <a class="link-arrow" href="tel:+393662205988">Chiama e chiedi se c’è oggi
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <section class="cat" id="m-forno" aria-labelledby="m-forno-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">04</span>
+                <h3 class="cat__title" id="m-forno-t">Dal forno</h3>
+                <p class="cat__note">oltre la pizza</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Calzoni</p><p class="dish__desc">ripieni, chiusi a mezzaluna e cotti in forno</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Focacce</p><p class="dish__desc">dorate, da gustare da sole o in compagnia</p></li>
+              </ul>
+            </section>
+
+            <section class="cat" id="m-buffet" aria-labelledby="m-buffet-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">05</span>
+                <h3 class="cat__title" id="m-buffet-t">Aperitivi &amp; buffet</h3>
+                <p class="cat__note">su prenotazione</p>
+              </header>
+              <ul class="dishes dishes--single">
+                <li class="dish" data-reveal><p class="dish__name">Vassoi di pizza al taglio</p><p class="dish__desc">per feste, compleanni e ufficio — su prenotazione</p></li>
+              </ul>
+              <a class="link-arrow" href="#buffet">Scopri aperitivi e buffet
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ N°03 — RECENSIONI ============ -->
+    <section class="reviews" id="recensioni" aria-labelledby="reviews-title">
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="kicker" data-reveal><span class="kicker__n">N°03</span><span class="kicker__rule" aria-hidden="true"></span><span>Recensioni</span></p>
+          <h2 class="display" id="reviews-title">
+            <span class="ln"><span class="ln__i" data-line>Il passaparola,</span></span>
+            <span class="ln"><span class="ln__i" data-line><em>in numeri.</em></span></span>
+          </h2>
+        </header>
+
+        <div class="reviews__grid">
+          <div class="score" data-reveal>
+            <p class="score__value"><span class="sr-only">Valutazione media </span><span data-count="4.8" data-decimals="1">4,8</span><span class="sr-only"> su 5</span></p>
+            <svg class="stars" viewBox="0 0 120 22" aria-hidden="true" focusable="false">
+              <defs>
+                <path id="star" d="M11 1.2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L11 16.1l-5.9 3.1 1.2-6.5L1.5 8.1l6.6-.9z"/>
+                <clipPath id="stars-clip"><rect x="0" y="0" width="114.6" height="22"/></clipPath>
+              </defs>
+              <g class="stars__base"><use href="#star"/><use href="#star" x="24"/><use href="#star" x="48"/><use href="#star" x="72"/><use href="#star" x="96"/></g>
+              <g class="stars__fill" clip-path="url(#stars-clip)"><use href="#star"/><use href="#star" x="24"/><use href="#star" x="48"/><use href="#star" x="72"/><use href="#star" x="96"/></g>
+            </svg>
+            <p class="score__caption">su <strong>81 recensioni</strong> Google</p>
+            <a class="link-arrow" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Leggi tutte le recensioni su Google
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
+              <span class="sr-only"> (si apre in una nuova scheda)</span>
+            </a>
+          </div>
+
+          <div class="reviews__data">
+            <figure class="dist">
+              <figcaption class="mini-title">Distribuzione dei voti</figcaption>
+              <ol class="dist__rows">
+                <li class="dist__row" style="--v: .8642"><span class="dist__label">5 <span aria-hidden="true">★</span><span class="sr-only"> stelle</span></span><span class="dist__track" aria-hidden="true"><span class="dist__bar"></span></span><span class="dist__count">70</span></li>
+                <li class="dist__row" style="--v: .0864"><span class="dist__label">4 <span aria-hidden="true">★</span><span class="sr-only"> stelle</span></span><span class="dist__track" aria-hidden="true"><span class="dist__bar"></span></span><span class="dist__count">7</span></li>
+                <li class="dist__row" style="--v: .0247"><span class="dist__label">3 <span aria-hidden="true">★</span><span class="sr-only"> stelle</span></span><span class="dist__track" aria-hidden="true"><span class="dist__bar"></span></span><span class="dist__count">2</span></li>
+                <li class="dist__row" style="--v: 0"><span class="dist__label">2 <span aria-hidden="true">★</span><span class="sr-only"> stelle</span></span><span class="dist__track" aria-hidden="true"><span class="dist__bar"></span></span><span class="dist__count">0</span></li>
+                <li class="dist__row" style="--v: .0247"><span class="dist__label">1 <span aria-hidden="true">★</span><span class="sr-only"> stella</span></span><span class="dist__track" aria-hidden="true"><span class="dist__bar"></span></span><span class="dist__count">2</span></li>
+              </ol>
+            </figure>
+
+            <figure class="topics">
+              <figcaption class="mini-title">Gli argomenti più citati <span>· menzioni secondo Google</span></figcaption>
+              <ul class="topics__list">
+                <li><span class="topics__t">Ingredienti</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">7</span></li>
+                <li><span class="topics__t">Impasto</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">7</span></li>
+                <li><span class="topics__t">Scelta</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">5</span></li>
+                <li><span class="topics__t">Aperitivo</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">4</span></li>
+                <li><span class="topics__t">Prodotti</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">3</span></li>
+                <li><span class="topics__t">Vegetariani</span><span class="topics__dots" aria-hidden="true"></span><span class="topics__n">2</span></li>
+              </ul>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <section class="themes" aria-labelledby="themes-title">
+        <div class="wrap themes__head">
+          <h3 class="themes__title" id="themes-title" data-reveal>Cosa emerge dalle recensioni</h3>
+          <p class="themes__intro" data-reveal>In sintesi, i temi che ritornano più spesso tra chi ci ha lasciato un voto.</p>
+        </div>
+        <div class="marquee" data-marquee="38">
+          <div class="marquee__track">
+            <ul class="marquee__group">
+              <li>Una pizza croccante e leggerissima, mai unta né pesante</li>
+              <li><em>Ingredienti genuini, prodotti scelti con cura</em></li>
+              <li>Tanti gusti, anche particolari, cotti al momento</li>
+            </ul>
+          </div>
+        </div>
+        <div class="marquee marquee--reverse" data-marquee="30">
+          <div class="marquee__track">
+            <ul class="marquee__group">
+              <li><em>Personale sorridente, titolare cordiale e professionale</em></li>
+              <li>Un locale accogliente, curato e rinnovato, con tavolini dentro e fuori</li>
+              <li><em>Perfetta per l’aperitivo e per i buffet delle feste</em></li>
+            </ul>
+          </div>
+        </div>
+        <div class="wrap themes__cta">
+          <a class="btn btn--ghost" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Leggi tutte le recensioni su Google
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
+            <span class="sr-only"> (si apre in una nuova scheda)</span>
+          </a>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ N°04 — APERITIVI & BUFFET ============ -->
+    <section class="buffet" id="buffet" aria-labelledby="buffet-title">
+      <div class="wrap buffet__grid">
+        <div class="buffet__copy">
+          <p class="kicker kicker--light" data-reveal><span class="kicker__n">N°04</span><span class="kicker__rule" aria-hidden="true"></span><span>Aperitivi &amp; buffet</span></p>
+          <h2 class="display" id="buffet-title">
+            <span class="ln"><span class="ln__i" data-line>Una festa in vista?</span></span>
+            <span class="ln"><span class="ln__i" data-line><em>Pensiamo a tutto noi.</em></span></span>
+          </h2>
+          <p class="lead" data-reveal>Vassoi di pizza al taglio per feste, compleanni e ufficio: su prenotazione, con tutto pronto all’ora che ci dici. E all’ora dell’aperitivo, passa a trovarci.</p>
+          <ul class="occasions" data-reveal>
+            <li>Feste</li><li>Compleanni</li><li>Ufficio</li><li>Aperitivo</li>
+          </ul>
+          <div class="buffet__ctas" data-reveal>
+            <a class="btn btn--cream" href="tel:+393662205988">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+              Chiama e prenota
+            </a>
+            <a class="buffet__phone" href="tel:+393662205988">366 220 5988</a>
+          </div>
+        </div>
+        <div class="tray" aria-hidden="true">
+          <div class="tray__plate"></div>
+          <img class="tray__slice tray__slice--1" data-speed=".35" src="../../assets/img/slice-600.webp" alt="" width="600" height="432" loading="lazy" decoding="async">
+          <img class="tray__slice tray__slice--2" data-speed=".7" src="../../assets/img/slice-600.webp" alt="" width="600" height="432" loading="lazy" decoding="async">
+          <img class="tray__slice tray__slice--3" data-speed=".5" src="../../assets/img/slice-600.webp" alt="" width="600" height="432" loading="lazy" decoding="async">
+          <img class="tray__ing tray__ing--a" data-speed="1.3" src="../../assets/img/ing/basil-sprig.webp" alt="" width="385" height="366" loading="lazy" decoding="async">
+          <img class="tray__ing tray__ing--b" data-speed="-.6" src="../../assets/img/ing/tomato.webp" alt="" width="302" height="394" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ N°05 — DOVE SIAMO ============ -->
+    <section class="visit" id="dove" aria-labelledby="visit-title">
+      <div class="wrap">
+        <header class="sec-head">
+          <p class="kicker" data-reveal><span class="kicker__n">N°05</span><span class="kicker__rule" aria-hidden="true"></span><span>Dove siamo</span></p>
+          <h2 class="display" id="visit-title">
+            <span class="ln"><span class="ln__i" data-line>Ti aspettiamo</span></span>
+            <span class="ln"><span class="ln__i" data-line><em>in Valpantena.</em></span></span>
+          </h2>
+        </header>
+
+        <div class="visit__grid">
+          <div class="visit__info">
+            <address class="visit__address" data-reveal>
+              <span class="visit__street">Via Valpantena 46</span>
+              <span>37142 Quinto di Valpantena (VR) · Verona</span>
+            </address>
+
+            <p class="status status--lg" data-open-status data-reveal><span class="status__dot" aria-hidden="true"></span><span class="status__text">Controlla gli orari qui sotto</span></p>
+
+            <table class="hours" data-reveal>
+              <caption class="mini-title">Orari di apertura</caption>
+              <tbody>
+                <tr data-day="1"><th scope="row">Lunedì</th><td><span class="hours__slot">11:00–13:30</span><span class="hours__sep" aria-hidden="true"> · </span><span class="hours__slot">17:30–20:30</span></td></tr>
+                <tr data-day="2"><th scope="row">Martedì</th><td><span class="hours__slot">11:00–13:30</span><span class="hours__sep" aria-hidden="true"> · </span><span class="hours__slot">17:30–20:30</span></td></tr>
+                <tr data-day="3"><th scope="row">Mercoledì</th><td><span class="hours__slot">11:00–13:30</span><span class="hours__sep" aria-hidden="true"> · </span><span class="hours__slot">17:30–20:30</span></td></tr>
+                <tr data-day="4"><th scope="row">Giovedì</th><td><span class="hours__slot">11:00–13:30</span><span class="hours__sep" aria-hidden="true"> · </span><span class="hours__slot">17:30–20:30</span></td></tr>
+                <tr data-day="5"><th scope="row">Venerdì</th><td><span class="hours__slot">11:00–13:30</span><span class="hours__sep" aria-hidden="true"> · </span><span class="hours__slot">17:30–20:30</span></td></tr>
+                <tr data-day="6"><th scope="row">Sabato</th><td><span class="hours__slot">17:00–20:30</span></td></tr>
+                <tr data-day="0"><th scope="row">Domenica</th><td><span class="hours__slot">17:00–20:30</span></td></tr>
+              </tbody>
+            </table>
+            <p class="fine" data-reveal>Orari da Google: nei giorni festivi possono variare, nel dubbio chiamaci.</p>
+
+            <div class="visit__phone" data-reveal>
+              <span class="mini-title">Per ordinare</span>
+              <a href="tel:+393662205988">366 220 5988</a>
+            </div>
+
+            <div class="visit__ctas" data-reveal>
+              <a class="btn btn--primary" href="tel:+393662205988">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+                Chiama
+              </a>
+              <a class="btn btn--ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination=45.4933179,11.0191" target="_blank" rel="noopener">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                Indicazioni<span class="sr-only"> (Google Maps, si apre in una nuova scheda)</span>
+              </a>
+            </div>
+
+            <ul class="visit__extras" data-reveal>
+              <li>Tavolini dentro e fuori, per mangiare sul posto.</li>
+              <li>Partner di Too Good To Go, contro lo spreco.</li>
+            </ul>
+
+            <ul class="socials socials--row" data-reveal>
+              <li><a href="https://www.instagram.com/pizzavoglia_denis/" target="_blank" rel="noopener">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
+                @pizzavoglia_denis<span class="sr-only"> su Instagram (si apre in una nuova scheda)</span></a></li>
+              <li><a href="https://www.facebook.com/Pizzvoglia/" target="_blank" rel="noopener">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8.8v3h2.6V21"/></svg>
+                Facebook<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+            </ul>
+          </div>
+
+          <figure class="map" data-reveal>
+            <div class="map__frame">
+              <iframe src="https://www.google.com/maps?q=Pizzavoglia,+Via+Valpantena+46,+37142+Verona&amp;output=embed" title="Mappa: Pizza Voglia, Via Valpantena 46, Quinto di Valpantena (VR)" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            </div>
+            <figcaption class="map__cap">
+              <span>Quinto di Valpantena · Verona</span>
+              <span class="map__coords">45°29′36″ N — 11°01′09″ E</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap">
+      <p class="footer__sign">
+        <span class="ln"><span class="ln__i" data-line>A presto,</span></span>
+        <span class="ln"><span class="ln__i" data-line><em>a Quinto.</em></span></span>
+      </p>
+
+      <div class="footer__grid">
+        <div class="badge" aria-hidden="true">
+          <span class="badge__box"><span>Pizza</span><span>Voglia</span></span>
+          <span class="dots"><i></i><i></i><i></i></span>
+        </div>
+        <div class="footer__col">
+          <p class="mini-title">Pizza Voglia</p>
+          <p>Via Valpantena 46<br>37142 Quinto di Valpantena (VR)</p>
+          <p><a href="tel:+393662205988">366 220 5988</a></p>
+        </div>
+        <div class="footer__col">
+          <p class="mini-title">Orari</p>
+          <p>Lun–Ven 11:00–13:30 · 17:30–20:30<br>Sab–Dom 17:00–20:30</p>
+        </div>
+        <div class="footer__col">
+          <p class="mini-title">Seguici</p>
+          <ul class="socials">
+            <li><a href="https://www.instagram.com/pizzavoglia_denis/" target="_blank" rel="noopener">Instagram<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+            <li><a href="https://www.facebook.com/Pizzvoglia/" target="_blank" rel="noopener">Facebook<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+            <li><a href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Google Maps<span class="sr-only"> (si apre in una nuova scheda)</span></a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__base">
+        <p>© <span data-year>2026</span> Pizza Voglia · Pizzeria a Quinto di Valpantena, Verona</p>
+        <a class="footer__top" href="#top">Torna su <span aria-hidden="true">↑</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <a class="call-fab" href="tel:+393662205988">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
+    Chiama e ordina
+  </a>
+</body>
+</html>
