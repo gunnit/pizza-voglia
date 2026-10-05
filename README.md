@@ -19,5 +19,15 @@ python3 -m http.server 5173
 ```
 Then open http://localhost:5173/options/
 
+## Tests
+With the local server running:
+```bash
+npm install
+npm test
+```
+`tests/smoke.mjs` loads every option in headless Chrome at 360/390/768/1024/1280/1440px plus reduced motion and fails on
+JS errors, failed requests, horizontal overflow, sideways-scrolled containers, broken images/anchors, invalid JSON-LD.
+`tests/interactions.mjs` checks the mobile menu (open, anchor navigation, Escape) and the live open/closed status.
+
 ## Assets
 `assets/img/` — AI-generated food imagery (Higgsfield, GPT Image 2.5), transparent WebP.
