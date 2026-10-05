@@ -240,7 +240,7 @@ function initActiveStates() {
   if (!('IntersectionObserver' in window)) return;
 
   const navLinks = $$('[data-nav]');
-  const sections = ['storia', 'menu', 'recensioni', 'buffet', 'dove'].map((id) => doc.getElementById(id)).filter(Boolean);
+  const sections = ['storia', 'territorio', 'menu', 'recensioni', 'buffet', 'dove'].map((id) => doc.getElementById(id)).filter(Boolean);
   const navIO = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -477,12 +477,29 @@ function initLenis() {
 /* --------------------------------------------------------------------------
    HERO — intro on load
    -------------------------------------------------------------------------- */
+const SLICE_SPIN = [-5, 3, 6, 4, -3, -6];
+const SLICE_DELAY = [0.03, 0, 0.05, 0.065, 0.02, 0.08];
+
 async function heroIntro() {
   const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } });
   const ings = $$('.stage .ing, .near .ing');
+  const teglia = $('.teglia');
 
-  tl.fromTo('.pizza__in', { autoAlpha: 0, scale: 0.68, rotation: -75 }, { autoAlpha: 1, scale: 1, rotation: 0, duration: 2.4 }, 0);
-  tl.fromTo('.pizza-shadow__in', { autoAlpha: 0, scale: 0.5 }, { autoAlpha: 1, scale: 1, duration: 2.4 }, 0.05);
+  // The teglia assembles itself: six slices settle into the tray, then the cut lines appear.
+  const tw = teglia ? teglia.offsetWidth : 400;
+  tl.fromTo('.teglia__in', { autoAlpha: 0, scale: 0.86, y: 36 }, { autoAlpha: 1, scale: 1, y: 0, duration: 2.2 }, 0);
+  tl.fromTo('.teglia__shade', { autoAlpha: 0, scale: 0.72 }, { autoAlpha: 1, scale: 1, duration: 2.2 }, 0.1);
+  $$('.teglia .slice').forEach((el, i) => {
+    const dx = parseFloat(el.dataset.dx) || 0;
+    const dy = parseFloat(el.dataset.dy) || 0;
+    tl.fromTo(
+      $('.slice__in', el),
+      { x: dx * tw * 0.15, y: dy * tw * 0.11, z: tw * 0.28, rotation: SLICE_SPIN[i] * 1.6, rotationX: dy * -12 },
+      { x: 0, y: 0, z: 0, rotation: 0, rotationX: 0, duration: 1.9, ease: 'expo.out' },
+      0.08 + SLICE_DELAY[i] * 1.6,
+    );
+  });
+  tl.fromTo('.teglia__under', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: 'power1.out' }, 1.35);
   tl.fromTo('.w--pizza .w__i', { yPercent: 112, autoAlpha: 1 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0.22);
   tl.fromTo('.w--voglia .w__i', { yPercent: 112, autoAlpha: 1 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0.4);
 
@@ -510,8 +527,7 @@ async function heroIntro() {
   // All start states are now inline: safe to lift the CSS pre-hide.
   root.classList.add('is-ready');
 
-  const img = $('.pizza__img');
-  const decoded = img && img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+  const decoded = Promise.all($$('.slice__top').map((img) => (img.decode ? img.decode().catch(() => {}) : null)));
   const fonts = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
   await Promise.race([Promise.all([decoded, fonts]), sleep(1400)]);
   tl.play();
@@ -550,9 +566,33 @@ function heroScroll(dust) {
 
   // Copy leaves first, so nothing ever travels across it.
   tl.to(['.hero__top', '.hero__aside', '.hero__bottom', '.hero__cue'], { y: -50, autoAlpha: 0, duration: 0.16, ease: 'power1.in' }, 0);
-  // The pizza recedes steadily for the whole sequence.
-  tl.to('.pizza', { scale: 0.52, yPercent: -16, rotation: 130, duration: 1, ease: 'power1.inOut' }, 0);
-  tl.to('.pizza-shadow', { scale: 0.46, yPercent: -10, autoAlpha: 0.4, duration: 1, ease: 'power1.inOut' }, 0);
+  // The teglia recedes steadily for the whole sequence…
+  tl.to('.teglia', { scale: 0.62, yPercent: -12, rotation: -5, duration: 1, ease: 'power1.inOut' }, 0);
+  tl.to('.teglia__shade', { autoAlpha: 0.7, duration: 0.6, ease: 'power1.out' }, 0);
+  tl.to(['.teglia__under', '.teglia__core'], { autoAlpha: 0, duration: 0.05 }, 0.01);
+  // …while “al taglio” happens: each slice parts along its own diagonal, lifts and turns a little, staggered.
+  const teglia = $('.teglia');
+  const tw = () => (teglia ? teglia.offsetWidth : 0);
+  const amp = () => (window.innerWidth < 700 ? 0.68 : 1);
+  const shadows = $$('.teglia .sshadow');
+  $$('.teglia .slice').forEach((el, i) => {
+    const dx = parseFloat(el.dataset.dx) || 0;
+    const dy = parseFloat(el.dataset.dy) || 0;
+    const sx = () => dx * tw() * 0.085 * amp();
+    const sy = () => dy * tw() * 0.07 * amp();
+    // its shadow stays on the table and follows in x/y only, softening as the slice lifts
+    if (shadows[i]) tl.to(shadows[i], { x: sx, y: sy, scale: 1.06, autoAlpha: 0.72, duration: 0.5, ease: 'power2.out' }, 0.02 + SLICE_DELAY[i]);
+    tl.to(el, {
+      x: sx,
+      y: sy,
+      z: () => tw() * (0.045 + (i % 3) * 0.02) * amp(),
+      rotation: () => SLICE_SPIN[i] * amp(),
+      rotationX: () => dy * -6 * amp(),
+      rotationY: () => dx * 7 * amp(),
+      duration: 0.5,
+      ease: 'power2.out',
+    }, 0.02 + SLICE_DELAY[i]);
+  });
   // The wordmark parts like a curtain and is gone by mid-scroll (never reaches the nav).
   tl.to('.w--pizza', { yPercent: -22, xPercent: -10, scale: 0.94, autoAlpha: 0, duration: 0.42, ease: 'power1.in' }, 0);
   tl.to('.w--voglia', { yPercent: 22, xPercent: 10, scale: 0.94, autoAlpha: 0, duration: 0.42, ease: 'power1.in' }, 0);
@@ -595,8 +635,7 @@ function initDepthParallax() {
     .map((el) => ({ el: $('.ing__p', el), d: parseFloat(el.dataset.depth) || 0.5 }))
     .concat($$('.w').map((el) => ({ el: $('.w__m', el), d: parseFloat(el.dataset.depth) || 0.3 })))
     .filter((it) => it.el);
-  const tilt = $('.pizza__tilt');
-  const shadow = $('.pizza-shadow__in');
+  const tilt = $('.teglia__tilt');
 
   let tx = 0;
   let ty = 0;
@@ -649,8 +688,7 @@ function initDepthParallax() {
       const it = items[i];
       it.el.style.transform = `translate3d(${(-cx * it.d * amp).toFixed(2)}px, ${(-cy * it.d * amp).toFixed(2)}px, 0)`;
     }
-    if (tilt) tilt.style.transform = `rotateX(${(-cy * 7).toFixed(2)}deg) rotateY(${(cx * 7).toFixed(2)}deg)`;
-    if (shadow) shadow.style.translate = `${(-cx * 14).toFixed(2)}px ${(-cy * 11).toFixed(2)}px`;
+    if (tilt) tilt.style.transform = `rotateX(${(-cy * 6).toFixed(2)}deg) rotateY(${(cx * 7).toFixed(2)}deg)`;
   });
 }
 
@@ -826,7 +864,48 @@ function initReveals() {
 }
 
 /* --------------------------------------------------------------------------
-   N°03 — Reviews: count-up, distribution bars, topics
+   N°02 — Il territorio: the atlas plate draws itself; a tiny “rally car”
+   climbs the Montecchio hairpins with the scroll, tracing the road.
+   -------------------------------------------------------------------------- */
+function initAtlas() {
+  const plate = $('[data-atlas]');
+  if (!plate) return;
+  const lines = $$('.atlas__line', plate);
+  const soft = $$('.atlas__road, .atlas__river, .atlas__compass, .atlas__coords, .atlas__marks > :not(.atlas__car)', plate);
+  const labels = $$('.place > span', plate);
+  const road = $('#atlas-hairpins', plate);
+  const car = $('.atlas__car', plate);
+
+  gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 });
+  gsap.set(soft, { autoAlpha: 0 });
+  gsap.set(labels, { autoAlpha: 0, y: 12 });
+  const draw = gsap.timeline({ paused: true });
+  draw.to(lines, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', stagger: 0.045 }, 0)
+    .to(soft, { autoAlpha: 1, duration: 1.2, ease: 'power1.out', stagger: 0.04 }, 0.5)
+    .to(labels, { autoAlpha: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.05 }, 0.9);
+  ScrollTrigger.create({ trigger: plate, start: 'top 78%', once: true, onEnter: () => draw.play() });
+
+  if (!road || !car) return;
+  const len = road.getTotalLength();
+  const place = (p) => {
+    const pt = road.getPointAtLength(len * p);
+    car.setAttribute('cx', pt.x.toFixed(1));
+    car.setAttribute('cy', pt.y.toFixed(1));
+    road.style.strokeDashoffset = String(1 - p);
+  };
+  road.style.strokeDasharray = '1';
+  place(0);
+  ScrollTrigger.create({
+    trigger: plate,
+    start: 'top 60%',
+    end: 'bottom 45%',
+    scrub: 0.6,
+    onUpdate: (self) => place(self.progress),
+  });
+}
+
+/* --------------------------------------------------------------------------
+   N°04 — Reviews: count-up, distribution bars, topics
    -------------------------------------------------------------------------- */
 function initReviews() {
   const scoreEl = $('.score__value [data-count]');
@@ -959,6 +1038,7 @@ if (MOTION) {
   });
   safe('parallax', initDepthParallax);
   safe('storia', initStoria);
+  safe('atlas', initAtlas);
   safe('reveals', initReveals);
   safe('reviews', initReviews);
   safe('marquee', initMarquees);

@@ -50,10 +50,10 @@ try {
         const after = await page.evaluate((h) => { const t = document.querySelector('header button[aria-expanded], button[aria-controls][aria-expanded]'); const el = document.getElementById(decodeURIComponent(h.slice(1))); const r = el?.getBoundingClientRect(); return { expanded: t.getAttribute('aria-expanded'), top: r ? Math.round(r.top) : null, y: Math.round(scrollY) }; }, target);
         res.push(`${after.expanded !== 'true' && after.top !== null && after.top < 300 && after.top > -400 ? 'ok  ' : 'FAIL'} link ${target} closes menu and scrolls (aria-expanded=${after.expanded}, target top=${after.top}, scrollY=${after.y})`);
       }
-      // 3. Escape closes
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await sleep(400);
-      await toggle.tap();
+      // 3. Escape closes (fresh load: smooth-scroll libraries fight instant programmatic scrolls)
+      await page.goto(`${BASE}/options/${opt}/`, { waitUntil: 'networkidle2', timeout: 60000 });
+      await sleep(1200);
+      await (await page.$('header button[aria-expanded], button[aria-controls][aria-expanded]')).tap();
       await sleep(600);
       await page.keyboard.press('Escape');
       await sleep(600);
@@ -61,7 +61,7 @@ try {
       res.push(`${esc !== 'true' ? 'ok  ' : 'FAIL'} Escape closes menu (aria-expanded=${esc})`);
     }
     // 4. open/closed status text present
-    const status = await page.evaluate(() => { const m = document.body.innerText.match(/(Aperto ora|Chiuso[^\n]{0,40}|APERTO[^\n]{0,30}|CHIUSO[^\n]{0,40})/i); return m ? m[0] : null; });
+    const status = await page.evaluate(() => { const m = document.body.textContent.replace(/\s+/g, ' ').match(/(Aperto ora|Chiuso[^\n]{0,40}|APERTO[^\n]{0,30}|CHIUSO[^\n]{0,40})/i); return m ? m[0] : null; });
     res.push(`${status ? 'ok  ' : 'FAIL'} open/closed status: ${status}`);
     if (errors.length) res.push(`FAIL page errors: ${errors.join(' | ')}`);
     failed += res.filter((l) => l.startsWith('FAIL')).length;

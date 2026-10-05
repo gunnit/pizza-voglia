@@ -12,7 +12,11 @@ Language of all site copy: **Italian**. `lang="it"`.
 - Name shown to customers: **Pizza Voglia** (Google listing spells it "Pizzavoglia").
 - Pizzaiolo / owner: **Denis** (Denis Vecchi). Denis is "nel mondo della pizza dal 2002" (since 2002).
 - New dough at **75% di idratazione** (75% hydration). Location recently renovated ("location restaurata").
-- Formats: **pizza al taglio**, **pizza tonda da asporto**, **pizza alla pala**. Wide choice of **farine e impasti**.
+- **Denis's pizza is SQUARE/RECTANGULAR** — pizza **al taglio in teglia** (rectangular trays in a glass vitrine, sold by weight,
+  cut into rectangles) and **alla pala**. NO round/Neapolitan pizza anywhere (no round pizza images, no "tonda" in copy).
+  Real shop: long glass vitrine with black steel trays, wooden counter, Edison bulbs, cream/terracotta checkered floor.
+- Formats: **al taglio** (a peso, sempre pronta in vetrina) · **alla pala** · **teglie/vassoi per feste e buffet** (su prenotazione).
+  Wide choice of **farine e impasti**.
   Also calzoni and focacce. **Aperitivi**. **Buffet / catering** for parties and events (everything ready on request).
 - Seen on their Instagram: special pizza with **Broccoli di Novaglie, taralli, Monte Veronese e mozzarella**.
 - Partner of **Too Good To Go** (anti-waste surprise bags) — optional small mention.
@@ -45,11 +49,22 @@ Always link "Leggi tutte le recensioni su Google" → the Google Maps link above
 ## Generic menu (no prices!)
 Label it clearly: "Menu indicativo — le pizze cambiano spesso: chiedi in pizzeria le proposte del giorno."
 Show no prices (no € figures at all).
-- **Al taglio** (a peso, sempre pronta in vetrina): Margherita · Rossa all'origano · Patate e rosmarino · Verdure di stagione · Salame piccante
-- **Tonde da asporto**: Marinara · Margherita · Diavola · Capricciosa · Quattro formaggi · Prosciutto e funghi · Bufala · Ortolana (vegetariana)
+- **In vetrina** (al taglio, a peso): Margherita · Rossa all'origano · Patate e rosmarino · Verdure di stagione · Salame piccante
+- **I classici** (al taglio): Marinara · Margherita · Diavola · Capricciosa · Quattro formaggi · Prosciutto e funghi · Bufala · Ortolana (vegetariana)
 - **La speciale del territorio**: "Valpantena" — broccoli di Novaglie, taralli, Monte Veronese, mozzarella
 - **Dal forno**: Calzoni · Focacce
-- **Aperitivi & buffet**: vassoi di pizza al taglio per feste, compleanni e ufficio — su prenotazione
+- **Aperitivi & buffet**: teglie e vassoi di pizza al taglio per feste, compleanni e ufficio — su prenotazione
+
+## Denis & the territory (from the client side, 2026-10-05)
+- Denis loves **rally** and **80s culture**. He — and his customers — are **proud of the region and its products**.
+- Verified regional facts you may use (no affiliation claims, no third-party logos):
+  - **Valpantena** is the valley that climbs from Verona north to the **Lessinia** plateau; Quinto sits at its mouth (Grezzana further up).
+  - **Monte Veronese DOP** (DOP since 1992) — the cheese of Lessinia, also produced in Valpantena. Denis uses it (Instagram special).
+  - **Broccolo di Novaglie** — traditional Veneto product (PAT), De.Co. of Verona; Novaglie is a hamlet in the hills of Verona;
+    its "Sagra del Broccolo" has run since 1933. Denis uses it (Instagram special).
+  - Valpantena roads are **rally territory**: Verona's historic rally (since 1972) has had special stages here, e.g. the
+    hairpins of Montecchio above Grezzana. Use as flavour ("Valpantena, terra di rally") — don't name/brand the event.
+- Don't claim other specific products are on the menu; "prodotti del territorio" in general is fine.
 
 ## Hard rules
 - No fake/fabricated reviews, quotes, names, numbers, prices or claims. No delivery claims (we don't know).
@@ -80,6 +95,13 @@ Show no prices (no € figures at all).
 - Everything must degrade gracefully: if WebGL or a CDN fails, the page still renders (static fallback image).
 
 ## Available image assets (AI-generated, transparent backgrounds, WebP)
+- **USE THESE for the pizza (square!)**: `assets/img/teglia-top.webp` (1800x1200) / `teglia-top-900.webp` — top-down
+  rectangular margherita in teglia; `assets/img/teglia/slice-{0,1}-{0,1,2}.webp` — the same teglia cut into a 3x2 grid
+  of square slices (row-col; put them back together edge to edge to rebuild the whole teglia); `assets/img/crumb-side.webp`
+  (2048x300, tileable horizontally) — real airy crumb for cut sides in 3D (top = topping edge, bottom = golden base).
+  Built by `scripts/make_teglia.py`.
+- `slice-1200.webp` is a square al-taglio slice (3/4 view) — accurate, keep using it.
+- The round `pizza-top-*.webp` images were removed (wrong product); its source stays in `assets/_src` only as raw material for `make_teglia.py`.
 - `assets/img/pizza-top-1600.webp` and `pizza-top-800.webp` — perfect top-down whole margherita (square, transparent, pizza fills the frame edge to edge) — ideal as a texture on a 3D disc or as a rotating hero cutout.
 - `assets/img/slice-1200.webp` / `slice-600.webp` — 3/4 view rectangular pizza al taglio slice with broccoli, Monte Veronese shavings, taralli (1200x865).
 - `assets/img/ing/*.webp` (≈300–430px, transparent cutouts): `basil-leaf`, `basil-sprig`, `tomato`, `tomato-half`,

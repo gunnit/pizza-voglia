@@ -427,8 +427,13 @@ button { font: inherit; }
 @media (min-width: 960px) {
   .nav { display: grid; grid-template-columns: 1fr auto 1fr; }
   .nav__links { display: block; }
-  .nav__phone { display: inline-flex; justify-self: end; }
+  .nav__phone { display: inline-flex; justify-self: end; white-space: nowrap; }
   .nav__toggle { display: none; }
+}
+@media (min-width: 960px) and (max-width: 1199.98px) {
+  .nav__links a { font-size: .7rem; letter-spacing: .12em; }
+  .nav__links li + li::before { margin: 0 .62rem; }
+  .nav__phone { padding: 0 .95rem; font-size: .82rem; }
 }
 
 /* No-JS mobile: show links inline (the overlay needs JS) */
@@ -438,6 +443,8 @@ button { font: inherit; }
   .no-js .nav__links { display: block; width: 100%; overflow-x: auto; }
   .no-js .nav__links a { font-size: .7rem; letter-spacing: .12em; }
   .no-js .nav__links li + li::before { margin: 0 .6rem; }
+  .no-js .nav__links li { flex: none; white-space: nowrap; }
+  .no-js .hero { padding-top: calc(var(--nav-h) + 58px); }
 }
 
 /* ---------- Mobile overlay ---------- */
@@ -666,42 +673,138 @@ button { font: inherit; }
   top: calc(var(--pz) * .44 - .84em);
 }
 
-.pizza {
+/* --- The teglia: six real slices on a CSS 3D tray, sized from --pz ---
+   Geometry mirrors scripts/make_teglia.py: canvas 1800x1200, slices cut at
+   x = 608 / 1191 and y = 600, 26px transparent margin, 70px corner radius.
+   Separate wrappers own separate jobs (intro / pointer / pose / float / scroll),
+   so no two animations ever fight over the same transform. */
+.teglia {
+  --tw: min(calc(var(--pz) * var(--tws, 1.08)), var(--twx, 86cqw));  /* tray width */
+  --th: calc(var(--tw) * 2 / 3);             /* tray height (3:2) */
+  --tk: calc(var(--tw) * .032);              /* thickness of the pizza */
+  --tm: calc(var(--tw) * .014444);           /* transparent margin baked into the outer slices */
+  --tr: calc(var(--tw) * .038889);           /* corner radius of the teglia */
   position: absolute;
   z-index: 4;
-  width: var(--pz);
-  height: var(--pz);
-  left: calc(var(--pz) * -.5);
-  top: calc(var(--pz) * -.5);
-  perspective: 1600px;
+  width: var(--tw);
+  height: var(--th);
+  left: calc(var(--tw) * -.5);
+  top: calc(var(--th) * -.5);
 }
-.pizza__tilt, .pizza__in { width: 100%; height: 100%; }
-.pizza picture, .pizza__img { display: block; width: 100%; height: 100%; }
-.pizza__img { border-radius: 50%; animation: spin 150s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.teglia__in { position: absolute; inset: 0; perspective: calc(var(--tw) * 3.2); }
+.teglia__tilt, .teglia__base, .teglia__float { position: absolute; inset: 0; }
+.teglia__tilt, .teglia__base, .teglia__float, .teglia__shade, .slice, .slice__in { transform-style: preserve-3d; }
+.teglia__base { transform: rotateX(var(--tx, 34deg)) rotateZ(var(--tz, -7deg)); }
 
-.pizza-shadow {
-  position: absolute;
-  z-index: 3;
-  width: calc(var(--pz) * 1.08);
-  height: calc(var(--pz) * 1.08);
-  left: calc(var(--pz) * -.54 + var(--pz) * .05);
-  top: calc(var(--pz) * -.54 + var(--pz) * .085);
-  pointer-events: none;
-}
-.pizza-shadow__in {
+/* Soft shadow lying on the “table”, below the floating tray (light from top-left) */
+.teglia__shade {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(84, 46, 14, .42) 0%, rgba(84, 46, 14, .3) 56%, rgba(84, 46, 14, .1) 84%, rgba(84, 46, 14, 0) 100%);
+  transform: translate3d(calc(var(--tw) * .028), calc(var(--th) * .06), calc(var(--tk) * -1 - var(--tw) * .06));
+  pointer-events: none;
 }
-.pizza-shadow__in::after {
+.teglia__pulse { position: absolute; inset: 0; }
+/* contact shadow of the whole tray (fades as soon as the slices part) */
+.teglia__core {
+  position: absolute;
+  inset: 8% 5%;
+  border-radius: 8%;
+  background: rgba(52, 24, 6, .32);
+  filter: blur(calc(var(--tw) * .02));
+}
+/* one soft shadow per slice: they tile into the tray's shadow and travel with their slice */
+.sshadow {
+  position: absolute;
+  left: calc(var(--l) * var(--tw));
+  top: calc(var(--t) * var(--th));
+  width: calc(var(--w) * var(--tw));
+  height: calc(var(--th) / 2);
+}
+.sshadow::before {
   content: "";
   position: absolute;
-  inset: 9%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(52, 26, 8, .32), rgba(52, 26, 8, 0));
-  transform: translate(-2.5%, -3%);
+  inset: 1.5%;
+  border-radius: 10%;
+  background: rgba(78, 40, 12, .3);
+  filter: blur(calc(var(--tw) * .04));
+}
+.has-motion .sshadow { will-change: transform; }
+
+/* Dark underside: shows through the cut lines as hairlines while the tray is whole */
+.teglia__under {
+  position: absolute;
+  inset: var(--tm);
+  border-radius: var(--tr);
+  background: #4a2810;
+  transform: translateZ(calc(var(--tk) * -.45));
+}
+
+.slice {
+  --sw: calc(var(--w) * var(--tw));
+  --sh: calc(var(--th) / 2);
+  position: absolute;
+  left: calc(var(--l) * var(--tw));
+  top: calc(var(--t) * var(--th));
+  width: var(--sw);
+  height: var(--sh);
+}
+.slice--r0 { --ia: var(--tm); }
+.slice--r1 { --ib: var(--tm); }
+.slice--c0 { --fa: var(--tm); }
+.slice--c2 { --fb: var(--tm); }
+.slice--r1.slice--c0 { --fa: calc(var(--tm) + var(--tr)); }
+.slice--r1.slice--c2 { --fb: calc(var(--tm) + var(--tr)); }
+.slice__in { position: absolute; inset: 0; }
+.slice__top {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  backface-visibility: hidden;
+}
+
+/* Cut faces (crumb) and outer crust, hanging below the top surface */
+.face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: var(--tk);
+  transform-origin: 0 0;
+  backface-visibility: hidden;
+  background:
+    linear-gradient(180deg, rgba(48, 22, 4, .34) 0%, rgba(48, 22, 4, 0) 26%, rgba(48, 22, 4, 0) 78%, rgba(48, 22, 4, .22) 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(var(--shade, rgba(60, 28, 6, .08)), var(--shade, rgba(60, 28, 6, .08))) 0 0 / 100% 100% no-repeat,
+    url("../../assets/img/crumb-side.webp") var(--bx, 0) 0 / auto 100% repeat-x;
+  background-color: #e9d7b4;
+}
+.face--front { width: calc(var(--sw) - var(--fa, 0px) - var(--fb, 0px)); transform: translate3d(var(--fa, 0px), calc(var(--sh) - var(--ib, 0px)), 0) rotateX(-90deg); }
+.face--left { --shade: rgba(255, 246, 228, .12); width: calc(var(--sh) - var(--ia, 0px) - var(--ib, 0px)); transform: translate3d(0, var(--ia, 0px), 0) rotateY(-90deg) rotateZ(90deg); }
+.face--right { --shade: rgba(60, 28, 6, .26); width: calc(var(--sh) - var(--ia, 0px) - var(--ib, 0px)); transform: translate3d(var(--sw), calc(var(--sh) - var(--ib, 0px)), 0) rotateY(90deg) rotateZ(-90deg); }
+.face--crust {
+  background:
+    linear-gradient(180deg, rgba(120, 58, 14, .2) 0%, rgba(172, 98, 36, .78) 30%, rgba(118, 58, 16, .9) 100%) 0 0 / 100% 100% no-repeat,
+    url("../../assets/img/crumb-side.webp") var(--bx, 0) 0 / auto 100% repeat-x;
+  background-blend-mode: multiply, normal;
+  background-color: #c88a4a;
+}
+.face--c { width: calc(var(--tr) * .7654 + 1px); }
+.face--bl1 { transform: translate3d(calc(var(--tm) + var(--tr) * .2929), calc(var(--sh) - var(--tm) - var(--tr) * .2929), 0) rotateZ(22.5deg) rotateX(-90deg); }
+.face--bl2 { transform: translate3d(var(--tm), calc(var(--sh) - var(--tm) - var(--tr)), 0) rotateZ(67.5deg) rotateX(-90deg); }
+.face--br1 { transform: translate3d(calc(var(--sw) - var(--tm) - var(--tr)), calc(var(--sh) - var(--tm)), 0) rotateZ(-22.5deg) rotateX(-90deg); }
+.face--br2 { transform: translate3d(calc(var(--sw) - var(--tm) - var(--tr) * .2929), calc(var(--sh) - var(--tm) - var(--tr) * .2929), 0) rotateZ(-67.5deg) rotateX(-90deg); }
+
+/* Slow float instead of a spin (motion mode only; reduced motion = static) */
+.has-motion .teglia__float { animation: tfloat 8s ease-in-out infinite; }
+.has-motion .teglia__pulse { animation: tshade 8s ease-in-out infinite; }
+@keyframes tfloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); }
+  50% { transform: translate3d(0, 0, calc(var(--tw) * .03)) rotateX(-1.4deg) rotateY(1.1deg); }
+}
+@keyframes tshade {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: .74; }
 }
 
 /* Ingredients */
@@ -812,7 +915,7 @@ button { font: inherit; }
 @media (min-width: 960px) and (min-aspect-ratio: 5/4) and (min-height: 560px) {
   .hero { display: block; padding: 0; }
   .stage { position: absolute; inset: 0; margin: 0; }
-  .stage__o { --pz: min(56cqh, 38cqw); left: 56%; top: 56%; }
+  .stage__o { --pz: min(56cqh, 38cqw); --tws: 1.22; --twx: 42cqw; --tx: 37deg; --tz: -9deg; left: 56%; top: 56%; }
   .w--pizza { font-size: calc(var(--pz) * .54); left: -.897em; }
   .w--voglia { font-size: calc(var(--pz) * .44); left: calc(var(--pz) * -.02); }
   .ing { --px: var(--xw); --py: var(--yw); --ps: var(--sw); }
@@ -871,6 +974,13 @@ button { font: inherit; }
   }
 }
 @keyframes cue { from { transform: translateY(-110%); } to { transform: translateY(240%); } }
+/* Narrower wide screens: the tray reaches the right column — keep only the rating chip there */
+@media (min-width: 960px) and (max-width: 1239.98px) and (min-aspect-ratio: 5/4) and (min-height: 560px) {
+  .hero__formats { display: none; }
+}
+@media (min-width: 960px) and (max-width: 1119.98px) and (min-aspect-ratio: 5/4) and (min-height: 560px) {
+  .hero__aside .status { display: none; }
+}
 
 /* Pre-intro hidden state (JS only; failsafe in <head> reveals it anyway) */
 .js:not(.is-ready) [data-intro] { opacity: 0; }
@@ -878,7 +988,8 @@ button { font: inherit; }
 [tabindex="-1"]:focus { outline: none; }
 
 /* Pause decorative loops when the hero is off-screen */
-.hero-off .pizza__img,
+.hero-off .teglia__float,
+.hero-off .teglia__pulse,
 .hero-off .ing img,
 .hero-off .hero__beam--core,
 .hero-off .hero__cue i::after { animation-play-state: paused; }
@@ -888,7 +999,7 @@ button { font: inherit; }
   .has-motion .hero-wrap { height: 200vh; height: 200svh; }
   .has-motion .hero { position: sticky; top: 0; }
   .has-motion .storia { margin-top: -60vh; margin-top: -60svh; }
-  .has-motion .ing, .has-motion .pizza, .has-motion .w, .has-motion .pizza-shadow { will-change: transform; }
+  .has-motion .ing, .has-motion .teglia, .has-motion .w { will-change: transform; }
 }
 
 /* ==========================================================================
@@ -994,7 +1105,7 @@ button { font: inherit; }
 .art--garlic { width: clamp(50px, 13vw, 90px); right: 4%; top: 34%; rotate: 24deg; filter: blur(1.5px) drop-shadow(0 10px 10px rgba(84, 46, 14, .2)); }
 .art--mozz { width: clamp(90px, 26vw, 170px); right: 5%; top: 8%; rotate: -10deg; }
 .art--leaf { width: clamp(60px, 16vw, 110px); right: 30%; top: 4%; rotate: 40deg; filter: blur(1.2px) drop-shadow(0 10px 10px rgba(84, 46, 14, .2)); }
-.art--pizza { width: clamp(220px, 70vw, 420px); right: -24%; top: 3%; border-radius: 50%; filter: drop-shadow(0 30px 30px rgba(84, 46, 14, .3)); }
+.art--teglia { width: clamp(250px, 80vw, 480px); right: -22%; top: 6%; rotate: -8deg; filter: drop-shadow(0 30px 30px rgba(84, 46, 14, .3)); }
 .art--olive { width: clamp(40px, 11vw, 70px); right: 40%; top: 12%; rotate: -16deg; }
 .art--slice { width: clamp(220px, 74vw, 460px); right: -16%; top: 2%; rotate: -6deg; filter: drop-shadow(0 30px 30px rgba(84, 46, 14, .32)); }
 .art--broccoli { width: clamp(70px, 20vw, 130px); right: 52%; top: 4%; rotate: -14deg; }
@@ -1048,8 +1159,8 @@ button { font: inherit; }
 .hx-on .art--garlic { width: min(10vh, 7vw); right: 6%; top: 52%; }
 .hx-on .art--mozz { width: min(24vh, 16vw); right: 8%; top: 18%; }
 .hx-on .art--leaf { width: min(14vh, 9vw); right: 34%; top: 8%; }
-.hx-on .art--pizza { width: min(46vh, 28vw); right: 3%; top: auto; bottom: 4%; }
-.hx-on .art--olive { width: min(8vh, 5.5vw); right: 44%; top: 20%; }
+.hx-on .art--teglia { width: min(50vh, 29vw); right: 2%; top: 19%; bottom: auto; }
+.hx-on .art--olive { width: min(8vh, 5.5vw); right: 12%; top: 64%; }
 .hx-on .art--slice { width: min(52vh, 31vw); right: 0; top: 36%; }
 .hx-on .art--broccoli { width: min(16vh, 10vw); right: 30%; top: 10%; bottom: auto; }
 .hx-on .hx__progress {
@@ -1071,7 +1182,151 @@ button { font: inherit; }
 .hx__fill { position: absolute; inset: 0; background: var(--tomato); transform: scaleX(0); transform-origin: 0 50%; }
 
 /* ==========================================================================
-   N°02 — MENU
+   N°02 — IL TERRITORIO: atlas plate + product sheets
+   ========================================================================== */
+.terra {
+  position: relative;
+  padding-block: clamp(6rem, 12vw, 11rem);
+  background: var(--paper);
+}
+.terra + .menu { border-top: 1px solid var(--hair); }
+.terra__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(2.5rem, 6vw, 4.5rem); align-items: start; }
+@media (min-width: 1000px) {
+  .terra__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 5vw; }
+}
+
+.atlas { margin: 0; }
+.atlas__plate {
+  --plate: #f2e8d5;
+  position: relative;
+  width: 100%;
+  max-width: 660px;
+  aspect-ratio: 600 / 760;
+  container-type: inline-size;
+}
+/* plate shadow on a static layer (a filter here would re-run on every frame the map redraws) */
+.atlas__plate::before {
+  content: "";
+  position: absolute;
+  inset: 1.58% 2%;
+  border-radius: 2px;
+  box-shadow: 0 30px 50px -24px rgba(90, 50, 15, .34), 0 2px 6px rgba(90, 50, 15, .08);
+}
+.atlas__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.atlas__paper { fill: var(--plate); }
+.atlas__frame { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .5; }
+.atlas__frame--outer { opacity: .22; }
+.atlas__ticks { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .38; }
+.atlas__line { fill: none; stroke: #8a6e4e; stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .5; }
+.atlas__terraces .atlas__line { stroke: #6f7b45; opacity: .4; }
+.atlas__river--edge { fill: none; stroke: #6d8c86; stroke-width: 9; stroke-linecap: round; opacity: .6; }
+.atlas__river--water { fill: none; stroke: #dbe4dc; stroke-width: 6.6; stroke-linecap: round; }
+.atlas__road { fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: .1 6; opacity: .5; }
+.atlas__hairpins { fill: none; stroke: var(--tomato); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.atlas__compass circle { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .35; }
+.atlas__compass path { fill: var(--ink); }
+.atlas__compass .atlas__compass-s { fill: var(--plate); stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.atlas__compass text { fill: var(--ink); font: 500 13px var(--sans); letter-spacing: .1em; }
+.atlas__city { fill: var(--ink); }
+.atlas__dot { fill: var(--plate); stroke: var(--ink); stroke-width: 1.7; transition: fill .4s, stroke .4s; }
+.atlas__dot--novaglie { fill: var(--basil); stroke: var(--plate); stroke-width: 2; }
+.atlas__home { fill: var(--tomato); }
+.atlas__home-ring { fill: none; stroke: var(--tomato); stroke-width: 1.5; opacity: .45; transform-box: fill-box; transform-origin: center; }
+.has-motion .atlas__home-ring { animation: ping 3s var(--expo) infinite; }
+@keyframes ping { from { transform: scale(.55); opacity: .75; } to { transform: scale(1.9); opacity: 0; } }
+.atlas__car { fill: var(--tomato); stroke: var(--cream-hi); stroke-width: 1.8; }
+
+/* Place names are real text (crisp, accessible), positioned in plate units (600 x 760) */
+.atlas__places { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+.place {
+  position: absolute;
+  left: calc(var(--x) / 600 * 100%);
+  top: calc(var(--y) / 760 * 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .3em;
+  max-width: 30%;
+  transform: translateY(-50%);
+}
+.place--l { align-items: flex-end; text-align: right; transform: translate(-100%, -50%); }
+.place--c { align-items: center; text-align: center; max-width: 72%; transform: translate(-50%, -50%); }
+.place__name, .place__note { text-shadow: 0 0 3px var(--plate), 0 0 6px var(--plate), 0 0 10px var(--plate); }
+.place__name { color: var(--ink); font: 400 clamp(.92rem, 3.2cqi, 1.36rem)/1 var(--serif); }
+.place__name--caps { font: 500 clamp(.66rem, 2.1cqi, .9rem)/1 var(--sans); letter-spacing: .5em; text-transform: uppercase; margin-right: -.5em; }
+.place__note { color: var(--muted); font: 500 clamp(.58rem, 1.6cqi, .68rem)/1.35 var(--sans); letter-spacing: .12em; text-transform: uppercase; text-wrap: balance; }
+.place--c .place__note { font: italic 400 clamp(.82rem, 2.5cqi, 1.08rem)/1.2 var(--serif); letter-spacing: 0; text-transform: none; }
+.place--home .place__name, .place--city .place__name { font-size: clamp(1rem, 3.9cqi, 1.6rem); }
+.place--home .place__note { color: var(--tomato-d); }
+.place--home { max-width: 46%; }
+.place--novaglie { max-width: 26%; }
+.place--novaglie .place__note { color: var(--basil); }
+.place--rally { max-width: 25%; transform: translateY(-100%); }
+.place--rally .place__name { color: var(--tomato-d); font-style: italic; }
+/* a quiet rally nod: three skewed “livery” stripes in the house colours */
+.place--rally .place__name::before {
+  content: "";
+  display: block;
+  width: 2.1em;
+  height: .32em;
+  margin: 0 0 .45em .15em;
+  background: linear-gradient(90deg, var(--tomato) 0 33%, var(--basil) 33% 66%, var(--crust) 66%);
+  transform: skewX(-28deg);
+}
+.place--river .place__name { color: #4e6e68; font: italic 400 clamp(.78rem, 2.5cqi, 1.05rem)/1 var(--serif); letter-spacing: .06em; }
+.atlas__coords {
+  position: absolute;
+  right: calc(30 / 600 * 100%);
+  bottom: calc(30 / 760 * 100%);
+  margin: 0;
+  color: var(--muted);
+  font: 500 clamp(.54rem, 1.45cqi, .62rem)/1 var(--sans);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.atlas__cap { margin: 1.1rem 0 0; color: var(--muted); font: italic 400 1.02rem/1.45 var(--serif); }
+.atlas__cap span { margin-right: .55rem; color: var(--tomato); font: 500 .66rem/1 var(--sans); font-style: normal; letter-spacing: .2em; text-transform: uppercase; }
+
+/* Product sheets */
+.terra__cards { display: grid; gap: 1.4rem; }
+@media (min-width: 700px) and (max-width: 999.98px) { .terra__cards { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.spec {
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2.2rem);
+  border-radius: 16px;
+  background: rgba(255, 252, 246, .62);
+  box-shadow: inset 0 0 0 1px var(--hair-2), 0 30px 60px -44px rgba(90, 50, 15, .5);
+  transition: box-shadow .5s var(--expo);
+}
+.spec:hover { box-shadow: inset 0 0 0 1px var(--ink), 0 34px 70px -44px rgba(90, 50, 15, .6); }
+.spec__art { position: absolute; top: clamp(1rem, 2.4vw, 1.6rem); right: clamp(1rem, 2.4vw, 1.6rem); width: clamp(92px, 24%, 132px); height: auto; }
+.spec__k { margin: 0 0 1.3rem; color: var(--muted); font: 500 .68rem/1.3 var(--sans); letter-spacing: .2em; text-transform: uppercase; }
+.spec__title { margin: 0 0 .9rem; padding-right: 26%; font: 400 clamp(2rem, 1.5rem + 1.5vw, 2.85rem)/.98 var(--serif); letter-spacing: -.01em; }
+.spec__title em { color: var(--tomato); }
+.spec--broc .spec__title em { color: var(--basil); }
+.spec__text { max-width: 42ch; margin: 0 0 1.4rem; color: var(--ink-2); font-size: .98rem; line-height: 1.62; }
+.spec__facts { margin: 0; border-top: 1px solid var(--hair-2); }
+.spec__facts div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 1rem; align-items: baseline; padding: .72rem 0; border-bottom: 1px solid var(--hair); }
+.spec__facts dt { color: var(--muted); font: 500 .66rem/1.5 var(--sans); letter-spacing: .16em; text-transform: uppercase; }
+.spec__facts dd { margin: 0; font: 400 1.12rem/1.3 var(--serif); }
+.spec__fill { stroke: var(--ink); stroke-width: 1.3; stroke-linejoin: round; }
+.spec__fill--rind { fill: #e2bd74; }
+.spec__fill--top { fill: #f6e6bd; }
+.spec__fill--cut { fill: #efd8a2; }
+.spec__fill--crown { fill: #8cab5c; }
+.spec__fill--stem { fill: #cbd8a0; }
+.spec__line { fill: none; stroke: var(--ink); stroke-width: 1; stroke-linecap: round; opacity: .38; }
+.spec__eyes ellipse { fill: #d9b977; stroke: var(--ink); stroke-width: .8; opacity: .85; }
+.spec__buds circle { fill: none; stroke: #234a21; stroke-width: 1; opacity: .5; }
+
+/* Sheet ↔ map: hovering a sheet points at its place */
+.atlas__dot--novaglie, .place__name { transition: color .4s, fill .4s; }
+.terra__grid:has(.spec--broc:hover) .place--novaglie .place__name { color: var(--basil); }
+.terra__grid:has(.spec--broc:hover) .atlas__dot--novaglie { fill: var(--tomato); }
+.terra__grid:has(.spec--cheese:hover) .place--lessinia .place__name { color: var(--crust); }
+
+/* ==========================================================================
+   N°03 — MENU
    ========================================================================== */
 .menu {
   position: relative;
@@ -1299,7 +1554,7 @@ button { font: inherit; }
 }
 
 /* ==========================================================================
-   N°03 — RECENSIONI
+   N°04 — RECENSIONI
    ========================================================================== */
 .reviews {
   position: relative;
@@ -1425,7 +1680,7 @@ button { font: inherit; }
 .themes__cta { margin-top: clamp(2.5rem, 5vw, 4rem); }
 
 /* ==========================================================================
-   N°04 — APERITIVI & BUFFET
+   N°05 — APERITIVI & BUFFET
    ========================================================================== */
 .buffet {
   position: relative;
@@ -1487,7 +1742,7 @@ button { font: inherit; }
 .tray__ing--b { width: 14%; left: 4%; bottom: 10%; rotate: -12deg; filter: blur(1.2px) drop-shadow(0 14px 12px rgba(70, 10, 0, .3)); }
 
 /* ==========================================================================
-   N°05 — DOVE SIAMO
+   N°06 — DOVE SIAMO
    ========================================================================== */
 .visit { padding-block: clamp(6rem, 12vw, 11rem); background: var(--paper); }
 .visit__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3.5rem; }

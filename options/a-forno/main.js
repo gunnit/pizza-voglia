@@ -584,6 +584,77 @@ function initStory() {
 }
 
 /* --------------------------------------------------------------------------
+   Il territorio: valley line + rally hairpins drawn with scroll
+   -------------------------------------------------------------------------- */
+function initTerritory() {
+  const valley = $('.valley');
+  const vLine = valley && $('.valley__line', valley);
+  const pts = valley ? $$('.valley__pt', valley) : [];
+  const road = $('.rally__trail');
+  const place = (path, len, t, circles) => {
+    const pt = path.getPointAtLength(len * clamp(t, 0, 1));
+    circles.forEach((c) => {
+      if (!c) return;
+      c.setAttribute('cx', pt.x.toFixed(1));
+      c.setAttribute('cy', pt.y.toFixed(1));
+    });
+  };
+  // path fraction at which the line reaches each waypoint (x is monotonic along the valley)
+  const tAtX = (path, len, x) => {
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 18; i++) {
+      const mid = (lo + hi) / 2;
+      if (path.getPointAtLength(len * mid).x < x) lo = mid;
+      else hi = mid;
+    }
+    return (lo + hi) / 2;
+  };
+
+  if (!ANIM || !vLine) {
+    pts.forEach((p) => p.classList.add('is-on'));
+    return;
+  }
+
+  const draw = (path, trigger, circles, onT, start, end) => {
+    const len = path.getTotalLength();
+    const o = { t: 0 };
+    const apply = () => {
+      path.style.strokeDashoffset = String(1 - o.t);
+      place(path, len, Math.max(0.0005, o.t), circles);
+      if (onT) onT(o.t);
+    };
+    apply();
+    gsap.to(o, {
+      t: 1,
+      ease: 'none',
+      onUpdate: apply,
+      scrollTrigger: { trigger, start, end, scrub: 0.8 },
+    });
+    return len;
+  };
+
+  const vLen = vLine.getTotalLength();
+  pts.forEach((p) => {
+    p.dataset.at = String(tAtX(vLine, vLen, parseFloat(p.dataset.x)));
+  });
+  draw(vLine, valley, [$('.valley__dot', valley), $('.valley__halo', valley)], (t) => {
+    pts.forEach((p) => p.classList.toggle('is-on', t >= parseFloat(p.dataset.at) - 0.004));
+  }, 'top 82%', 'bottom 42%');
+
+  if (road) draw(road, '.rally', [$('.rally__car'), $('.rally__halo')], null, 'top 75%', 'bottom 35%');
+
+  const img = $('.product__img');
+  if (img) {
+    gsap.fromTo(
+      img,
+      { y: 30 },
+      { y: -40, ease: 'none', scrollTrigger: { trigger: '.terra__cards', start: 'top bottom', end: 'bottom top', scrub: true } }
+    );
+  }
+}
+
+/* --------------------------------------------------------------------------
    3D tilt card (slice) + parallax
    -------------------------------------------------------------------------- */
 function initCard3D() {
@@ -929,7 +1000,7 @@ function initMagnetic() {
 }
 
 /* ==========================================================================
-   HERO 3D — Three.js
+   HERO 3D — Three.js · "AL TAGLIO": a teglia cut in a 3x2 grid of slices
    ========================================================================== */
 function hasWebGL2() {
   try {
@@ -954,359 +1025,318 @@ function loadImage(src) {
   });
 }
 
-/* Separable box blur (3 passes ≈ gaussian) on a Float32 field. */
-function boxBlur(src, S, r) {
+/* Separable box blur (3 passes ≈ gaussian) on a W×H Float32 field. */
+function boxBlur(src, W, H, r) {
   if (r < 1) return src.slice();
   const tmp = new Float32Array(src.length);
   const out = new Float32Array(src.length);
   const k = 2 * r + 1;
-  const last = S - 1;
-  for (let y = 0; y < S; y++) {
-    const row = y * S;
+  for (let y = 0; y < H; y++) {
+    const row = y * W;
     let acc = 0;
-    for (let x = -r; x <= r; x++) acc += src[row + clamp(x, 0, last)];
-    for (let x = 0; x < S; x++) {
+    for (let x = -r; x <= r; x++) acc += src[row + clamp(x, 0, W - 1)];
+    for (let x = 0; x < W; x++) {
       tmp[row + x] = acc / k;
-      acc += src[row + Math.min(last, x + r + 1)] - src[row + Math.max(0, x - r)];
+      acc += src[row + Math.min(W - 1, x + r + 1)] - src[row + Math.max(0, x - r)];
     }
   }
-  for (let x = 0; x < S; x++) {
+  for (let x = 0; x < W; x++) {
     let acc = 0;
-    for (let y = -r; y <= r; y++) acc += tmp[clamp(y, 0, last) * S + x];
-    for (let y = 0; y < S; y++) {
-      out[y * S + x] = acc / k;
-      acc += tmp[Math.min(last, y + r + 1) * S + x] - tmp[Math.max(0, y - r) * S + x];
+    for (let y = -r; y <= r; y++) acc += tmp[clamp(y, 0, H - 1) * W + x];
+    for (let y = 0; y < H; y++) {
+      out[y * W + x] = acc / k;
+      acc += tmp[Math.min(H - 1, y + r + 1) * W + x] - tmp[Math.max(0, y - r) * W + x];
     }
   }
   return out;
 }
-const gaussBlur = (src, S, r) => boxBlur(boxBlur(boxBlur(src, S, r), S, r), S, r);
+const gaussBlur = (src, W, H, r) => boxBlur(boxBlur(boxBlur(src, W, H, r), W, H, r), W, H, r);
 
-function circularSmooth(arr, k, passes) {
-  const n = arr.length;
-  for (let p = 0; p < passes; p++) {
-    const copy = arr.slice();
-    for (let i = 0; i < n; i++) {
-      let acc = 0;
-      for (let j = -k; j <= k; j++) acc += copy[(i + j + n) % n];
-      arr[i] = acc / (2 * k + 1);
-    }
-  }
+/* Teglia layout in texture pixels (teglia-top.webp is 1800×1200, see scripts/make_teglia.py). */
+const TEX_W = 1800;
+const TEX_H = 1200;
+const T_MARGIN = 36; // 26px transparent margin + 10px inset: the photo is fully opaque inside
+const T_RADIUS = 60; // 70px outline corner radius − inset
+const CUT_XS = [26 + 1748 / 3, 26 + (2 * 1748) / 3];
+const CUT_Y = 600;
+const RIM_BAND = 84; // baked rim width (px) inside the inset outline
+const UNIT = 3 / TEX_W; // world units per texture px: the whole photo spans 3 × 2 units
+
+/** Distance (px) inside the inset rounded-rect outline; negative outside. */
+function tegliaInside(tx, ty) {
+  const hx = TEX_W / 2 - T_MARGIN - T_RADIUS;
+  const hy = TEX_H / 2 - T_MARGIN - T_RADIUS;
+  const qx = Math.abs(tx - TEX_W / 2) - hx;
+  const qy = Math.abs(ty - TEX_H / 2) - hy;
+  return -(Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - T_RADIUS);
 }
 
 /**
- * Derive relief maps from the top-down pizza photo:
- * - finds the sauce boundary per angle (polar density histogram) → cornicione ring
- * - height = puffy rounded crust profile + raised cheese/basil + fine detail
- * - normal map (for lighting), and a packed map: R = oil/clearcoat mask, G = roughness
+ * Relief from the teglia photo (luminance + colour classes):
+ * - height field: raised baked rim (rounded profile from the outline) + melted cheese / basil bumps
+ * - fine normal map from luminance detail; packed map R = oil (clearcoat), G = roughness
+ * The float height field is returned so the slices are displaced on the CPU and the cut
+ * walls can follow exactly the same profile (no gaps between top and crumb faces).
  */
-async function analyzePizza(img, S, crustH) {
-  const cv = document.createElement('canvas');
-  cv.width = S;
-  cv.height = S;
-  const ctx = cv.getContext('2d', { willReadFrequently: true });
-  ctx.drawImage(img, 0, 0, S, S);
-  const src = ctx.getImageData(0, 0, S, S).data;
-  const N = S * S;
-  const sc = S / 512;
+async function analyzeTeglia(img, Wc) {
+  const Hc = Math.round((Wc * TEX_H) / TEX_W);
+  const sc = Wc / TEX_W;
   const R = (v) => Math.max(1, Math.round(v * sc));
-
-  const A = new Float32Array(N);
+  const cv = document.createElement('canvas');
+  cv.width = Wc;
+  cv.height = Hc;
+  const ctx = cv.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0, Wc, Hc);
+  const src = ctx.getImageData(0, 0, Wc, Hc).data;
+  const N = Wc * Hc;
   const L = new Float32Array(N);
-  const TOP = new Float32Array(N);
   const CH = new Float32Array(N);
   const BA = new Float32Array(N);
   const SA = new Float32Array(N);
   const DARK = new Float32Array(N);
-  for (let i = 0, p = 0; i < N; i++, p += 4) {
-    const r = src[p] / 255;
-    const g = src[p + 1] / 255;
-    const b = src[p + 2] / 255;
-    const a = src[p + 3] / 255;
-    const mx = Math.max(r, g, b);
-    const mn = Math.min(r, g, b);
-    const sat = mx > 1e-4 ? (mx - mn) / mx : 0;
-    A[i] = a;
-    L[i] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    const redness = (r - Math.max(g, b)) / Math.max(r, 1e-3);
-    const sauce = smoothstep(0.48, 0.6, redness) * smoothstep(0.2, 0.35, mx);
-    const basil = smoothstep(0.04, 0.18, (g - r) / Math.max(g, 1e-3)) * a;
-    const cheese = smoothstep(0.62, 0.8, mx) * (1 - smoothstep(0.2, 0.45, sat)) * a;
-    TOP[i] = Math.min(1, sauce + basil);
-    SA[i] = sauce * a;
-    BA[i] = basil;
-    CH[i] = cheese;
-    DARK[i] = (1 - smoothstep(0.12, 0.38, mx)) * a;
+  const DIN = new Float32Array(N);
+  for (let y = 0, i = 0; y < Hc; y++) {
+    for (let x = 0; x < Wc; x++, i++) {
+      const p = i * 4;
+      const r = src[p] / 255;
+      const g = src[p + 1] / 255;
+      const b = src[p + 2] / 255;
+      const mx = Math.max(r, g, b);
+      const mn = Math.min(r, g, b);
+      const sat = mx > 1e-4 ? (mx - mn) / mx : 0;
+      L[i] = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      SA[i] = smoothstep(0.48, 0.6, (r - Math.max(g, b)) / Math.max(r, 1e-3)) * smoothstep(0.2, 0.35, mx);
+      BA[i] = smoothstep(0.04, 0.18, (g - r) / Math.max(g, 1e-3));
+      CH[i] = smoothstep(0.62, 0.8, mx) * (1 - smoothstep(0.2, 0.45, sat));
+      DARK[i] = 1 - smoothstep(0.12, 0.38, mx);
+      DIN[i] = tegliaInside((x + 0.5) / sc, (y + 0.5) / sc);
+    }
   }
   await nextFrame();
 
-  // Polar histogram → sauce boundary (rho) and silhouette (redge) per angle.
-  const NA = 180;
-  const NR = 128;
-  const half = S / 2;
-  const cnt = new Float32Array(NA * NR);
-  const tot = new Float32Array(NA * NR);
-  const acnt = new Float32Array(NA * NR);
-  const RR = new Float32Array(N);
-  const TH = new Float32Array(N);
-  for (let y = 0; y < S; y++) {
-    for (let x = 0; x < S; x++) {
-      const i = y * S + x;
-      const dx = x - half + 0.5;
-      const dy = y - half + 0.5;
-      const rr = Math.sqrt(dx * dx + dy * dy) / half;
-      const th = Math.atan2(dy, dx);
-      RR[i] = rr;
-      TH[i] = th;
-      const ai = Math.floor(((th + Math.PI) / (2 * Math.PI)) * NA) % NA;
-      const ri = Math.min(NR - 1, Math.floor(rr * NR));
-      const k = ai * NR + ri;
-      tot[k] += 1;
-      cnt[k] += TOP[i];
-      acnt[k] += A[i];
-    }
-  }
-  const rho = new Float32Array(NA);
-  const redge = new Float32Array(NA);
-  for (let a = 0; a < NA; a++) {
-    rho[a] = 0.82;
-    redge[a] = 0.985;
-    for (let r = NR - 1; r >= 0; r--) {
-      const k = a * NR + r;
-      if (tot[k] > 0 && cnt[k] / tot[k] > 0.45) {
-        rho[a] = (r + 1) / NR;
-        break;
-      }
-    }
-    for (let r = NR - 1; r >= 0; r--) {
-      const k = a * NR + r;
-      if (tot[k] > 0 && acnt[k] / tot[k] > 0.5) {
-        redge[a] = (r + 1) / NR;
-        break;
-      }
-    }
-  }
-  circularSmooth(rho, 3, 3);
-  circularSmooth(redge, 2, 2);
+  const chB = gaussBlur(CH, Wc, Hc, R(3));
+  const baB = gaussBlur(BA, Wc, Hc, R(2));
   await nextFrame();
-
-  // Crust profile per pixel.
-  const PROF = new Float32Array(N);
-  const RING = new Float32Array(N);
-  for (let i = 0; i < N; i++) {
-    const fa = ((TH[i] + Math.PI) / (2 * Math.PI)) * NA - 0.5;
-    const fl = Math.floor(fa);
-    const f = fa - fl;
-    const i0 = ((fl % NA) + NA) % NA;
-    const i1 = (i0 + 1) % NA;
-    const rh = rho[i0] * (1 - f) + rho[i1] * f;
-    const re = redge[i0] * (1 - f) + redge[i1] * f;
-    const rr = RR[i];
-    if (rr > rh) {
-      const t = clamp((rr - rh) / Math.max(re - rh, 1e-3), 0, 1);
-      const u = 2 * t - 1;
-      PROF[i] = Math.pow(Math.max(0, 1 - u * u), 0.55);
-      RING[i] = 1;
-    }
-  }
-  const inner = new Float32Array(N);
-  for (let i = 0; i < N; i++) inner[i] = 1 - RING[i];
-  const chB = gaussBlur(CH.map((v, i) => v * inner[i]), S, R(2));
-  await nextFrame();
-  const baB = gaussBlur(BA.map((v, i) => v * inner[i]), S, R(1));
-  const Lb = gaussBlur(L, S, R(3));
-  await nextFrame();
-  const aB = gaussBlur(A, S, R(2));
-  const ringSoft = gaussBlur(RING, S, R(3));
+  const Lb = gaussBlur(L, Wc, Hc, R(4));
+  const Lf = gaussBlur(L, Wc, Hc, 1);
   await nextFrame();
 
   let H = new Float32Array(N);
   for (let i = 0; i < N; i++) {
-    const detail = L[i] - Lb[i];
-    H[i] = PROF[i] * (1 + detail * 0.6) + chB[i] * 0.16 + baB[i] * 0.07;
+    const d = DIN[i];
+    if (d <= 0) continue;
+    const rim = d < RIM_BAND ? Math.pow(Math.sin((Math.PI * d) / RIM_BAND), 0.7) : 0;
+    const inner = smoothstep(52, 96, d);
+    H[i] = rim * (1 + (L[i] - Lb[i]) * 0.8) + inner * (chB[i] * 0.34 + baB[i] * 0.16);
   }
-  H = gaussBlur(H, S, R(2));
+  H = gaussBlur(H, Wc, Hc, R(2));
   let maxH = 1e-4;
   for (let i = 0; i < N; i++) {
-    H[i] *= smoothstep(0.3, 0.9, aB[i]);
+    H[i] *= smoothstep(0, 6, DIN[i]); // the outline stays exactly at the base height
     if (H[i] > maxH) maxH = H[i];
   }
   for (let i = 0; i < N; i++) H[i] /= maxH;
   await nextFrame();
 
-  // Output canvases.
-  const mk = () => {
-    const c = document.createElement('canvas');
-    c.width = S;
-    c.height = S;
-    return c;
-  };
-  const heightCv = mk();
-  const normalCv = mk();
-  const ormCv = mk();
-  const hImg = heightCv.getContext('2d').createImageData(S, S);
-  const nImg = normalCv.getContext('2d').createImageData(S, S);
-  const oImg = ormCv.getContext('2d').createImageData(S, S);
-
-  // Normal map from the displaced height plus fine luminance detail.
-  const fine = gaussBlur(L, S, 1);
-  const px = 2 / S;
-  const hn = new Float32Array(N);
-  for (let i = 0; i < N; i++) hn[i] = H[i] * crustH + (L[i] - fine[i]) * A[i] * 0.004;
-  const last = S - 1;
-  for (let y = 0; y < S; y++) {
-    for (let x = 0; x < S; x++) {
-      const i = y * S + x;
-      const xl = y * S + Math.max(0, x - 1);
-      const xr = y * S + Math.min(last, x + 1);
-      const yu = Math.max(0, y - 1) * S + x;
-      const yd = Math.min(last, y + 1) * S + x;
-      const dhdx = (hn[xr] - hn[xl]) / (2 * px);
-      const dhdyUp = -(hn[yd] - hn[yu]) / (2 * px);
-      let nx = -dhdx;
-      let ny = -dhdyUp;
-      let nz = 1;
-      const inv = 1 / Math.sqrt(nx * nx + ny * ny + nz * nz);
-      nx *= inv;
-      ny *= inv;
-      nz *= inv;
+  const normalCv = document.createElement('canvas');
+  const ormCv = document.createElement('canvas');
+  normalCv.width = ormCv.width = Wc;
+  normalCv.height = ormCv.height = Hc;
+  const nImg = normalCv.getContext('2d').createImageData(Wc, Hc);
+  const oImg = ormCv.getContext('2d').createImageData(Wc, Hc);
+  const px = 3 / Wc; // world size of one analysis pixel
+  const fine = new Float32Array(N);
+  for (let i = 0; i < N; i++) fine[i] = (L[i] - Lf[i]) * 0.0035;
+  for (let y = 0; y < Hc; y++) {
+    for (let x = 0; x < Wc; x++) {
+      const i = y * Wc + x;
+      const dhdx = (fine[y * Wc + Math.min(Wc - 1, x + 1)] - fine[y * Wc + Math.max(0, x - 1)]) / (2 * px);
+      const dhdy = -(fine[Math.min(Hc - 1, y + 1) * Wc + x] - fine[Math.max(0, y - 1) * Wc + x]) / (2 * px);
+      const inv = 1 / Math.sqrt(dhdx * dhdx + dhdy * dhdy + 1);
       const p = i * 4;
-      nImg.data[p] = (nx * 0.5 + 0.5) * 255;
-      nImg.data[p + 1] = (ny * 0.5 + 0.5) * 255;
-      nImg.data[p + 2] = (nz * 0.5 + 0.5) * 255;
+      nImg.data[p] = (-dhdx * inv * 0.5 + 0.5) * 255;
+      nImg.data[p + 1] = (-dhdy * inv * 0.5 + 0.5) * 255;
+      nImg.data[p + 2] = (inv * 0.5 + 0.5) * 255;
       nImg.data[p + 3] = 255;
-
-      const hv = H[i] * 255;
-      hImg.data[p] = hv;
-      hImg.data[p + 1] = hv;
-      hImg.data[p + 2] = hv;
-      hImg.data[p + 3] = 255;
-
-      // R: oily clearcoat on sauce & cheese; G: roughness (crust dry, toppings glossy)
-      const ring = ringSoft[i];
-      const oil = clamp((SA[i] * 0.9 + CH[i] * 0.75 + BA[i] * 0.45) * (1 - ring), 0, 1);
-      const rough = clamp(0.46 - 0.08 * CH[i] - 0.05 * SA[i] + ring * 0.38 + DARK[i] * 0.12, 0.28, 0.95);
-      oImg.data[p] = oil * 255;
-      oImg.data[p + 1] = rough * 255;
+      const inner = smoothstep(56, 96, DIN[i]);
+      oImg.data[p] = clamp((SA[i] * 0.9 + CH[i] * 0.75 + BA[i] * 0.45) * inner, 0, 1) * 255;
+      oImg.data[p + 1] = clamp(0.46 - 0.08 * CH[i] - 0.05 * SA[i] + (1 - inner) * 0.36 + DARK[i] * 0.1, 0.28, 0.95) * 255;
       oImg.data[p + 2] = 0;
       oImg.data[p + 3] = 255;
     }
   }
-  heightCv.getContext('2d').putImageData(hImg, 0, 0);
   normalCv.getContext('2d').putImageData(nImg, 0, 0);
   ormCv.getContext('2d').putImageData(oImg, 0, 0);
-  return { height: heightCv, normal: normalCv, orm: ormCv };
+  return { height: H, w: Wc, h: Hc, normal: normalCv, orm: ormCv };
 }
 
-/* Polar disc with interior vertices, denser rings on the cornicione. */
-function makeDiscGeometry(THREE, rings, segs) {
-  const M = 1024;
-  const cum = new Float32Array(M + 1);
-  let total = 0;
-  for (let i = 1; i <= M; i++) {
-    const r = i / M;
-    total += (1 + 3.4 * smoothstep(0.55, 0.82, r)) / M;
-    cum[i] = total;
-  }
-  const radii = [0];
-  let j = 0;
-  for (let k = 1; k <= rings; k++) {
-    const target = (k / rings) * total;
-    while (j < M - 1 && cum[j + 1] < target) j++;
-    const f = (target - cum[j]) / Math.max(1e-9, cum[j + 1] - cum[j]);
-    radii.push(Math.min(1, (j + clamp(f, 0, 1)) / M));
-  }
-  const vCount = 1 + rings * (segs + 1);
-  const pos = new Float32Array(vCount * 3);
-  const uv = new Float32Array(vCount * 2);
-  const nor = new Float32Array(vCount * 3);
-  uv[0] = 0.5;
-  uv[1] = 0.5;
-  nor[2] = 1;
-  let v = 1;
-  for (let k = 1; k <= rings; k++) {
-    const r = radii[k];
-    for (let s = 0; s <= segs; s++) {
-      const a = (s / segs) * Math.PI * 2;
-      const x = Math.cos(a) * r;
-      const y = Math.sin(a) * r;
-      pos[v * 3] = x;
-      pos[v * 3 + 1] = y;
-      uv[v * 2] = 0.5 + x * 0.5;
-      uv[v * 2 + 1] = 0.5 + y * 0.5;
-      nor[v * 3 + 2] = 1;
-      v++;
+/** Bilinear sample of a W×H field at texture uv (v = 0 at the bottom). */
+function sampleField(F, W, H, u, v) {
+  const x = clamp(u * W - 0.5, 0, W - 1.001);
+  const y = clamp((1 - v) * H - 0.5, 0, H - 1.001);
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const fx = x - x0;
+  const fy = y - y0;
+  const i = y0 * W + x0;
+  return (F[i] * (1 - fx) + F[i + 1] * fx) * (1 - fy) + (F[i + W] * (1 - fx) + F[i + W + 1] * fx) * fy;
+}
+
+/** Alpha mask for the top faces: trims the rounded teglia corners (slightly dilated). */
+function makeTegliaMask(Wm = 600) {
+  const Hm = Math.round((Wm * TEX_H) / TEX_W);
+  const s = Wm / TEX_W;
+  const c = document.createElement('canvas');
+  c.width = Wm;
+  c.height = Hm;
+  const g = c.getContext('2d');
+  g.fillStyle = '#000';
+  g.fillRect(0, 0, Wm, Hm);
+  g.fillStyle = '#fff';
+  const m = (T_MARGIN - 3) * s;
+  const r = (T_RADIUS + 3) * s;
+  const w = Wm - 2 * m;
+  const h = Hm - 2 * m;
+  g.beginPath();
+  g.moveTo(m + r, m);
+  g.arcTo(m + w, m, m + w, m + h, r);
+  g.arcTo(m + w, m + h, m, m + h, r);
+  g.arcTo(m, m + h, m, m, r);
+  g.arcTo(m, m, m + w, m, r);
+  g.closePath();
+  g.fill();
+  return c;
+}
+
+/** Top face of one slice: dense grid, displaced on the CPU, uv = sub-rect of the photo. */
+function buildSliceTop(THREE, b, T, relief, seg) {
+  const n = seg + 1;
+  const pos = new Float32Array(n * n * 3);
+  const uv = new Float32Array(n * n * 2);
+  let k = 0;
+  for (let j = 0; j <= seg; j++) {
+    const y = b.y0 + ((b.y1 - b.y0) * j) / seg;
+    for (let i = 0; i <= seg; i++) {
+      const x = b.x0 + ((b.x1 - b.x0) * i) / seg;
+      const u = x / 3 + 0.5;
+      const v = y / 2 + 0.5;
+      pos[k * 3] = x - b.cx;
+      pos[k * 3 + 1] = y - b.cy;
+      pos[k * 3 + 2] = T + relief(u, v);
+      uv[k * 2] = u;
+      uv[k * 2 + 1] = v;
+      k++;
     }
   }
   const idx = [];
-  for (let s = 0; s < segs; s++) idx.push(0, 1 + s, 2 + s);
-  for (let k = 1; k < rings; k++) {
-    const a0 = 1 + (k - 1) * (segs + 1);
-    const b0 = 1 + k * (segs + 1);
-    for (let s = 0; s < segs; s++) {
-      const a = a0 + s;
-      const b = b0 + s;
-      idx.push(a, b, a + 1, a + 1, b, b + 1);
+  for (let j = 0; j < seg; j++) {
+    for (let i = 0; i < seg; i++) {
+      const a = j * n + i;
+      idx.push(a, a + 1, a + n + 1, a, a + n + 1, a + n);
     }
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
   geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
   geo.setIndex(idx);
+  geo.computeVertexNormals();
   return geo;
 }
 
-/* Baked-dough underside: lathe with a rounded edge. */
-function makeUnderside(THREE) {
-  const pts = [
-    [0.0, -0.05],
-    [0.45, -0.052],
-    [0.74, -0.05],
-    [0.86, -0.044],
-    [0.92, -0.034],
-    [0.952, -0.02],
-    [0.968, -0.004],
-    [0.972, 0.012],
-    [0.962, 0.03],
-  ].map(([r, h]) => new THREE.Vector2(r, h));
-  const geo = new THREE.LatheGeometry(pts, 180);
-  geo.rotateX(Math.PI / 2);
-  return geo;
-}
+/**
+ * Walls + bottom of one slice. Cut faces show the airy crumb (full crumb texture),
+ * outer walls and the bottom use its toasted golden base band.
+ */
+function buildSliceBody(THREE, b, T, relief, seg, corner, outer, crumbRepeat, uOffset) {
+  const R = T_RADIUS * UNIT;
+  const P = [];
+  const NRM = [];
+  const UV = [];
+  const COL = [];
+  const IDX = [];
+  const poly = [];
+  let s = uOffset;
+  const inner = [1, 1, 1];
+  const toast = [0.9, 0.8, 0.7];
+  const base = [0.62, 0.5, 0.4];
 
-function makeUndersideCanvas(W = 512, Hh = 128) {
-  const c = document.createElement('canvas');
-  c.width = W;
-  c.height = Hh;
-  const g = c.getContext('2d');
-  const grad = g.createLinearGradient(0, 0, 0, Hh);
-  grad.addColorStop(0, '#8a4f22');
-  grad.addColorStop(0.18, '#b4743c');
-  grad.addColorStop(0.55, '#cf9a5e');
-  grad.addColorStop(1, '#ddb07a');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, W, Hh);
-  // flour speckles
-  for (let i = 0; i < 1400; i++) {
-    g.fillStyle = `rgba(255, 238, 210, ${(Math.random() * 0.18).toFixed(3)})`;
-    g.fillRect(Math.random() * W, Math.random() * Hh, 1.2, 1.2);
+  const quad = (ax, ay, bx, by, nax, nay, nbx, nby, isOuter) => {
+    const za = T + relief(ax / 3 + 0.5, ay / 2 + 0.5);
+    const zb = T + relief(bx / 3 + 0.5, by / 2 + 0.5);
+    const len = Math.hypot(bx - ax, by - ay);
+    const vb = isOuter ? 0.01 : 0;
+    const vt = isOuter ? 0.14 : 1;
+    // keep the photo's proportions: outer walls only use the golden base band, scaled up evenly
+    const rep = crumbRepeat / (vt - vb);
+    const u0 = s / rep;
+    const u1 = (s + len) / rep;
+    s += len;
+    const col = isOuter ? toast : inner;
+    const i0 = P.length / 3;
+    P.push(ax - b.cx, ay - b.cy, 0, bx - b.cx, by - b.cy, 0, bx - b.cx, by - b.cy, zb, ax - b.cx, ay - b.cy, za);
+    NRM.push(nax, nay, 0, nbx, nby, 0, nbx, nby, 0, nax, nay, 0);
+    UV.push(u0, vb, u1, vb, u1, vt, u0, vt);
+    for (let q = 0; q < 4; q++) COL.push(...col);
+    IDX.push(i0, i0 + 1, i0 + 2, i0, i0 + 2, i0 + 3);
+    poly.push([ax, ay]);
+  };
+  const edge = (ax, ay, bx, by, nx, ny, isOuter) => {
+    const pieces = isOuter ? Math.max(2, Math.round(seg / 4)) : seg;
+    for (let q = 0; q < pieces; q++) {
+      const t0 = q / pieces;
+      const t1 = (q + 1) / pieces;
+      quad(lerp(ax, bx, t0), lerp(ay, by, t0), lerp(ax, bx, t1), lerp(ay, by, t1), nx, ny, nx, ny, isOuter);
+    }
+  };
+  const arc = (xc, yc, a0, a1) => {
+    const pieces = 10;
+    for (let q = 0; q < pieces; q++) {
+      const t0 = lerp(a0, a1, q / pieces);
+      const t1 = lerp(a0, a1, (q + 1) / pieces);
+      quad(xc + R * Math.cos(t0), yc + R * Math.sin(t0), xc + R * Math.cos(t1), yc + R * Math.sin(t1),
+        Math.cos(t0), Math.sin(t0), Math.cos(t1), Math.sin(t1), true);
+    }
+  };
+
+  const rBL = corner === 'bl' ? R : 0;
+  const rBR = corner === 'br' ? R : 0;
+  const rTR = corner === 'tr' ? R : 0;
+  const rTL = corner === 'tl' ? R : 0;
+  edge(b.x0 + rBL, b.y0, b.x1 - rBR, b.y0, 0, -1, outer.b);
+  if (rBR) arc(b.x1 - R, b.y0 + R, -Math.PI / 2, 0);
+  edge(b.x1, b.y0 + rBR, b.x1, b.y1 - rTR, 1, 0, outer.r);
+  if (rTR) arc(b.x1 - R, b.y1 - R, 0, Math.PI / 2);
+  edge(b.x1 - rTR, b.y1, b.x0 + rTL, b.y1, 0, 1, outer.t);
+  if (rTL) arc(b.x0 + R, b.y1 - R, Math.PI / 2, Math.PI);
+  edge(b.x0, b.y1 - rTL, b.x0, b.y0 + rBL, -1, 0, outer.l);
+  if (rBL) arc(b.x0 + R, b.y0 + R, Math.PI, Math.PI * 1.5);
+
+  // Bottom: fan from the centre (the footprint is convex), facing −z.
+  const c0 = P.length / 3;
+  const bh = b.y1 - b.y0;
+  P.push(0, 0, 0);
+  NRM.push(0, 0, -1);
+  UV.push(0.5 + b.cx * 0.04, 0.05);
+  COL.push(...base);
+  poly.forEach(([x, y]) => {
+    P.push(x - b.cx, y - b.cy, 0);
+    NRM.push(0, 0, -1);
+    UV.push(0.5 + x * 0.04, 0.03 + 0.04 * ((y - b.y0) / bh));
+    COL.push(...base);
+  });
+  for (let q = 0; q < poly.length; q++) {
+    const a = c0 + 1 + q;
+    const nxt = c0 + 1 + ((q + 1) % poly.length);
+    IDX.push(c0, nxt, a);
   }
-  // char spots (more toward the rim = top rows)
-  for (let i = 0; i < 90; i++) {
-    const x = Math.random() * W;
-    const y = Math.pow(Math.random(), 1.8) * Hh;
-    const r = 2 + Math.random() * 9;
-    const rg = g.createRadialGradient(x, y, 0, x, y, r);
-    rg.addColorStop(0, 'rgba(40, 20, 10, 0.85)');
-    rg.addColorStop(0.55, 'rgba(70, 36, 16, 0.45)');
-    rg.addColorStop(1, 'rgba(70, 36, 16, 0)');
-    g.fillStyle = rg;
-    g.beginPath();
-    g.ellipse(x, y, r * 1.6, r, 0, 0, Math.PI * 2);
-    g.fill();
-  }
-  return c;
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(NRM, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(UV, 2));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(COL, 3));
+  geo.setIndex(IDX);
+  return geo;
 }
 
 function makeEnvironment(THREE, renderer) {
@@ -1424,6 +1454,7 @@ const GLOW_FS = /* glsl */ `
   }
 `;
 
+
 async function initHero3D() {
   const stage = $('.stage');
   const layer = $('.stage__layer');
@@ -1454,7 +1485,7 @@ async function initHero3D() {
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.05;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
@@ -1476,26 +1507,31 @@ async function initHero3D() {
   const rig = new THREE.Group();
   const pivot = new THREE.Group();
   pivot.rotation.order = 'ZYX';
-  const spin = new THREE.Group();
+  const slab = new THREE.Group();
   rig.add(pivot);
-  pivot.add(spin);
+  pivot.add(slab);
   scene.add(rig);
   const under = new THREE.PointLight(0xff5a1f, 0, 7, 2);
-  under.position.set(0.3, -1.5, 1.4);
+  under.position.set(0.3, -1.3, 1.3);
   rig.add(under);
 
-  // --- Pizza top ---------------------------------------------------------
-  const CRUST_H = 0.1;
+  // --- Teglia textures ------------------------------------------------------
+  const T = 0.165; // slab thickness ≈ 5.6% of the width: reads as airy
+  const CRUST = 0.045; // height of the baked rim above the base
+  const picked = fallback.currentSrc || '';
+  const hiRes = !small && window.innerWidth >= 768 && (window.devicePixelRatio || 1) >= 1.5;
+  const topSrc = /teglia-top(-900)?\.webp/.test(picked) ? picked : `${ASSETS}${hiRes ? 'teglia-top.webp' : 'teglia-top-900.webp'}`;
   let img;
   try {
-    const hiRes = !small && window.innerWidth >= 768 && (window.devicePixelRatio || 1) >= 1.5;
-    img = await loadImage(`${ASSETS}${hiRes ? 'pizza-top-1600.webp' : 'pizza-top-800.webp'}`);
+    img = await loadImage(topSrc);
     performance.mark('forno:image');
   } catch (err) {
     renderer.dispose();
     return;
   }
-  const maps = await analyzePizza(img, small ? 384 : 512, CRUST_H);
+  const loader = new THREE.TextureLoader();
+  const crumbPromise = loader.loadAsync(`${ASSETS}crumb-side.webp`).catch(() => null);
+  const maps = await analyzeTeglia(img, small ? 600 : 900);
   performance.mark('forno:relief');
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
@@ -1503,45 +1539,80 @@ async function initHero3D() {
   map.colorSpace = THREE.SRGBColorSpace;
   map.anisotropy = maxAniso;
   map.needsUpdate = true;
-  const dispTex = new THREE.CanvasTexture(maps.height);
+  const alphaTex = new THREE.CanvasTexture(makeTegliaMask());
   const normalTex = new THREE.CanvasTexture(maps.normal);
   normalTex.anisotropy = Math.min(8, maxAniso);
   const ormTex = new THREE.CanvasTexture(maps.orm);
   ormTex.anisotropy = Math.min(8, maxAniso);
+  const crumbTex = await crumbPromise;
+  if (crumbTex) {
+    crumbTex.colorSpace = THREE.SRGBColorSpace;
+    crumbTex.wrapS = THREE.RepeatWrapping;
+    crumbTex.anisotropy = Math.min(8, maxAniso);
+  }
 
   const topMat = new THREE.MeshPhysicalMaterial({
     map,
+    alphaMap: alphaTex,
     alphaTest: 0.5,
-    displacementMap: dispTex,
-    displacementScale: CRUST_H,
     normalMap: normalTex,
-    normalScale: new THREE.Vector2(1, 1),
+    normalScale: new THREE.Vector2(0.9, 0.9),
     roughnessMap: ormTex,
     roughness: 1,
     metalness: 0,
-    clearcoat: 0.9,
+    clearcoat: 0.85,
     clearcoatMap: ormTex,
-    clearcoatRoughness: 0.3,
+    clearcoatRoughness: 0.32,
     clearcoatNormalMap: normalTex,
-    sheen: 0.25,
+    sheen: 0.2,
     sheenRoughness: 0.8,
     sheenColor: new THREE.Color(0xffd9ad),
   });
   topMat.alphaToCoverage = true;
-  const top = new THREE.Mesh(makeDiscGeometry(THREE, small ? 96 : 140, small ? 200 : 320), topMat);
-  top.frustumCulled = false;
-  spin.add(top);
+  const bodyMat = new THREE.MeshStandardMaterial({
+    map: crumbTex,
+    color: crumbTex ? 0xffffff : 0xc98f52,
+    vertexColors: true,
+    roughness: 0.86,
+    metalness: 0,
+  });
 
-  const underTex = new THREE.CanvasTexture(makeUndersideCanvas());
-  underTex.colorSpace = THREE.SRGBColorSpace;
-  underTex.wrapS = THREE.RepeatWrapping;
-  const underside = new THREE.Mesh(
-    makeUnderside(THREE),
-    new THREE.MeshStandardMaterial({ map: underTex, roughness: 0.9, metalness: 0, side: THREE.DoubleSide })
-  );
-  spin.add(underside);
+  // --- The six slices (3 columns × 2 rows) ---------------------------------------
+  const relief = (u, v) => CRUST * sampleField(maps.height, maps.w, maps.h, u, v);
+  const crumbRepeat = (T * 2048) / 300; // keep the crumb photo's proportions on the walls
+  const seg = small ? 30 : 46;
+  const xs = [(T_MARGIN - TEX_W / 2) * UNIT, (CUT_XS[0] - TEX_W / 2) * UNIT, (CUT_XS[1] - TEX_W / 2) * UNIT, (TEX_W / 2 - T_MARGIN) * UNIT];
+  const ys = [(TEX_H / 2 - T_MARGIN) * UNIT, (TEX_H / 2 - CUT_Y) * UNIT, (T_MARGIN - TEX_H / 2) * UNIT];
+  const slices = [];
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 3; c++) {
+      const b = { x0: xs[c], x1: xs[c + 1], y0: ys[r + 1], y1: ys[r] };
+      b.cx = (b.x0 + b.x1) / 2;
+      b.cy = (b.y0 + b.y1) / 2;
+      const corner = c === 1 ? null : `${r === 0 ? 't' : 'b'}${c === 0 ? 'l' : 'r'}`;
+      const outer = { l: c === 0, r: c === 2, t: r === 0, b: r === 1 };
+      const group = new THREE.Group();
+      group.position.set(b.cx, b.cy, 0);
+      group.add(
+        new THREE.Mesh(buildSliceTop(THREE, b, T, relief, seg), topMat),
+        new THREE.Mesh(buildSliceBody(THREE, b, T, relief, seg, corner, outer, crumbRepeat, Math.random() * 3), bodyMat)
+      );
+      slab.add(group);
+      slices.push({
+        group,
+        cx: b.cx,
+        cy: b.cy,
+        sx: c - 1,
+        sy: r === 0 ? 1 : -1,
+        lift: 0.15 + Math.random() * 0.1 + (c === 1 ? 0.07 : 0),
+        twist: (Math.random() - 0.5) * 0.14,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+  slab.position.z = -T / 2;
 
-  // --- Glow / heat haze behind the pizza ---------------------------------
+  // --- Glow / heat haze behind the teglia -----------------------------------------
   const glowMat = new THREE.ShaderMaterial({
     uniforms: {
       uTime: { value: 0 },
@@ -1556,12 +1627,12 @@ async function initHero3D() {
     blending: THREE.AdditiveBlending,
     premultipliedAlpha: true,
   });
-  const glow = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 5.4), glowMat);
-  glow.position.z = -1.1;
+  const glow = new THREE.Mesh(new THREE.PlaneGeometry(6.6, 4.9), glowMat);
+  glow.position.z = -1.0;
   glow.renderOrder = -1;
   rig.add(glow);
 
-  // --- Embers ------------------------------------------------------------
+  // --- Embers ------------------------------------------------------------------
   const EMBERS = small ? 150 : 380;
   const eGeo = new THREE.BufferGeometry();
   const ePos = new Float32Array(EMBERS * 3);
@@ -1603,7 +1674,7 @@ async function initHero3D() {
   embers.frustumCulled = false;
   scene.add(embers);
 
-  // --- Floating ingredients ----------------------------------------------
+  // --- Floating ingredients (elliptical orbit around the teglia) -------------------
   const ING = [
     ['basil-leaf', 310, 408],
     ['tomato-half', 315, 311],
@@ -1612,7 +1683,6 @@ async function initHero3D() {
     ['garlic', 265, 327],
     ['basil-sprig', 385, 366],
   ];
-  const loader = new THREE.TextureLoader();
   const ingTex = await Promise.all(
     ING.map(([name]) =>
       loader
@@ -1625,7 +1695,7 @@ async function initHero3D() {
         .catch(() => null)
     )
   );
-  // type, angle(deg), radius, height (along normal), size, angular speed, phase
+  // type, angle(deg), radius, height (along the normal), size, angular speed
   const PLACE = [
     [0, 18, 1.26, 0.26, 0.24, 0.11],
     [1, 82, 1.34, -0.1, 0.26, 0.1],
@@ -1672,13 +1742,12 @@ async function initHero3D() {
     });
   });
 
-  // --- State & layout ------------------------------------------------------
-  const state = { intro: 0, rim: 0, embers: 0, ing: 0, scroll: 0, scrollS: 0 };
+  // --- State & layout ------------------------------------------------------------
+  const state = { intro: 0, rim: 0, embers: 0, ing: 0, cut: 0, scroll: 0, scrollS: 0 };
   const base = { x: 0, y: 0, s: 1 };
   const aside = { x: 0, y: 0, s: 1 };
   let heroDrop = 0;
   let wide = true;
-  let spinAngle = 0;
   let elapsed = 0;
 
   const textEls = $$('.hero__overline, .hero__title, .hero__sub, .hero__ctas, .hero__chips, .statement__over, .statement__text');
@@ -1698,24 +1767,26 @@ async function initHero3D() {
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
+    // The face-on teglia matches the static image box exactly (the photo spans 3 world units).
     const cx = fallback.offsetLeft + fallback.offsetWidth / 2;
     const cy = fallback.offsetTop + fallback.offsetHeight / 2;
     const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * CAM_Z;
     const upp = (2 * halfH) / H;
     base.x = (cx - W / 2) * upp;
     base.y = -(cy - H / 2) * upp;
-    base.s = (fallback.offsetWidth / 2) * upp;
+    base.s = (fallback.offsetWidth * upp) / 3;
     wide = window.matchMedia(MQ_WIDE).matches;
     if (wide) {
-      aside.x = W * 0.1 * upp;
+      aside.x = -W * 0.02 * upp;
       aside.y = H * 0.02 * upp;
-      aside.s = 1.06;
+      aside.s = 0.76;
       heroDrop = 0;
     } else {
-      aside.x = W * 0.22 * upp;
-      aside.y = H * 0.04 * upp;
-      aside.s = 0.95;
-      heroDrop = -base.s * 0.1;
+      // narrow: the teglia travels down and ends below the statement text
+      aside.x = 0;
+      aside.y = -H * 0.4 * upp;
+      aside.s = 0.86;
+      heroDrop = -base.s * 0.16;
     }
     const halfW = halfH * camera.aspect;
     eMat.uniforms.uArea.value.set(halfW * 1.15, halfH * 1.18, 2.6);
@@ -1764,16 +1835,6 @@ async function initHero3D() {
     onScroll();
   }
 
-  // Continue the CSS spin seamlessly.
-  try {
-    const m = new DOMMatrixReadOnly(getComputedStyle(fallback).transform);
-    const deg = Math.atan2(m.b, m.a);
-    fallback.style.transform = `rotate(${deg}rad)`;
-    spinAngle = -deg;
-  } catch (err) {
-    spinAngle = 0;
-  }
-
   const orbitEuler = new THREE.Euler(0, 0, 0, 'ZYX');
   const v3 = new THREE.Vector3();
   const wp = new THREE.Vector3();
@@ -1784,29 +1845,40 @@ async function initHero3D() {
     pointer.x += (pointer.tx - pointer.x) * kp;
     pointer.y += (pointer.ty - pointer.y) * kp;
     if (!FINE) {
-      pointer.tx = Math.sin(elapsed * 0.35) * 0.35;
-      pointer.ty = Math.cos(elapsed * 0.27) * 0.25;
+      pointer.tx = Math.sin(elapsed * 0.35) * 0.3;
+      pointer.ty = Math.cos(elapsed * 0.27) * 0.2;
     }
     state.scrollS += (state.scroll - state.scrollS) * (1 - Math.exp(-dt * 7));
-    const S = smoothstep(0.02, 0.82, state.scrollS);
+    const S = smoothstep(0.02, 0.8, state.scrollS);
     const I = state.intro;
 
-    spinAngle -= dt * 0.12;
-    spin.rotation.z = spinAngle - S * 1.3;
+    // Hero pose → exploded pose (turns, tilts toward the viewer, moves aside)
+    const tilt = lerp(lerp(0, -0.95, I), -0.6, S);
+    const yaw = lerp(lerp(0, wide ? 0.32 : 0.16, I), wide ? -0.24 : -0.12, S) + Math.sin(elapsed * 0.35) * 0.05 * I;
+    const roll = lerp(lerp(0, wide ? -0.09 : -0.06, I), 0.05, S);
+    pivot.rotation.set(tilt + pointer.y * 0.15 * I, yaw + pointer.x * 0.26 * I, roll);
 
-    const tilt = lerp(lerp(0, -0.98, I), -0.14, S);
-    const roll = lerp(0, wide ? -0.17 : -0.1, I) * (1 - S * 0.6);
-    pivot.rotation.set(tilt + pointer.y * 0.16 * I, pointer.x * 0.24 * I, roll);
+    // AL TAGLIO: slices part, lift and turn so the airy crumb on the cut faces shows.
+    const E = Math.max(smoothstep(0.04, 0.7, state.scrollS), state.cut * 0.2);
+    const gap = 0.004 * I;
+    slices.forEach((sl) => {
+      sl.group.position.set(
+        sl.cx + sl.sx * (gap + 0.2 * E),
+        sl.cy + sl.sy * (gap + 0.27 * E),
+        E * sl.lift + Math.sin(elapsed * 1.2 + sl.phase) * 0.014 * E
+      );
+      sl.group.rotation.set(-sl.sy * 0.24 * E, sl.sx * 0.26 * E, sl.twist * E);
+    });
 
     const s = base.s * lerp(1, aside.s, S) * (1 + 0.035 * I);
     rig.position.set(
       base.x + aside.x * S,
-      base.y + heroDrop * I + aside.y * S + Math.sin(elapsed * 0.8) * 0.025 * I,
+      base.y + heroDrop * I * (1 - S) + aside.y * S + Math.sin(elapsed * 0.8) * 0.025 * I,
       0
     );
     rig.scale.setScalar(s);
 
-    camera.position.set(pointer.x * 0.2 * I, -pointer.y * 0.14 * I, CAM_Z - S * 1.5);
+    camera.position.set(pointer.x * 0.2 * I, -pointer.y * 0.14 * I, CAM_Z - S * 1.0);
     camera.lookAt(0, 0, 0);
     camera.updateMatrixWorld();
     const layerTop = layer.getBoundingClientRect().top;
@@ -1820,18 +1892,17 @@ async function initHero3D() {
     eMat.uniforms.uTime.value = elapsed;
     eMat.uniforms.uIntensity.value = state.embers;
 
-    // Ingredients orbit in a plane tilted with the pizza; explode outward on scroll.
-    orbitEuler.set(tilt * 0.9, 0, roll);
-    const explode = S;
+    // Ingredients orbit in a plane tilted with the teglia; they drift outward on scroll.
+    orbitEuler.set(tilt * 0.9, yaw * 0.8, roll);
     sprites.forEach((sp) => {
       const local = clamp((state.ing - sp.delay) / (1 - sp.delay), 0, 1);
       const pop = local < 1 ? 1 - Math.pow(1 - local, 3) : 1;
       const ang = sp.a0 + elapsed * sp.w;
-      const r = sp.r * lerp(0.6, 1, pop) * (1 + explode * 0.85);
+      const r = sp.r * lerp(0.6, 1, pop) * (1 + S * 0.6);
       v3.set(
-        Math.cos(ang) * r,
+        Math.cos(ang) * r * 1.42,
         Math.sin(ang) * r,
-        sp.h * (1 + explode * 1.4) + Math.sin(elapsed * 0.9 + sp.phase) * 0.06
+        sp.h * (1 + S * 1.4) + Math.sin(elapsed * 0.9 + sp.phase) * 0.06
       );
       v3.applyEuler(orbitEuler);
       sp.mesh.position.copy(v3);
@@ -1861,8 +1932,8 @@ async function initHero3D() {
     });
   };
 
-  // --- Upload & compile without blocking, then crossfade --------------------
-  [map, dispTex, normalTex, ormTex, underTex, ...ingTex.filter(Boolean)].forEach((t) => renderer.initTexture(t));
+  // --- Upload & compile without blocking, then crossfade ----------------------------
+  [map, alphaTex, normalTex, ormTex, crumbTex, ...ingTex].filter(Boolean).forEach((t) => renderer.initTexture(t));
   await nextFrame();
   try {
     if (renderer.compileAsync && renderer.extensions.has('KHR_parallel_shader_compile')) {
@@ -1915,7 +1986,6 @@ async function initHero3D() {
       e.preventDefault();
       stop();
       stage.classList.remove('is-3d');
-      fallback.style.transform = '';
     },
     false
   );
@@ -1934,6 +2004,8 @@ async function initHero3D() {
     tl.to(state, { intro: 1, duration: 2.8, ease: 'expo.inOut' }, 0.2)
       .to(state, { rim: 1, duration: 2.4, ease: 'power2.inOut' }, 0.7)
       .to(state, { embers: 1, duration: 2.6, ease: 'power2.out' }, 0.35)
+      .to(state, { cut: 1, duration: 0.9, ease: 'power3.out' }, 1.9)
+      .to(state, { cut: 0, duration: 1.3, ease: 'power3.inOut' }, 2.8)
       .to(state, { ing: 1, duration: 2.2, ease: 'power2.out' }, 1.15);
   } else {
     const t0 = performance.now();
@@ -1944,7 +2016,8 @@ async function initHero3D() {
       state.rim = e(clamp((t - 0.7) / 2.4, 0, 1));
       state.embers = clamp((t - 0.35) / 2.6, 0, 1);
       state.ing = clamp((t - 1.15) / 2.2, 0, 1);
-      if (t < 4) requestAnimationFrame(ramp);
+      state.cut = Math.sin(Math.PI * clamp((t - 1.9) / 2.2, 0, 1));
+      if (t < 4.5) requestAnimationFrame(ramp);
     };
     requestAnimationFrame(ramp);
   }
@@ -1965,6 +2038,7 @@ function boot() {
   safe('reveals', initReveals);
   safe('statement', initStatement);
   safe('story', initStory);
+  safe('territory', initTerritory);
   safe('card', initCard3D);
   safe('reviews', initReviews);
   safe('buffet', initBuffet);

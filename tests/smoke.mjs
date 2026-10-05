@@ -119,7 +119,7 @@ async function run() {
         const errors = [];
         page.on('pageerror', (e) => errors.push(`pageerror: ${e.message.split('\n')[0]}`));
         page.on('console', (m) => { if (m.type() === 'error') errors.push(`console: ${m.text().slice(0, 200)}`); });
-        page.on('requestfailed', (r) => { const u = r.url(); if (!u.includes('google.com/maps') && !u.includes('gstatic')) errors.push(`requestfailed: ${u} ${r.failure()?.errorText}`); });
+        page.on('requestfailed', (r) => { const u = r.url(); if (!/google\.com\/maps|maps\.googleapis\.com|gstatic|googleusercontent/.test(u)) errors.push(`requestfailed: ${u} ${r.failure()?.errorText}`); });
         page.on('response', (r) => { if (r.status() >= 400 && r.url().startsWith(BASE)) errors.push(`HTTP ${r.status()}: ${r.url()}`); });
         if (vp.isMobile) await page.setUserAgent(IPHONE_UA);
         await page.setViewport(vp);

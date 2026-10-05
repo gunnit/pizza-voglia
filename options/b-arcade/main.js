@@ -1,8 +1,8 @@
 /* =====================================================================
-   PIZZA VOGLIA — Opzione B "SALA GIOCHI" · logica della pagina
+   PIZZA VOGLIA — Opzione B "PROVA SPECIALE VALPANTENA" · logica della pagina
    (il mini-gioco vive in game.js)
    ===================================================================== */
-import { mountGame, Sfx, pizzaIcon, spriteCanvas } from './game.js';
+import { mountGame, Sfx, pizzaIcon, spriteCanvas, readRecord, fmtTime } from './game.js';
 
 /* ---------------------------------------------------------------------
    Orari (Europe/Rome) — funzioni pure, testabili
@@ -63,7 +63,29 @@ export function statusLabel(st) {
 }
 
 /* ---------------------------------------------------------------------
-   Icone pixel delle pizze (menu "seleziona il personaggio")
+   Cifre LED a 7 segmenti (SVG) per il cronometro di tappa
+   --------------------------------------------------------------------- */
+const SEG7 = { 0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', '-': 'g' };
+const SEG_RECT = { a: [2, 0, 6, 2], b: [8, 2, 2, 6], c: [8, 10, 2, 6], d: [2, 16, 6, 2], e: [0, 10, 2, 6], f: [0, 2, 2, 6], g: [2, 8, 6, 2] };
+export function ledSvg(text) {
+  let x = 0;
+  const out = [];
+  for (const ch of String(text)) {
+    if (ch === ':' || ch === '.') {
+      if (ch === ':') out.push(`<rect class="on" x="${x}" y="5" width="2" height="2"/><rect class="on" x="${x}" y="11" width="2" height="2"/>`);
+      else out.push(`<rect class="on" x="${x}" y="16" width="2" height="2"/>`);
+      x += 4;
+      continue;
+    }
+    const lit = SEG7[ch] || '';
+    for (const [k, [sx, sy, w, h]] of Object.entries(SEG_RECT)) out.push(`<rect class="${lit.includes(k) ? 'on' : 'off'}" x="${x + sx}" y="${sy}" width="${w}" height="${h}"/>`);
+    x += 12;
+  }
+  return `<svg class="led-digits" viewBox="0 0 ${Math.max(1, x - 2)} 18" aria-hidden="true" shape-rendering="crispEdges">${out.join('')}</svg>`;
+}
+
+/* ---------------------------------------------------------------------
+   Icone pixel delle pizze (sempre al taglio: tranci rettangolari)
    --------------------------------------------------------------------- */
 const PIZZAS = {
   't-margherita': { shape: 'slice', base: 'sauce', top: [['mozz', 4], ['basil', 3]] },
@@ -71,14 +93,14 @@ const PIZZAS = {
   't-patate': { shape: 'slice', base: 'white', top: [['potato', 7], ['rosemary', 5]] },
   't-verdure': { shape: 'slice', base: 'sauce', top: [['zucchini', 3], ['pepper', 3], ['eggplant', 2], ['pepperR', 2]] },
   't-salame': { shape: 'slice', base: 'sauce', top: [['mozz', 3], ['salame', 4], ['flake', 5]] },
-  marinara: { shape: 'round', base: 'sauce', top: [['garlic', 7], ['oregano', 12]] },
-  margherita: { shape: 'round', base: 'sauce', top: [['mozz', 5], ['basil', 3]] },
-  diavola: { shape: 'round', base: 'sauce', top: [['mozz', 3], ['salame', 6]] },
-  capricciosa: { shape: 'round', base: 'sauce', top: [['ham', 3], ['mushroom', 3], ['artichoke', 2], ['olive', 3], ['mozz', 2]] },
-  '4formaggi': { shape: 'round', base: 'cheese', top: [['mozz', 4], ['gorgonzola', 3], ['shaving', 5]] },
-  prosciuttofunghi: { shape: 'round', base: 'sauce', top: [['mozz', 3], ['ham', 4], ['mushroom', 4]] },
-  bufala: { shape: 'round', base: 'sauce', top: [['bufala', 4], ['basil', 2]] },
-  ortolana: { shape: 'round', base: 'sauce', top: [['mozz', 2], ['zucchini', 3], ['pepper', 3], ['eggplant', 2]] },
+  marinara: { shape: 'square', base: 'sauce', top: [['garlic', 7], ['oregano', 12]] },
+  margherita: { shape: 'square', base: 'sauce', top: [['mozz', 5], ['basil', 3]] },
+  diavola: { shape: 'square', base: 'sauce', top: [['mozz', 3], ['salame', 6]] },
+  capricciosa: { shape: 'square', base: 'sauce', top: [['ham', 3], ['mushroom', 3], ['artichoke', 2], ['olive', 3], ['mozz', 2]] },
+  '4formaggi': { shape: 'square', base: 'cheese', top: [['mozz', 4], ['gorgonzola', 3], ['shaving', 5]] },
+  prosciuttofunghi: { shape: 'square', base: 'sauce', top: [['mozz', 3], ['ham', 4], ['mushroom', 4]] },
+  bufala: { shape: 'square', base: 'sauce', top: [['bufala', 4], ['basil', 2]] },
+  ortolana: { shape: 'square', base: 'sauce', top: [['mozz', 2], ['zucchini', 3], ['pepper', 3], ['eggplant', 2]] },
   valpantena: { shape: 'slice', base: 'white', top: [['broccoli', 5], ['tarallo', 3], ['shaving', 5]] },
   calzone: { shape: 'calzone' },
   focaccia: { shape: 'focaccia', top: [['rosemary', 6], ['salt', 6]] },
@@ -130,6 +152,8 @@ function boot() {
   safe('led', initLed);
   safe('ambient', initAmbient);
   safe('reveal', initReveal);
+  safe('record', initRecord);
+  safe('teglia', initTeglia);
   safe('powerup', initPowerup);
   safe('hours', initHours);
   safe('continue', initContinue);
@@ -230,6 +254,7 @@ function boot() {
         start: $('#btn-start'),
         left: $('#btn-left'),
         right: $('#btn-right'),
+        brake: $('#btn-brake'),
         over: $('#game-over'),
         replay: $('#replay'),
         live: $('#game-live'),
@@ -382,7 +407,42 @@ function boot() {
 
   /* ---------------- animazioni decorative in pausa fuori schermo ---------------- */
   function initAmbient() {
-    $$('.hero, .boss, .multi').forEach((sec) => watch(sec, (on) => sec.classList.toggle('is-off', !on)));
+    $$('.hero, .boss, .multi, .terra').forEach((sec) => watch(sec, (on) => sec.classList.toggle('is-off', !on)));
+  }
+
+  /* ---------------- cronometro: miglior tempo della PS1 ---------------- */
+  function initRecord() {
+    const box = $('[data-record-led]');
+    if (!box) return;
+    const show = (sec) => {
+      const label = sec > 0 ? fmtTime(sec) : '-:--.-';
+      box.innerHTML = `${ledSvg(label)}<span class="sr-only">${sec > 0 ? `Miglior tempo: ${label}` : 'Nessun tempo registrato: gioca la prova speciale'}</span>`;
+    };
+    show(readRecord());
+    window.addEventListener('pv:record', (e) => show(e.detail && e.detail.best));
+  }
+
+  /* ---------------- service: la teglia si taglia in sei tranci ---------------- */
+  function initTeglia() {
+    const t = $('[data-teglia]');
+    if (!t) return;
+    if (reduced || !hasIO) {
+      t.classList.add('is-cut');
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting && en.intersectionRatio >= 0.4) {
+            t.classList.add('is-cut');
+            sfx.play('select');
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: [0, 0.4, 0.8] }
+    );
+    io.observe(t);
   }
 
   /* ---------------- comparsa a scatti ---------------- */

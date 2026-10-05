@@ -46,17 +46,18 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
 
-  /* Hero pizza placement (stacked / mobile first) */
-  --pz: min(86vw, 46vh, 34rem);
+  /* Hero teglia placement (stacked / mobile first): a 3:2 box */
+  --pz: min(84vw, 62vh, 38rem);
+  --pz-h: calc(var(--pz) * 2 / 3);
   --pz-x: calc(50% - var(--pz) / 2);
-  --pz-y: calc(var(--nav-h) + 1.5vh);
+  --pz-y: calc(var(--nav-h) + 2.5vh);
 }
 
 @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
   :root {
-    --pz: min(46vw, 80vh);
+    --pz: min(48vw, 105vh);
     --pz-x: calc(73% - var(--pz) / 2);
-    --pz-y: calc(52% - var(--pz) / 2);
+    --pz-y: calc(52% - var(--pz-h) / 2);
   }
 }
 
@@ -553,6 +554,7 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
 .mobile-menu__list li:nth-child(3) a { transition-delay: 0.3s; }
 .mobile-menu__list li:nth-child(4) a { transition-delay: 0.36s; }
 .mobile-menu__list li:nth-child(5) a { transition-delay: 0.42s; }
+.mobile-menu__list li:nth-child(6) a { transition-delay: 0.48s; }
 .mobile-menu.is-open .mobile-menu__list a { opacity: 1; transform: none; }
 .mobile-menu__list a:hover { color: var(--gold); }
 .mobile-menu__idx {
@@ -595,8 +597,8 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(calc(var(--pz) * 0.75) calc(var(--pz) * 0.62) at calc(var(--pz-x) + var(--pz) / 2) calc(var(--pz-y) + var(--pz) * 0.56), rgba(255, 90, 31, 0.26), transparent 72%),
-    radial-gradient(calc(var(--pz) * 1.3) calc(var(--pz) * 1.1) at calc(var(--pz-x) + var(--pz) / 2) calc(var(--pz-y) + var(--pz) / 2), rgba(231, 179, 90, 0.09), transparent 70%),
+    radial-gradient(calc(var(--pz) * 0.72) calc(var(--pz-h) * 0.9) at calc(var(--pz-x) + var(--pz) / 2) calc(var(--pz-y) + var(--pz-h) * 0.58), rgba(255, 90, 31, 0.26), transparent 72%),
+    radial-gradient(calc(var(--pz) * 1.25) calc(var(--pz-h) * 1.6) at calc(var(--pz-x) + var(--pz) / 2) calc(var(--pz-y) + var(--pz-h) / 2), rgba(231, 179, 90, 0.09), transparent 70%),
     radial-gradient(120% 60% at 50% 120%, rgba(214, 51, 42, 0.16), transparent 60%);
 }
 .stage__pizza {
@@ -604,7 +606,7 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
   left: var(--pz-x);
   top: var(--pz-y);
   width: var(--pz);
-  height: var(--pz);
+  height: var(--pz-h);
   max-width: none;
   object-fit: contain;
   filter: drop-shadow(0 0 3rem rgba(255, 90, 31, 0.32)) drop-shadow(0 2rem 3rem rgba(0, 0, 0, 0.55));
@@ -612,9 +614,12 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
   will-change: transform, opacity;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .stage:not(.is-3d) .stage__pizza { animation: pizza-spin 140s linear infinite; }
+  .stage:not(.is-3d) .stage__pizza { animation: teglia-float 7s ease-in-out infinite; }
 }
-@keyframes pizza-spin { to { transform: rotate(360deg); } }
+@keyframes teglia-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
 
 .stage__canvas {
   position: absolute;
@@ -646,7 +651,7 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: calc(var(--pz-y) + var(--pz) + 0.5rem) 0 3.5rem;
+  padding: calc(var(--pz-y) + var(--pz-h) + 1.75rem) 0 3.5rem;
 }
 .hero__inner { position: relative; }
 .hero__title {
@@ -717,7 +722,7 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
 
 /* Short landscape phones */
 @media (max-width: 899px) and (max-height: 520px) {
-  :root { --pz: min(48vh, 60vw); }
+  :root { --pz: min(66vh, 64vw); }
 }
 
 /* Statement */
@@ -758,7 +763,7 @@ html.menu-open .back-pill { opacity: 0; visibility: hidden; }
 .story {
   position: relative;
   z-index: 2;
-  padding: calc(var(--section-pad) * 0.7) 0 calc(var(--section-pad) * 0.8 + var(--sheet-r));
+  padding: calc(var(--section-pad) * 0.7) 0 calc(var(--section-pad) * 0.45);
   background: linear-gradient(to bottom, var(--bg), var(--bg-2));
 }
 .story .section-head { margin-bottom: clamp(2rem, 4vw, 3rem); }
@@ -993,6 +998,187 @@ html.no-js .step { opacity: 1; }
 .format__desc { margin-top: 0.25rem; color: var(--muted); }
 
 /* ==========================================================================
+   IL TERRITORIO — Valpantena → Lessinia
+   ========================================================================== */
+.terra {
+  position: relative;
+  z-index: 2;
+  overflow: clip;
+  padding: calc(var(--section-pad) * 0.55) 0 calc(var(--section-pad) * 0.8 + var(--sheet-r));
+  background:
+    radial-gradient(60% 50% at 82% 28%, rgba(231, 179, 90, 0.06), transparent 70%),
+    radial-gradient(50% 40% at 8% 92%, rgba(255, 90, 31, 0.07), transparent 70%),
+    var(--bg-2);
+}
+.terra__topo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(75% 60% at 50% 35%, #000 15%, transparent 80%);
+  mask-image: radial-gradient(75% 60% at 50% 35%, #000 15%, transparent 80%);
+}
+.terra__topo path { fill: none; stroke: rgba(231, 179, 90, 0.1); stroke-width: 1; }
+.terra .container { position: relative; }
+.terra__head { margin-bottom: clamp(1.5rem, 4vw, 3rem); }
+
+.valley { position: relative; margin: 0 0 clamp(4.5rem, 8vw, 7rem); }
+.valley__svg { width: 100%; height: auto; overflow: visible; }
+.valley__ridge { fill: url(#valley-ridge); }
+.valley__area { fill: url(#valley-fill); }
+.valley__base { fill: none; stroke: rgba(244, 236, 225, 0.16); stroke-width: 2; stroke-dasharray: 2 10; stroke-linecap: round; }
+.valley__line { fill: none; stroke: url(#valley-stroke); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.valley__dot { fill: #ffe2b0; }
+.valley__dot,
+.valley__halo { transform-box: fill-box; transform-origin: center; }
+.valley__pts { position: absolute; inset: 0; pointer-events: none; }
+.valley__pt { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; }
+.valley__pt::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1.5px solid var(--gold);
+  transition: background-color 0.5s, box-shadow 0.5s;
+}
+.valley__pt.is-on::before { background: var(--gold); box-shadow: 0 0 0 5px rgba(231, 179, 90, 0.15); }
+.valley__pt--home::before { border-color: var(--ember); }
+.valley__pt--home.is-on::before { background: var(--ember); box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.2), 0 0 18px 4px rgba(255, 90, 31, 0.5); }
+.valley__label {
+  position: absolute;
+  left: 0;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--faint);
+  transition: color 0.6s;
+}
+.valley__label b { font-weight: 700; }
+.valley__label small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ember); }
+.valley__pt.is-on .valley__label { color: var(--ink); }
+.valley__pt--above .valley__label { bottom: 1rem; transform: translateX(-50%); text-align: center; }
+.valley__pt--below .valley__label { top: 1rem; transform: translateX(-50%); text-align: center; }
+.valley__pt--start .valley__label { transform: none; text-align: left; }
+.valley__pt--end .valley__label { transform: translateX(-100%); text-align: right; }
+@media (max-width: 899px) {
+  .valley__base { stroke-width: 5; stroke-dasharray: 4 20; }
+  .valley__line { stroke-width: 8; }
+  .valley__dot { transform: scale(2); }
+  .valley__label { font-size: 0.64rem; letter-spacing: 0.12em; }
+  .valley__pt--home .valley__label { white-space: normal; width: 8.5rem; }
+}
+
+.terra__cards { display: grid; gap: 1rem; }
+@media (min-width: 900px) {
+  .terra__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+}
+.product {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(30rem, 42vw, 36rem);
+  padding: clamp(1.6rem, 3.4vw, 2.75rem);
+  border-radius: 1.75rem;
+  background: linear-gradient(160deg, #1f1712, var(--surface) 55%, #110c09);
+  border: 1px solid var(--line);
+  box-shadow: 0 50px 100px -50px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.product::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.product--cheese::before {
+  background:
+    radial-gradient(circle, rgba(231, 179, 90, 0.1) 0 7px, transparent 8px) 0 0 / 64px 64px,
+    radial-gradient(circle, rgba(231, 179, 90, 0.07) 0 3px, transparent 4px) 30px 22px / 46px 46px,
+    radial-gradient(55% 50% at 85% 15%, rgba(231, 179, 90, 0.16), transparent 70%);
+  -webkit-mask-image: radial-gradient(70% 65% at 85% 15%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(70% 65% at 85% 15%, #000 10%, transparent 75%);
+}
+.product--broccolo::before {
+  background: radial-gradient(55% 50% at 80% 20%, rgba(79, 138, 63, 0.28), transparent 70%);
+}
+.seal {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2rem);
+  right: clamp(1.25rem, 3vw, 2rem);
+  width: clamp(8.5rem, 15vw, 12rem);
+  height: auto;
+  color: var(--gold);
+  overflow: visible;
+}
+.seal__ring { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.45; }
+.seal__ring--in { opacity: 0.25; }
+.seal__text { font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.2em; fill: currentColor; }
+.seal__dop { font-family: var(--font-display); font-size: 38px; font-weight: 500; fill: var(--ink); letter-spacing: 0.02em; }
+.seal__spin { transform-origin: 100px 100px; }
+@media (prefers-reduced-motion: no-preference) {
+  .seal__spin { animation: seal-spin 30s linear infinite; }
+}
+@keyframes seal-spin { to { transform: rotate(360deg); } }
+.product__img {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  width: clamp(11rem, 19vw, 16rem);
+  height: auto;
+  rotate: -12deg;
+  filter: drop-shadow(0 1.75rem 2rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0 2rem rgba(79, 138, 63, 0.25));
+}
+.product__body { position: relative; display: grid; gap: 0.9rem; max-width: 32rem; }
+.product__meta { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+.product__name { font-size: clamp(2.5rem, 1.4rem + 3.3vw, 4.4rem); line-height: 0.95; letter-spacing: -0.035em; text-wrap: balance; }
+.product__text { color: var(--muted); font-size: var(--fs-lead); line-height: 1.5; }
+.product__use {
+  justify-self: start;
+  padding-block: 0.65rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--gold);
+}
+.product__use .icon {
+  display: inline-block;
+  margin-left: 0.4em;
+  vertical-align: -0.2em;
+  transition: transform 0.4s var(--ease-out);
+}
+.product__use:hover .icon { transform: translateX(4px); }
+
+.rally {
+  display: grid;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  margin-top: clamp(4.5rem, 9vw, 8rem);
+  padding-top: clamp(3rem, 6vw, 5rem);
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 900px) {
+  .rally { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+}
+.rally__title { margin-top: 1.25rem; font-size: clamp(2.6rem, 1.3rem + 4.6vw, 6rem); line-height: 0.95; text-wrap: balance; }
+.rally__text { margin-top: 1.25rem; max-width: 30rem; color: var(--muted); font-size: var(--fs-lead); line-height: 1.5; }
+.rally__road { width: 100%; max-width: 34rem; height: auto; justify-self: center; overflow: visible; }
+.rally__asphalt { fill: none; stroke: rgba(244, 236, 225, 0.06); stroke-width: 30; stroke-linecap: round; stroke-linejoin: round; }
+.rally__lane { fill: none; stroke: rgba(231, 179, 90, 0.35); stroke-width: 1.5; stroke-dasharray: 10 14; }
+.rally__trail { fill: none; stroke: var(--ember); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; filter: drop-shadow(0 0 6px rgba(255, 90, 31, 0.8)); }
+.rally__car { fill: #ffe2b0; }
+
+/* ==========================================================================
    Stacked sheets (menu → reviews → buffet → visit)
    ========================================================================== */
 .menu,
@@ -1095,8 +1281,8 @@ html.no-js .step { opacity: 1; }
 .menu__grid { display: grid; gap: 0 clamp(2rem, 6vw, 6rem); }
 @media (min-width: 900px) {
   .menu__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
-  .menu-cat--taglio { grid-column: 1; grid-row: 1; }
-  .menu-cat--tonde { grid-column: 2; grid-row: 1 / span 2; }
+  .menu-cat--vetrina { grid-column: 1; grid-row: 1; }
+  .menu-cat--classici { grid-column: 2; grid-row: 1 / span 2; }
   .menu-cat--forno { grid-column: 1; grid-row: 2; }
   .menu-cat--buffet { grid-column: 1 / -1; grid-row: 3; }
   .menu-cat--buffet .menu-cat__text { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 2rem; }

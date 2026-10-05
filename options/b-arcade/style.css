@@ -1,5 +1,5 @@
 /* =====================================================================
-   PIZZA VOGLIA — Opzione B "SALA GIOCHI"
+   PIZZA VOGLIA — Opzione B "PROVA SPECIALE VALPANTENA"
    Retro arcade anni '80/'90: neon, CRT, pixel. Mobile-first.
    ===================================================================== */
 
@@ -114,7 +114,7 @@ p { text-wrap: pretty; }
 
 /* anello "pixel" ad angoli scalinati (bordo esterno via box-shadow) */
 .btn, .tab, .card, .secret, .team, .select-bar, .board, .hiscore, .ach, .mode,
-.powerup-box, .level-info, .map-frame, .arena {
+.powerup-box, .level-info, .map-frame, .tcard, .roadbook {
   --bd: var(--line);
   --ring:
     0 calc(var(--b) * -1) 0 0 var(--bd),
@@ -399,13 +399,66 @@ p { text-wrap: pretty; }
   text-transform: uppercase;
   color: var(--cheese);
 }
-.kicker-tag {
-  padding: 5px 7px 4px;
-  font: 400 9px/1.3 var(--f-pixel);
+/* targa da rally: "PS" + numero della prova */
+.plate {
+  display: inline-flex;
+  align-items: stretch;
+  font: 400 11px/1 var(--f-pixel);
+  letter-spacing: 0;
+  color: var(--deep);
+  background: var(--cream);
+  border: 2px solid var(--deep);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--cream), 0 0 18px rgba(255, 244, 220, 0.25);
+  overflow: hidden;
+}
+.plate > span { display: grid; place-items: center; padding: 5px 7px 4px; }
+.plate .plate-k { padding-inline: 5px; color: var(--cream); background: var(--tomato); }
+/* nota del navigatore */
+.pace {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin: 18px 0 0;
+  padding: 6px 12px 5px 6px;
+  font: 400 20px/1.15 var(--f-term);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cheese);
+  background: rgba(7, 10, 28, 0.72);
+  border-left: 3px solid var(--pink);
+}
+.pace-k {
+  flex: none;
+  padding: 4px 5px 3px;
+  font: 400 9px/1 var(--f-pixel);
   letter-spacing: 0;
   color: var(--deep);
   background: var(--pink);
-  box-shadow: 0 0 14px rgba(255, 79, 216, 0.45);
+}
+/* strisce di livrea (pomodoro, formaggio, basilico) */
+.stripes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 5fr 2fr 4fr;
+  gap: 8px;
+  width: min(52vw, 560px);
+  height: 16px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.stripes i { display: block; margin: 0 -6px; transform: skewX(-32deg); }
+.stripes i:nth-child(1) { background: var(--tomato); }
+.stripes i:nth-child(2) { background: var(--cheese); }
+.stripes i:nth-child(3) { background: var(--basil); }
+.stripes--left { right: auto; left: 0; }
+.checkered {
+  height: 16px;
+  background: conic-gradient(var(--cream) 25%, var(--deep) 0 50%, var(--cream) 0 75%, var(--deep) 0) 0 0 / 16px 16px;
+  opacity: 0.9;
 }
 .section { position: relative; padding: clamp(60px, 8vw, 104px) 0; }
 .sec-head { max-width: 780px; margin-bottom: clamp(28px, 4vw, 44px); }
@@ -493,6 +546,24 @@ p { text-wrap: pretty; }
   to { transform: rotateX(60deg) translateY(56px); }
 }
 
+.hero-livery {
+  position: absolute;
+  bottom: 18%;
+  left: -6%;
+  display: grid;
+  grid-template-columns: 5fr 2fr 4fr;
+  gap: 10px;
+  width: 46%;
+  height: 22px;
+  opacity: 0.55;
+  transform: skewX(-32deg);
+}
+.hero-livery i:nth-child(1) { background: var(--tomato); }
+.hero-livery i:nth-child(2) { background: var(--cheese); }
+.hero-livery i:nth-child(3) { background: var(--basil); }
+@media (max-width: 959.98px) {
+  .hero-livery { display: none; }
+}
 .hero-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -528,7 +599,15 @@ p { text-wrap: pretty; }
   .h1-pixel { font-size: clamp(30px, 15.2cqi, 82px); }
 }
 .h1-pixel span { display: block; }
-.h1-pixel span:last-child { color: var(--cheese); }
+.h1-pixel span:nth-child(2) { color: var(--cheese); }
+.h1-pixel .h1-sub {
+  margin-top: 0.55em;
+  font-size: max(13px, 0.24em);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--basil);
+  text-shadow: 2px 2px 0 #0a3a22, 0 0 16px rgba(54, 209, 122, 0.45);
+}
 .logo-dots { gap: 8px; margin: 22px 0 16px; }
 .logo-dots i { width: 14px; height: 14px; box-shadow: 0 0 10px currentColor; }
 .tagline {
@@ -585,6 +664,23 @@ p { text-wrap: pretty; }
 }
 .rating-chip .i { width: 17px; height: 17px; margin-top: -2px; color: var(--cheese); }
 .rating-chip:hover { color: var(--cream); background: rgba(255, 210, 63, 0.16); border-color: var(--cheese); }
+.stage-time {
+  display: inline-grid;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 10px 14px 12px;
+  background: #05060f;
+  border: 2px solid #2b3275;
+  border-radius: 6px;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(7, 10, 28, 0.7);
+}
+.st-k { margin: 0; font: 400 18px/1 var(--f-term); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pink); }
+.st-k span { color: var(--dim); }
+.st-led { margin: 0; line-height: 0; }
+.st-fallback { font: 400 22px/1 var(--f-pixel); color: var(--cheese); }
+.led-digits { display: block; width: auto; height: 34px; filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.55)); }
+.led-digits .on { fill: var(--cheese); }
+.led-digits .off { fill: rgba(255, 210, 63, 0.09); }
 
 /* stato aperto/chiuso */
 .status {
@@ -854,17 +950,48 @@ p { text-wrap: pretty; }
 /* pannello comandi */
 .cab-panel {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "steer mid brake";
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   margin-top: 14px;
   padding: 14px 12px 16px;
   border-radius: 12px;
   background: linear-gradient(180deg, #2c2380, #1b1556);
   box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.12), inset 0 -4px 0 rgba(0, 0, 0, 0.4), 0 0 0 2px #090620;
 }
-.panel-mid { display: flex; align-items: center; gap: 10px; }
+.pad-steer { grid-area: steer; display: flex; gap: 12px; }
+.panel-mid { grid-area: mid; display: flex; justify-content: center; align-items: center; gap: 10px; }
+.pedal {
+  grid-area: brake;
+  display: grid;
+  place-items: end center;
+  width: 62px;
+  height: 58px;
+  margin-bottom: 6px;
+  padding: 0 0 6px;
+  font: 400 9px/1 var(--f-pixel);
+  color: var(--tomato);
+  border: 0;
+  border-radius: 8px 8px 12px 12px;
+  cursor: pointer;
+  background: repeating-linear-gradient(0deg, #2b3166 0 4px, #191d40 4px 8px);
+  box-shadow: inset 0 0 0 2px #4a50a0, 0 6px 0 #0b0a26, 0 0 0 3px #090620, 0 6px 0 3px #090620;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+.pedal:active,
+.pedal.is-down { transform: translateY(5px); box-shadow: inset 0 0 0 2px var(--tomato), 0 1px 0 #0b0a26, 0 0 0 3px #090620, 0 0 18px rgba(255, 59, 59, 0.6); }
+.pedal:focus-visible { outline-offset: 6px; }
+@media (max-width: 519.98px) {
+  .cab-panel { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "mid mid" "steer brake"; row-gap: 14px; }
+  .pedal { justify-self: end; }
+}
 .arc-btn {
   --c: var(--tomato);
   --cd: #8c1525;
@@ -950,46 +1077,10 @@ p { text-wrap: pretty; }
   .sound-label { display: inline; }
 }
 
-.joystick { position: relative; display: none; flex: none; width: 54px; height: 64px; }
-.joy-base {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 48px;
-  height: 16px;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(#06041a 34%, #3a3290 36% 58%, #06041a 61%);
-}
-.joy-arm {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  width: 8px;
-  height: 40px;
-  margin-left: -4px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #77749f, #ecebff 40%, #5c5a86);
-  transform-origin: 50% 100%;
-  transition: transform 0.08s;
-}
-.joy-ball {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  width: 28px;
-  height: 28px;
-  margin-left: -14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffb3b3 0 14%, var(--tomato) 42%, #8e1626 100%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
-.cabinet[data-dir="-1"] .joy-arm { transform: rotate(-20deg); }
-.cabinet[data-dir="1"] .joy-arm { transform: rotate(20deg); }
 @media (min-width: 520px) {
-  .joystick { display: block; }
-  .cab-panel { padding: 16px 22px 20px; }
-  .arc-btn { width: 64px; height: 64px; }
+  .cab-panel { padding: 16px 20px 20px; }
+  .arc-btn { width: 62px; height: 62px; }
+  .pedal { width: 68px; height: 62px; }
 }
 
 .cab-coin {
@@ -1275,7 +1366,21 @@ kbd {
   pointer-events: none;
   background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.16) 50%) 0 0 / 100% 4px;
 }
-.card-num { position: absolute; top: 6px; left: 7px; font: 400 17px/1 var(--f-term); color: var(--dim); }
+.card-num {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 1;
+  min-width: 26px;
+  padding: 4px 4px 3px;
+  font: 400 9px/1 var(--f-pixel);
+  text-align: center;
+  color: var(--deep);
+  background: var(--cream);
+  border: 2px solid var(--deep);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px var(--cream);
+}
 .card-tag {
   position: absolute;
   top: 6px;
@@ -1822,32 +1927,26 @@ kbd {
 .multi-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .cta-note { max-width: 36ch; margin: 0; font-size: 15px; color: var(--dim); }
 
-.multi-art { width: 100%; max-width: 480px; margin-inline: auto; }
-.arena {
-  --bd: var(--pink);
+.multi-art { width: 100%; max-width: 540px; margin-inline: auto; }
+.teglia {
   position: relative;
-  aspect-ratio: 1;
-  margin: 3px;
-  padding: 13%;
+  padding: 26px 20px;
   background:
-    radial-gradient(circle, rgba(255, 79, 216, 0.22), transparent 62%),
+    radial-gradient(circle at 50% 50%, rgba(255, 79, 216, 0.2), transparent 65%),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 24px),
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 24px),
     var(--deep);
-  box-shadow: var(--ring), 0 0 50px -10px rgba(255, 79, 216, 0.55);
+  box-shadow: 0 -3px 0 var(--pink), 0 3px 0 var(--pink), -3px 0 0 var(--pink), 3px 0 0 var(--pink), 0 0 50px -10px rgba(255, 79, 216, 0.55);
+  margin: 3px;
 }
-.arena-spin { width: 100%; height: 100%; }
-.arena-spin img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.6));
+.teglia-grid {
+  display: grid;
+  grid-template-columns: 608fr 583fr 609fr;
+  filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.6));
 }
-@media (prefers-reduced-motion: no-preference) {
-  .arena-spin { animation: spin 70s linear infinite; }
-  .multi.is-off .arena-spin { animation-play-state: paused; }
-}
+.teglia-grid img { display: block; width: 100%; height: auto; transition: transform 0.5s steps(5); }
+.teglia.is-cut .teglia-grid img { transform: translate(var(--tx, 0), var(--ty, 0)); }
+.has-js .teglia:not(.is-cut) .pcur { opacity: 0; }
 .pcur {
   --pc: var(--tomato);
   position: absolute;
@@ -1857,27 +1956,82 @@ kbd {
   color: var(--deep);
   background: var(--pc);
   box-shadow: 0 0 16px var(--pc);
+  transition: opacity 0.3s steps(3) 0.4s;
 }
 .pcur::after { content: ""; position: absolute; width: 8px; height: 8px; background: var(--pc); }
-.pcur--1 { top: 13%; left: 9%; }
+.pcur--1 { top: 8px; left: 8px; }
 .pcur--1::after { right: -4px; bottom: -4px; }
-.pcur--2 { --pc: var(--basil); top: 17%; right: 7%; }
+.pcur--2 { --pc: var(--basil); top: 8px; right: 8px; }
 .pcur--2::after { bottom: -4px; left: -4px; }
-.pcur--3 { --pc: var(--cheese); bottom: 15%; left: 6%; }
+.pcur--3 { --pc: var(--cheese); bottom: 8px; left: 8px; }
 .pcur--3::after { top: -4px; right: -4px; }
-.pcur--4 { --pc: var(--pink); right: 9%; bottom: 11%; }
+.pcur--4 { --pc: var(--pink); right: 8px; bottom: 8px; }
 .pcur--4::after { top: -4px; left: -4px; }
 @media (prefers-reduced-motion: no-preference) {
-  .pcur { animation: bob 0.9s steps(2) infinite; }
-  .pcur--2 { animation-delay: -0.3s; }
-  .pcur--3 { animation-delay: -0.55s; }
-  .pcur--4 { animation-delay: -0.15s; }
+  .teglia.is-cut .pcur { animation: bob 0.9s steps(2) infinite; }
+  .teglia.is-cut .pcur--2 { animation-delay: -0.3s; }
+  .teglia.is-cut .pcur--3 { animation-delay: -0.55s; }
+  .teglia.is-cut .pcur--4 { animation-delay: -0.15s; }
   .multi.is-off .pcur { animation-play-state: paused; }
 }
 .arena-cap { margin: 18px 0 0; font: 400 22px/1 var(--f-term); letter-spacing: 0.14em; text-align: center; text-transform: uppercase; color: var(--pink); }
 
 /* =====================================================================
-   STAGE 5 · MAPPA DEL LIVELLO
+   PS5 · TERRITORIO
+   ===================================================================== */
+.terra { overflow: hidden; }
+.terra-grid { display: grid; gap: 30px; align-items: start; }
+@media (min-width: 900px) {
+  .terra-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; }
+}
+.roadbook {
+  --bd: var(--line-2);
+  margin: 3px;
+  padding: 16px 16px 12px;
+  background: #07091d;
+  box-shadow: var(--ring);
+}
+.roadbook-map { display: block; width: 100%; height: auto; max-height: 460px; }
+.rb-hills { fill: #2a1a4f; }
+.rb-road { fill: none; stroke: var(--cheese); stroke-width: 4; stroke-linejoin: round; stroke-dasharray: 10 6; }
+.rb-road--glow { stroke: var(--tomato); stroke-width: 10; stroke-dasharray: none; opacity: 0.35; }
+.rb-place rect { fill: var(--cream); stroke: var(--deep); stroke-width: 2; }
+.rb-place text { font: 400 11px var(--f-pixel); fill: var(--cream); }
+.rb-place--home rect { fill: var(--tomato); }
+.rb-place--home text { fill: var(--cheese); }
+.rb-place--top text { font-size: 14px; fill: var(--basil); }
+.rb-place--warn text { fill: var(--pink); }
+.rb-place--warn path { fill: var(--pink); }
+.rb-small { font: 400 14px var(--f-term) !important; letter-spacing: 0.06em; fill: var(--dim) !important; }
+@media (prefers-reduced-motion: no-preference) {
+  .rb-road:not(.rb-road--glow) { animation: rb-dash 1.2s linear infinite; }
+  .terra.is-off .rb-road { animation-play-state: paused; }
+}
+@keyframes rb-dash {
+  to { stroke-dashoffset: -16; }
+}
+.roadbook figcaption { margin-top: 10px; font: 400 18px/1.3 var(--f-term); letter-spacing: 0.04em; text-transform: uppercase; color: var(--dim); }
+.terra-cards { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.tcard {
+  --bd: var(--line);
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  margin: 3px;
+  padding: 16px 18px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 60%), var(--ink);
+  box-shadow: var(--ring);
+}
+.tcard:hover { --bd: var(--accent); }
+.tcard-icon { justify-self: center; width: 60px; height: 40px; }
+.tcard-k { margin: 0 0 6px; font: 400 13px/1.4 var(--f-pixel); text-transform: uppercase; color: var(--accent); }
+.tcard p { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--muted); }
+.has-reveal .tcard.reveal:nth-child(2) { transition-delay: 0.1s; }
+.has-reveal .tcard.reveal:nth-child(3) { transition-delay: 0.2s; }
+
+/* =====================================================================
+   PS7 · ROAD BOOK (MAPPA)
    ===================================================================== */
 .level-grid { display: grid; gap: 30px; }
 @media (min-width: 960px) {
@@ -1986,9 +2140,10 @@ kbd {
 /* =====================================================================
    FOOTER
    ===================================================================== */
+.site-footer > .checkered { margin-bottom: clamp(52px, 8vw, 96px); }
 .site-footer {
   position: relative;
-  padding: clamp(68px, 9vw, 112px) 0 calc(76px + env(safe-area-inset-bottom));
+  padding: 0 0 calc(76px + env(safe-area-inset-bottom));
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.35)), var(--deep);
   border-top: 3px solid #1a1f52;
 }
@@ -2091,3 +2246,7 @@ kbd {
 .has-reveal .mode.reveal:nth-child(4) { transition-delay: 0.24s; }
 .has-reveal .ach.reveal:nth-child(5) { transition-delay: 0.32s; }
 .has-reveal .ach.reveal:nth-child(6) { transition-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) {
+  .teglia-grid img,
+  .pcur { transition: none; }
+}
