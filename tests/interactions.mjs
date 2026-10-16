@@ -1,5 +1,5 @@
-// Interaction tests: mobile menu open/close + anchor navigation, on each option prototype.
-// Usage: node tests/interactions.mjs [a-forno b-arcade c-valpantena]
+// Interaction tests: mobile menu open/close + anchor navigation, on the site and each archived prototype.
+// Usage: node tests/interactions.mjs [site a-forno b-arcade]
 import puppeteer from 'puppeteer-core';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -8,7 +8,9 @@ import { join } from 'node:path';
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:5173';
 const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const pages = process.argv.slice(2).filter((a) => !a.startsWith('--'));
-const OPTIONS = pages.length ? pages : ['a-forno', 'b-arcade', 'c-valpantena'];
+// 'site' is the live homepage (chosen option C); the other two are archived prototypes.
+const PATHS = { site: '/', 'a-forno': '/options/a-forno/', 'b-arcade': '/options/b-arcade/' };
+const OPTIONS = pages.length ? pages : Object.keys(PATHS);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const profile = mkdtempSync(join(tmpdir(), 'pv-int-'));
@@ -20,7 +22,7 @@ try {
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message.split('\n')[0]));
     await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-    await page.goto(`${BASE}/options/${opt}/`, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.goto(`${BASE}${PATHS[opt]}`, { waitUntil: 'networkidle2', timeout: 60000 });
     await sleep(1500);
     const res = [];
     // 1. hamburger
@@ -51,7 +53,7 @@ try {
         res.push(`${after.expanded !== 'true' && after.top !== null && after.top < 300 && after.top > -400 ? 'ok  ' : 'FAIL'} link ${target} closes menu and scrolls (aria-expanded=${after.expanded}, target top=${after.top}, scrollY=${after.y})`);
       }
       // 3. Escape closes (fresh load: smooth-scroll libraries fight instant programmatic scrolls)
-      await page.goto(`${BASE}/options/${opt}/`, { waitUntil: 'networkidle2', timeout: 60000 });
+      await page.goto(`${BASE}${PATHS[opt]}`, { waitUntil: 'networkidle2', timeout: 60000 });
       await sleep(1200);
       await (await page.$('header button[aria-expanded], button[aria-controls][aria-expanded]')).tap();
       await sleep(600);

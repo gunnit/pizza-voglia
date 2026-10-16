@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Pizza Voglia — Option C “VALPANTENA” — main.js (ES module)
+   Pizza Voglia — site script (design: option C “Valpantena”) — main.js (ES module)
    Progressive enhancement: the page is complete and composed without this
    file. With GSAP + ScrollTrigger + Lenis it becomes the layered experience;
    with prefers-reduced-motion it stays static.
@@ -134,7 +134,7 @@ function initMenu() {
   if (!btn || !overlay) return { close() {}, isOpen: () => false };
 
   const label = $('.nav__toggle-label', btn);
-  const background = [$('#contenuto'), $('.footer'), $('.opts-pill'), $('.call-fab'), $('.skip-link'), $('.brand')].filter(Boolean);
+  const background = [$('#contenuto'), $('.footer'), $('.call-fab'), $('.skip-link'), $('.brand')].filter(Boolean);
   let open = false;
   let hideTimer = 0;
 

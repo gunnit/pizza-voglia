@@ -1,5 +1,5 @@
-// Smoke tests for the design-option prototypes, using the system Chrome in headless mode.
-// Usage: node tests/smoke.mjs [a-forno b-arcade c-valpantena] [--shots] [--debug-shots=DIR]
+// Smoke tests for the live site and the archived design prototypes, using the system Chrome in headless mode.
+// Usage: node tests/smoke.mjs [site a-forno b-arcade] [--shots] [--debug-shots=DIR]
 //   --shots             write gallery screenshots to options/shots/<key>-{desktop,mobile}.jpg
 //   --debug-shots=DIR   write top/middle/bottom screenshots per viewport for visual review
 // Requires the static server: python3 -m http.server 5173 --bind 127.0.0.1
@@ -17,7 +17,9 @@ const args = process.argv.slice(2);
 const wantShots = args.includes('--shots');
 const debugDir = (args.find((a) => a.startsWith('--debug-shots=')) || '').split('=')[1];
 const pages = args.filter((a) => !a.startsWith('--'));
-const OPTIONS = pages.length ? pages : ['a-forno', 'b-arcade', 'c-valpantena'];
+// 'site' is the live homepage (chosen option C); the other two are archived prototypes.
+const PATHS = { site: '/', 'a-forno': '/options/a-forno/', 'b-arcade': '/options/b-arcade/' };
+const OPTIONS = pages.length ? pages : Object.keys(PATHS);
 
 const VIEWPORTS = [
   { name: 'mobile-360', width: 360, height: 740, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
@@ -113,7 +115,7 @@ async function run() {
   try {
     for (const opt of OPTIONS) {
       const key = opt.split('-')[0];
-      const url = `${BASE}/options/${opt}/`;
+      const url = `${BASE}${PATHS[opt]}`;
       for (const vp of VIEWPORTS) {
         const page = await browser.newPage();
         const errors = [];

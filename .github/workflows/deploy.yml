@@ -20,12 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Static site: publish the repo minus dev-only files (docs, tests, scripts, tooling).
+      # Static site: publish the repo minus dev-only files (docs, design prototypes, tests, scripts, tooling).
       - name: Assemble _site
         run: |
           rsync -a \
             --exclude '_site' --exclude '.git*' --exclude '.github' --exclude '.claude' \
-            --exclude 'docs' --exclude 'tests' --exclude 'scripts' --exclude 'node_modules' \
+            --exclude 'docs' --exclude 'options' --exclude 'tests' --exclude 'scripts' --exclude 'node_modules' \
             --exclude 'package.json' --exclude 'package-lock.json' --exclude 'README.md' \
             --exclude 'assets/_src' \
             ./ _site/
