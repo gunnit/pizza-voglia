@@ -718,14 +718,15 @@ function initDepthParallax() {
 function initStoria() {
   const ring = $('.ring__arc');
   const num = $('.panel__num');
+  const pct = (num && parseInt(num.dataset.count, 10)) || 70;   // hydration %, from the markup
   let ringPlayed = false;
   const ringIn = () => {
     if (ringPlayed) return;
     ringPlayed = true;
-    if (ring) gsap.fromTo(ring, { strokeDashoffset: 100 }, { strokeDashoffset: 25, duration: 2.6, ease: 'expo.out' });
+    if (ring) gsap.fromTo(ring, { strokeDashoffset: 100 }, { strokeDashoffset: 100 - pct, duration: 2.6, ease: 'expo.out' });
     if (num) {
       const o = { v: 0 };
-      gsap.to(o, { v: 75, duration: 2.2, ease: 'expo.out', onUpdate: () => { num.textContent = String(Math.round(o.v)); } });
+      gsap.to(o, { v: pct, duration: 2.2, ease: 'expo.out', onUpdate: () => { num.textContent = String(Math.round(o.v)); } });
     }
   };
   if (ring) gsap.set(ring, { strokeDashoffset: 100 });

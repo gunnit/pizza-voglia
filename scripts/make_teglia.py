@@ -1,5 +1,9 @@
 """Build square "pizza in teglia" assets from the photoreal topping texture of the round source pizza.
 
+If assets/_src/ig-teglia-zucca.jpg exists (Denis's own top-down photo of a real teglia, already cut in
+four), the topping comes from that photo instead: each of the six slices gets a square from one real
+piece, so the hero shows Denis's actual pizza. The crust band still comes from the round source rim.
+
 Outputs (assets/img/):
   teglia-top.webp, teglia-top-900.webp   top-down rectangular margherita in teglia (transparent)
   teglia/slice-<row>-<col>.webp          the same pizza cut in 3x2 square slices (transparent)
@@ -14,6 +18,9 @@ from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "assets/_src/src-pizza-top.png"
+REAL = ROOT / "assets/_src/ig-teglia-zucca.jpg"
+# The four real pieces in REAL (left, top, right, bottom), inset from the cuts and the tray rim.
+REAL_PIECES = [(40, 70, 500, 700), (530, 70, 1015, 700), (40, 735, 500, 1345), (530, 735, 1015, 1345)]
 OUT = ROOT / "assets/img"
 rng = np.random.default_rng(7)
 
@@ -21,6 +28,7 @@ W, H = 1800, 1200          # canvas
 MARGIN = 26                # transparent margin around the pizza
 CORNER = 70                # corner radius of the teglia shape
 BAND = 92                  # crust band width (compressed real rim)
+BAND_REAL = 46             # thinner, golden edge of a stirata romana in teglia (with the real topping)
 
 
 def value_noise(w, h, cell, octaves=4, persistence=0.5):
@@ -61,6 +69,30 @@ def topping_texture():
     crop = crop.filter(ImageFilter.MedianFilter(3)).resize((W, H), Image.LANCZOS)
     crop = crop.filter(ImageFilter.UnsharpMask(radius=1.6, percent=35, threshold=3))
     return np.asarray(crop, np.float32) / 255.0
+
+
+def real_topping_texture():
+    """3x2 grid of squares cut from the real pieces, one per slice, so the photo's cuts fall on the slice cuts."""
+    im = Image.open(REAL).convert("RGB")
+    squares = []
+    for (x0, y0, x1, y1) in REAL_PIECES:
+        side = min(x1 - x0, y1 - y0)
+        cx, cy = (x0 + x1) // 2, (y0 + y1) // 2
+        squares.append(im.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)))
+    tl, tr, bl, br = squares
+    grid = [[tl, tr, bl.transpose(Image.FLIP_LEFT_RIGHT)],
+            [br, tl.transpose(Image.ROTATE_180), tr.transpose(Image.FLIP_LEFT_RIGHT)]]
+    canvas = Image.new("RGB", (W, H))
+    cw, ch = (W - 2 * MARGIN) / 3, (H - 2 * MARGIN) / 2
+    for r in range(2):
+        for c in range(3):
+            x0 = 0 if c == 0 else int(MARGIN + c * cw)
+            x1 = W if c == 2 else int(MARGIN + (c + 1) * cw)
+            y0 = 0 if r == 0 else int(MARGIN + r * ch)
+            y1 = H if r == 1 else int(MARGIN + (r + 1) * ch)
+            canvas.paste(grid[r][c].resize((x1 - x0, y1 - y0), Image.LANCZOS), (x0, y0))
+    canvas = canvas.filter(ImageFilter.UnsharpMask(radius=1.2, percent=25, threshold=3))
+    return np.asarray(canvas, np.float32) / 255.0
 
 
 def bilinear(img, xs, ys):
@@ -117,19 +149,23 @@ def build_top():
     # map (s, depth) -> polar coords on the round pizza: top edge centre <-> top of the rim (theta = -90deg)
     theta = (s - hx) / P * 2 * np.pi - np.pi / 2
     r_out, r_in = 1.035 * R, 0.80 * R                               # include a bit of outside -> natural silhouette
+    band = BAND_REAL if REAL.exists() else BAND
     depth = np.clip(d_in + 14, 0, None)                              # 14px of outside margin in the band
-    r = r_out - depth / (BAND + 14) * (r_out - r_in)
+    r = r_out - depth / (band + 14) * (r_out - r_in)
     rim = bilinear(src, cx + r * np.cos(theta), cy + r * np.sin(theta))
 
     # teglia edges bake golden, not leopard-spotted: pull the darkest char toward golden brown
     lum = rim[..., :3].mean(-1, keepdims=True)
-    char = np.clip((0.40 - lum) / 0.28, 0, 1) * 0.6
+    char = np.clip((0.40 - lum) / 0.28, 0, 1) * (0.92 if REAL.exists() else 0.6)
     rim[..., :3] = rim[..., :3] * (1 - char) + np.array([0.68, 0.43, 0.19]) * char
+    if REAL.exists():   # flatten the leopard spotting into an even golden bake
+        gold = np.array([0.80, 0.56, 0.28])
+        rim[..., :3] = rim[..., :3] * 0.45 + gold * 0.55
 
-    tex = topping_texture()
-    blend = np.clip((d_in - (BAND - 26)) / 26.0, 0, 1)[..., None]   # rim -> topping crossfade
+    tex = real_topping_texture() if REAL.exists() else topping_texture()
+    blend = np.clip((d_in - (band - 18)) / 18.0, 0, 1)[..., None]   # rim -> topping crossfade
     rgb = rim[..., :3] * (1 - blend) + tex * blend
-    alpha = np.where(d_in > BAND - 26, 1.0, np.clip((rim[..., 3] - 0.5) * 2.2 + 0.5, 0, 1)) * np.clip(d_in + 16, 0, 1)
+    alpha = np.where(d_in > band - 18, 1.0, np.clip((rim[..., 3] - 0.5) * 2.2 + 0.5, 0, 1)) * np.clip(d_in + 16, 0, 1)
     out = np.dstack([np.clip(rgb, 0, 1), alpha])
     return Image.fromarray((out * 255).astype(np.uint8))
 

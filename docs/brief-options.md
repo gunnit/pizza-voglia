@@ -11,13 +11,13 @@ Language of all site copy: **Italian**. `lang="it"`.
 
 - Name shown to customers: **Pizza Voglia** (Google listing spells it "Pizzavoglia").
 - Pizzaiolo / owner: **Denis** (Denis Vecchi). Denis is "nel mondo della pizza dal 2002" (since 2002).
-- New dough at **75% di idratazione** (75% hydration). Location recently renovated ("location restaurata").
+- Dough at **70% di idratazione** (corrected by Denis; 75% was wrong). Location recently renovated ("location restaurata").
 - **Denis's pizza is SQUARE/RECTANGULAR** — pizza **al taglio in teglia** (rectangular trays in a glass vitrine, sold by weight,
-  cut into rectangles) and **alla pala**. NO round/Neapolitan pizza anywhere (no round pizza images, no "tonda" in copy).
+  cut into rectangles) — a **stirata romana in teglia**; NOT alla pala (corrected by Denis). NO round/Neapolitan pizza anywhere (no round pizza images, no "tonda" in copy).
   Real shop: long glass vitrine with black steel trays, wooden counter, Edison bulbs, cream/terracotta checkered floor.
-- Formats: **al taglio** (a peso, sempre pronta in vetrina) · **alla pala** · **teglie/vassoi per feste e buffet** (su prenotazione).
-  Wide choice of **farine e impasti**.
-  Also calzoni and focacce. **Aperitivi**. **Buffet / catering** for parties and events (everything ready on request).
+- Formats: **al taglio** (a peso, sempre pronta in vetrina) · **teglie/vassoi per feste e buffet** (su prenotazione).
+  **One flour** (Veronesi, Lugo), same dough also al malto tostato (corrected by Denis).
+  Also focacce (no calzoni/panzerotti any more). **Aperitivi**. **Buffet / catering** for parties and events (everything ready on request).
 - Seen on their Instagram: special pizza with **Broccoli di Novaglie, taralli, Monte Veronese e mozzarella**.
 - Partner of **Too Good To Go** (anti-waste surprise bags) — optional small mention.
 - Address: **Via Valpantena 46, 37142 Quinto di Valpantena (VR)** — Verona.
@@ -46,6 +46,17 @@ never invent reviewer names. Present them as "Cosa emerge dalle recensioni" / th
 
 Always link "Leggi tutte le recensioni su Google" → the Google Maps link above.
 
+## Denis's corrections (WhatsApp to the user, 2026-10-11) — these override anything below
+- He chose the third option (C, Valpantena) as the most sober; wants **more real photos** and the **real price list**.
+- **No pizza alla pala.** He makes only one thing: **stirata romana in teglia**. Never write "alla pala" or "pala".
+- **No panzerotti/calzoni** any more.
+- **One flour only**: Veronesi (the mill in Lugo, Valpantena — L'Arena calls it "un molino locale, di Lugo: Veronesi").
+  Never write "tante farine". The same dough also comes **al malto tostato**: darker, looks wholemeal but isn't.
+- **Hydration is 70%, not 75%.**
+- In the territory part, don't brand a single broccoli pizza: talk about **using local ingredients** in general.
+- The hero teglia is now built from his real pumpkin teglia photo (`scripts/make_teglia.py` uses
+  `assets/_src/ig-teglia-zucca.jpg` when present; `assets/_src/` is not committed).
+
 ## Live site — verified additions (2026-10-16)
 The prototype rules below still apply, except that the live site now uses Denis's **real menu with prices**
 and **real photos**. Sources, all public and published by Denis or about him:
@@ -58,7 +69,7 @@ and **real photos**. Sources, all public and published by Denis or about him:
 - **Story** (L'Arena, full-page article by Andrea Marchiori, Dec 2025, "Il contest di Athesis"): Denis started
   with pizza at 13; in 2002 opened a pizza-al-taglio shop in Negrar with his mother and sister; later moved to
   Quinto (took over from a cousin), rebuilt the shop, studied, switched to a "stirata romana in teglia", added
-  20–25 seats and aperitivi; four young women work with him; flour from a local mill in **Lugo** (Valpantena)
+  20–25 seats and aperitivi; four young women work with him; flour from the **Veronesi** mill in **Lugo** (Valpantena)
   with a custom blend; loyalty points ("raccolta punti"). Paraphrase only, never reproduce the article.
 - **Pizzeria dell'anno 2025/26 (L'Arena)**: Pizzavoglia Valpantena was 2nd on 9 Dec 2025 and briefly 1st, but the
   final title went to Pizza Ok (podium Pau Pizza, La Prua). Only say the paper dedicated a full page to them.
