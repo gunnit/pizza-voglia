@@ -46,7 +46,30 @@ never invent reviewer names. Present them as "Cosa emerge dalle recensioni" / th
 
 Always link "Leggi tutte le recensioni su Google" → the Google Maps link above.
 
-## Generic menu (no prices!)
+## Live site — verified additions (2026-10-16)
+The prototype rules below still apply, except that the live site now uses Denis's **real menu with prices**
+and **real photos**. Sources, all public and published by Denis or about him:
+- **Menu + prices**: "Listino prezzi" carousel on Instagram, post DSdCyNKAiXF (Dec 2025). Per kg: Margherita 16 €,
+  classiche 18 €, speciali / bianche / fredde / focacce 19 €, tartufo (della Lessinia) 21 €, imbottite 14 €.
+  Seasonal items marked estiva / invernale / stagionale / solo il weekend. The full list lives in `index.html` (#menu).
+  **Ask Denis to confirm the prices are current**; the site says the in-store listino prevails.
+- **Hours**: winter Mon–Fri 11:00–13:30 / 17:30–20:30, Sat–Sun 17:00–20:30; summer evenings close at 21:00
+  (same Instagram post). Google still shows the winter hours (checked 2026-10-16).
+- **Story** (L'Arena, full-page article by Andrea Marchiori, Dec 2025, "Il contest di Athesis"): Denis started
+  with pizza at 13; in 2002 opened a pizza-al-taglio shop in Negrar with his mother and sister; later moved to
+  Quinto (took over from a cousin), rebuilt the shop, studied, switched to a "stirata romana in teglia", added
+  20–25 seats and aperitivi; four young women work with him; flour from a local mill in **Lugo** (Valpantena)
+  with a custom blend; loyalty points ("raccolta punti"). Paraphrase only, never reproduce the article.
+- **Pizzeria dell'anno 2025/26 (L'Arena)**: Pizzavoglia Valpantena was 2nd on 9 Dec 2025 and briefly 1st, but the
+  final title went to Pizza Ok (podium Pau Pizza, La Prua). Only say the paper dedicated a full page to them.
+- **Photos**: `assets/img/ig/` are Denis's own Instagram photos (posts DeY2IelggbQ, DYpccuwglhw, DVHQPJqgp05,
+  DQMwvIYgj2m, DRsebf3gjIl), downloaded 2026-10-16; the logo badge in `assets/img/logo-pizza-voglia.png` comes
+  from the menu cover. Ask Denis for originals at full resolution (the portrait is only 480×640).
+- **Google**: 4.8★ from 81 reviews (re-checked 2026-10-16); the listing still has no website.
+- **Missing for legal compliance**: Denis's **Partita IVA** (must appear on the site). Do NOT use 02854120231:
+  that belongs to the unrelated pizzavoglia.it chain.
+
+## Generic menu (prototypes only, superseded on the live site)
 Label it clearly: "Menu indicativo — le pizze cambiano spesso: chiedi in pizzeria le proposte del giorno."
 Show no prices (no € figures at all).
 - **In vetrina** (al taglio, a peso): Margherita · Rossa all'origano · Patate e rosmarino · Verdure di stagione · Salame piccante

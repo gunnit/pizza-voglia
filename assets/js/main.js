@@ -98,6 +98,26 @@ function initYear() {
 }
 
 /* --------------------------------------------------------------------------
+   Map: the Google Maps iframe is created only when the visitor asks for it,
+   so no request (or cookie) reaches Google before that.
+   -------------------------------------------------------------------------- */
+function initMap() {
+  const frame = $('[data-map]');
+  const btn = frame && $('[data-map-load]', frame);
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const iframe = doc.createElement('iframe');
+    iframe.src = frame.dataset.mapSrc;
+    iframe.title = 'Mappa: Pizza Voglia, Via Valpantena 46, Quinto di Valpantena (VR)';
+    iframe.referrerPolicy = 'no-referrer-when-downgrade';
+    iframe.allowFullscreen = true;
+    frame.prepend(iframe);
+    frame.classList.add('is-loaded');
+    iframe.focus({ preventScroll: true });
+  }, { once: true });
+}
+
+/* --------------------------------------------------------------------------
    Scroll UI: progress hairline, nav background, floating call button
    -------------------------------------------------------------------------- */
 function initScrollUI() {
@@ -1012,6 +1032,7 @@ function initMarquees() {
    -------------------------------------------------------------------------- */
 safe('year', initYear);
 safe('status', initStatus);
+safe('map', initMap);
 
 if (MOTION) {
   gsap.registerPlugin(ScrollTrigger);

@@ -8,7 +8,9 @@ Live site: option C "Valpantena" (sunlit editorial parallax), chosen by Denis on
 | Path | What |
 |---|---|
 | `index.html`, `assets/css/style.css`, `assets/js/main.js` | the site |
-| `robots.txt`, `sitemap.xml`, `llms.txt`, `404.html` | crawl/AI files and the not-found page |
+| `robots.txt`, `sitemap.xml`, `llms.txt`, `404.html`, `privacy.html` | crawl/AI files, not-found page, privacy notice |
+| `assets/img/ig/` | Denis's real photos from Instagram (see `docs/brief-options.md` for sources) |
+| `assets/fonts/`, `assets/vendor/` | self-hosted fonts and GSAP/Lenis: the page makes no third-party requests (the map loads on click) |
 | `options/` | archived design prototypes A and B plus the proposal page (kept in the repo, not deployed) |
 
 Deploy: every push to `main` publishes to GitHub Pages (`.github/workflows/deploy.yml`).

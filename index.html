@@ -16,20 +16,22 @@
   <meta property="og:title" content="Pizza Voglia — Leggera. Croccante. Fatta qui.">
   <meta property="og:description" content="Pizzeria a Quinto di Valpantena (Verona): pizza al taglio in teglia e alla pala, teglie e vassoi per feste. Impasto al 75% di idratazione. 4,8★ su 81 recensioni Google.">
   <meta property="og:url" content="https://pizza-voglia.it/">
-  <meta property="og:image" content="https://pizza-voglia.it/assets/img/teglia-top.webp">
-  <meta property="og:image:width" content="1800">
-  <meta property="og:image:height" content="1200">
-  <meta property="og:image:alt" content="Pizza margherita in teglia vista dall’alto">
+  <meta property="og:image" content="https://pizza-voglia.it/assets/img/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Una teglia di pizza ai broccoli di Novaglie sul tavolo di legno di Pizza Voglia">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://pizza-voglia.it/assets/img/og-image.jpg">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23f6efe3' stroke='%231d1915' stroke-width='2.5'/%3E%3Ccircle cx='20' cy='32' r='5.5' fill='%23c8341f'/%3E%3Ccircle cx='32' cy='32' r='5.5' fill='%233f7a3a'/%3E%3Ccircle cx='44' cy='32' r='5.5' fill='%23c98a3d'/%3E%3C/svg%3E">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Inter:wght@300..700&amp;display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+  <!-- Fonts and libraries are self-hosted: no visitor data goes to third parties. -->
+  <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/instrument-serif-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/vendor/lenis.css">
   <link rel="stylesheet" href="assets/css/style.css">
 
   <script>
@@ -44,10 +46,20 @@
     "@type": "Restaurant",
     "name": "Pizza Voglia",
     "alternateName": "Pizzavoglia",
-    "url": "https://pizza-voglia.it",
+    "url": "https://pizza-voglia.it/",
+    "logo": "https://pizza-voglia.it/assets/img/logo-pizza-voglia.png",
+    "image": [
+      "https://pizza-voglia.it/assets/img/og-image.jpg",
+      "https://pizza-voglia.it/assets/img/ig/teglia-broccoli-1200.webp",
+      "https://pizza-voglia.it/assets/img/ig/zucca-tagliere-1080.webp"
+    ],
     "telephone": "+39 366 220 5988",
+    "founder": { "@type": "Person", "name": "Denis Vecchi" },
     "description": "Pizza al taglio in teglia, a peso e sempre pronta in vetrina, e pizza alla pala. Teglie e vassoi per feste e buffet su prenotazione.",
-    "servesCuisine": "Pizza",
+    "servesCuisine": ["Pizza", "Pizza al taglio", "Focacce"],
+    "hasMenu": "https://pizza-voglia.it/#menu",
+    "priceRange": "€",
+    "currenciesAccepted": "EUR",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Via Valpantena 46",
@@ -63,7 +75,6 @@
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "17:30", "closes": "20:30" },
       { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday", "Sunday"], "opens": "17:00", "closes": "20:30" }
     ],
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "81", "bestRating": "5", "worstRating": "1" },
     "sameAs": [
       "https://www.instagram.com/pizzavoglia_denis/",
       "https://www.facebook.com/Pizzvoglia/"
@@ -71,9 +82,9 @@
   }
   </script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script defer src="assets/vendor/gsap.min.js"></script>
+  <script defer src="assets/vendor/ScrollTrigger.min.js"></script>
+  <script defer src="assets/vendor/lenis.min.js"></script>
   <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
@@ -322,7 +333,7 @@
           <span class="ln"><span class="ln__i" data-line>Dal 2002,</span></span>
           <span class="ln"><span class="ln__i" data-line><em>le mani in pasta.</em></span></span>
         </h2>
-        <p class="lead storia__lead" data-reveal>Pizza Voglia è la pizzeria di Denis a Quinto di Valpantena: un locale rinnovato, un impasto nuovo e tante proposte che cambiano spesso. Quattro capitoli per conoscerla.</p>
+        <p class="lead storia__lead" data-reveal>Pizza Voglia è la pizzeria di Denis Vecchi a Quinto di Valpantena: un locale rinnovato, un impasto nuovo e tante proposte che cambiano spesso. Quattro capitoli per conoscerla.</p>
       </header>
 
       <div class="hx">
@@ -332,12 +343,11 @@
               <div class="panel__meta"><span>01</span><span class="panel__of">/ 04</span><span class="panel__rule" aria-hidden="true"></span><span>Il pizzaiolo</span></div>
               <p class="panel__big" aria-hidden="true">2002</p>
               <div class="panel__copy">
-                <h3 class="panel__title"><span class="sr-only">2002 — </span>Denis inizia a <em>fare pizza.</em></h3>
-                <p>Da allora la pizza è il suo mestiere. Oggi la trovi qui, in Via Valpantena 46: un locale rinnovato, con tavolini dentro e fuori per mangiare sul posto.</p>
+                <h3 class="panel__title"><span class="sr-only">2002 — </span>La prima pizzeria <em>al taglio.</em></h3>
+                <p>Denis impasta da quando aveva 13 anni. Nel 2002 apre la sua prima pizzeria al taglio a Negrar, con la mamma e la sorella. Poi arriva a Quinto, in Via Valpantena 46: rifà il locale da capo e aggiunge i tavoli per mangiare sul posto e fare l’aperitivo.</p>
               </div>
-              <div class="panel__art" aria-hidden="true">
-                <img class="art art--tomato" data-hx-speed="1.4" data-speed=".6" src="assets/img/ing/tomato.webp" alt="" width="302" height="394" loading="lazy" decoding="async">
-                <img class="art art--sprig" data-hx-speed="-0.6" data-speed="-.3" src="assets/img/ing/basil-sprig.webp" alt="" width="385" height="366" loading="lazy" decoding="async">
+              <div class="panel__art">
+                <img class="art art--print art--print-denis" data-hx-speed=".6" data-speed=".2" src="assets/img/ig/denis-teglia-zucca-480.webp" alt="Denis Vecchi nel locale, con in mano una teglia di pizza alla zucca" width="480" height="640" loading="lazy" decoding="async">
                 <img class="art art--garlic" data-hx-speed="2.2" data-speed="1" src="assets/img/ing/garlic.webp" alt="" width="265" height="327" loading="lazy" decoding="async">
               </div>
             </li>
@@ -353,7 +363,7 @@
               </div>
               <div class="panel__copy">
                 <h3 class="panel__title"><span class="sr-only">75% — </span>L’idratazione del <em>nuovo impasto.</em></h3>
-                <p>Tanta acqua nell’impasto per una pizza leggera e croccante: la senti al primo morso, e non pesa.</p>
+                <p>Una pizza romana stirata in teglia, con tanta acqua nell’impasto e la farina di un mulino di Lugo, qui in Valpantena, che prepara una miscela apposta per Denis. Leggera e croccante: la senti al primo morso, e non pesa.</p>
               </div>
               <div class="panel__art" aria-hidden="true">
                 <img class="art art--mozz" data-hx-speed="1.2" data-speed=".5" src="assets/img/ing/mozzarella-torn.webp" alt="" width="376" height="366" loading="lazy" decoding="async">
@@ -372,8 +382,8 @@
                   <li><span class="formats__n">III.</span><span class="formats__t">Teglie e vassoi</span><span class="formats__d">per feste e buffet, su prenotazione</span></li>
                 </ol>
               </div>
-              <div class="panel__art" aria-hidden="true">
-                <img class="art art--teglia" data-hx-speed=".5" data-speed=".25" src="assets/img/teglia-top-900.webp" alt="" width="900" height="600" loading="lazy" decoding="async">
+              <div class="panel__art">
+                <img class="art art--print art--print-board" data-hx-speed=".5" data-speed=".2" src="assets/img/ig/zucca-tagliere-640.webp" srcset="assets/img/ig/zucca-tagliere-640.webp 640w, assets/img/ig/zucca-tagliere-1080.webp 1080w" sizes="(min-width: 1024px) 30vw, 64vw" alt="Un trancio di pizza al taglio con crema di zucca, pecorino, guanciale e noci, su un tagliere nel locale" width="640" height="486" fetchpriority="low" decoding="async">
                 <img class="art art--olive" data-hx-speed="2" data-speed=".9" src="assets/img/ing/olive.webp" alt="" width="253" height="285" loading="lazy" decoding="async">
               </div>
             </li>
@@ -383,10 +393,10 @@
               <p class="panel__big panel__big--words" aria-hidden="true">Del<br><em>territorio</em></p>
               <div class="panel__copy">
                 <h3 class="panel__title"><span class="sr-only">Del territorio — </span>Broccoli di Novaglie, <em>Monte Veronese.</em></h3>
-                <p>Tra le proposte speciali entrano i sapori della valle: broccoli di Novaglie, Monte Veronese, taralli e mozzarella. Chiedi in pizzeria cosa c’è oggi in vetrina.</p>
+                <p>Nelle teglie entrano i sapori di qui: i broccoli di Novaglie, il Monte Veronese stagionato, il tartufo della Lessinia, il radicchio macerato nell’Amarone. Chiedi in pizzeria cosa c’è oggi in vetrina.</p>
               </div>
-              <div class="panel__art" aria-hidden="true">
-                <img class="art art--slice" data-hx-speed=".7" data-speed=".3" src="assets/img/slice-1200.webp" srcset="assets/img/slice-600.webp 600w, assets/img/slice-1200.webp 1200w" sizes="(min-width: 1024px) 34vw, 70vw" alt="" width="1200" height="865" loading="lazy" decoding="async">
+              <div class="panel__art">
+                <img class="art art--print art--print-broc" data-hx-speed=".7" data-speed=".25" src="assets/img/ig/teglia-broccoli-640.webp" srcset="assets/img/ig/teglia-broccoli-640.webp 640w, assets/img/ig/teglia-broccoli-1200.webp 1200w" sizes="(min-width: 1024px) 26vw, 52vw" alt="Teglia ai broccoli di Novaglie con Monte Veronese, vista dall’alto" width="640" height="640" fetchpriority="low" decoding="async">
                 <img class="art art--broccoli" data-hx-speed="1.8" data-speed=".8" src="assets/img/ing/broccoli.webp" alt="" width="360" height="387" loading="lazy" decoding="async">
               </div>
             </li>
@@ -522,6 +532,7 @@
     </section>
 
     <!-- ============ N°03 — MENU ============ -->
+    <!-- Source: Denis's own "Listino prezzi" posted on Instagram (Dec 2025). Update here when it changes. -->
     <section class="menu" id="menu" aria-labelledby="menu-title">
       <div class="wrap">
         <header class="sec-head sec-head--split">
@@ -533,8 +544,8 @@
             </h2>
           </div>
           <div class="sec-head__aside">
-            <p class="lead" data-reveal>In vetrina la pizza al taglio, a peso e sempre pronta; poi i grandi classici e la speciale del territorio. Niente prezzi qui: passa in pizzeria o chiamaci.</p>
-            <p class="note" data-reveal><span class="note__mark" aria-hidden="true">✻</span><span><strong>Menu indicativo</strong> — le pizze cambiano spesso: chiedi in pizzeria le proposte del giorno.</span></p>
+            <p class="lead" data-reveal>In vetrina la pizza al taglio è sempre pronta: scegli il trancio e si paga a peso. Ecco il listino di Denis, con il prezzo al chilo di ogni famiglia di pizze.</p>
+            <p class="note" data-reveal><span class="note__mark" aria-hidden="true">✻</span><span><strong>Cosa c’è oggi?</strong> Alcune pizze sono stagionali o solo nel weekend, e in vetrina girano spesso le novità: chiedi in pizzeria. Fa fede il listino esposto nel locale.</span></p>
           </div>
         </header>
 
@@ -542,11 +553,16 @@
           <aside class="menu__index" aria-label="Categorie del menu">
             <p class="menu__index-title">Indice</p>
             <ol data-lenis-prevent-horizontal>
-              <li><a href="#m-vetrina" data-cat="m-vetrina"><span>01</span>In vetrina</a></li>
-              <li><a href="#m-classici" data-cat="m-classici"><span>02</span>I classici</a></li>
-              <li><a href="#m-speciale" data-cat="m-speciale"><span>03</span>La speciale</a></li>
-              <li><a href="#m-forno" data-cat="m-forno"><span>04</span>Dal forno</a></li>
-              <li><a href="#m-buffet" data-cat="m-buffet"><span>05</span>Aperitivi &amp; buffet</a></li>
+              <li><a href="#m-margherita" data-cat="m-margherita"><span>01</span>Margherita</a></li>
+              <li><a href="#m-classiche" data-cat="m-classiche"><span>02</span>Classiche</a></li>
+              <li><a href="#m-speciali" data-cat="m-speciali"><span>03</span>Speciali</a></li>
+              <li><a href="#m-speciale" data-cat="m-speciale"><span>04</span>Speciale del territorio</a></li>
+              <li><a href="#m-bianche" data-cat="m-bianche"><span>05</span>Bianche</a></li>
+              <li><a href="#m-fredde" data-cat="m-fredde"><span>06</span>Fredde</a></li>
+              <li><a href="#m-tartufo" data-cat="m-tartufo"><span>07</span>Tartufo</a></li>
+              <li><a href="#m-imbottite" data-cat="m-imbottite"><span>08</span>Imbottite</a></li>
+              <li><a href="#m-focacce" data-cat="m-focacce"><span>09</span>Focacce</a></li>
+              <li><a href="#m-buffet" data-cat="m-buffet"><span>10</span>Aperitivi &amp; buffet</a></li>
             </ol>
             <a class="btn btn--primary btn--sm" href="tel:+393662205988">
               <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.2 3.5h3.3l1.8 4.6-2.2 1.4a11.5 11.5 0 0 0 6.4 6.4l1.4-2.2 4.6 1.8v3.3a1.7 1.7 0 0 1-1.8 1.7A17 17 0 0 1 3.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg>
@@ -555,54 +571,80 @@
           </aside>
 
           <div class="menu__body">
-            <section class="cat" id="m-vetrina" aria-labelledby="m-vetrina-t">
+            <section class="cat" id="m-margherita" aria-labelledby="m-margherita-t">
               <header class="cat__head">
                 <span class="cat__n" aria-hidden="true">01</span>
-                <h3 class="cat__title" id="m-vetrina-t">In vetrina</h3>
-                <p class="cat__note">al taglio, a peso — sempre pronta</p>
+                <h3 class="cat__title" id="m-margherita-t">Margherita</h3>
+                <p class="cat__note">€ 16,00 al kg</p>
               </header>
-              <ul class="dishes">
-                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro, mozzarella, basilico</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Rossa all’origano</p><p class="dish__desc">pomodoro, origano, un filo d’olio</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Patate e rosmarino</p><p class="dish__desc">patate, rosmarino</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Verdure di stagione</p><p class="dish__desc">le verdure del momento</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Salame piccante</p><p class="dish__desc">pomodoro, mozzarella, salame piccante</p></li>
+              <ul class="dishes dishes--single">
+                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte</p></li>
               </ul>
             </section>
-
-            <section class="cat" id="m-classici" aria-labelledby="m-classici-t">
+            <section class="cat" id="m-classiche" aria-labelledby="m-classiche-t">
               <header class="cat__head">
                 <span class="cat__n" aria-hidden="true">02</span>
-                <h3 class="cat__title" id="m-classici-t">I classici</h3>
-                <p class="cat__note">al taglio, i gusti di sempre</p>
+                <h3 class="cat__title" id="m-classiche-t">Classiche</h3>
+                <p class="cat__note">€ 18,00 al kg</p>
               </header>
               <ul class="dishes">
-                <li class="dish" data-reveal><p class="dish__name">Marinara</p><p class="dish__desc">pomodoro, aglio, origano</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro, mozzarella, basilico</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Diavola</p><p class="dish__desc">pomodoro, mozzarella, salame piccante</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Capricciosa</p><p class="dish__desc">pomodoro, mozzarella, prosciutto cotto, funghi, carciofi, olive</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Quattro formaggi</p><p class="dish__desc">mozzarella e formaggi misti</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Prosciutto e funghi</p><p class="dish__desc">pomodoro, mozzarella, prosciutto cotto, funghi</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Bufala</p><p class="dish__desc">pomodoro, mozzarella di bufala, basilico</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Ortolana <span class="tag tag--veg">vegetariana</span></p><p class="dish__desc">pomodoro, mozzarella, verdure</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Wurstel</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, wurstel del Trentino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Salamino</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, salamino piccante Levoni</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Parmigiana</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, melanzane, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Tonno cipolla</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, tonno, cipolla, pomodoro a fette</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prosciutto funghi</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, prosciutto cotto, funghi freschi</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Capricciosa</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, prosciutto cotto, funghi freschi, carciofi, peperoni, wurstel del Trentino, salamino piccante Levoni, olive taggiasche</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodori <span class="tag tag--season">estiva</span></p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pomodoro a fette, origano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Champignon</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, funghi freschi, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Vegetariana <span class="tag tag--veg">vegetariana</span></p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, verdure di stagione, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Ricotta e spinaci</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, ricotta, spinaci, grana padano</p></li>
               </ul>
             </section>
-
+            <section class="cat" id="m-speciali" aria-labelledby="m-speciali-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">03</span>
+                <h3 class="cat__title" id="m-speciali-t">Speciali</h3>
+                <p class="cat__note">€ 19,00 al kg</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Formaggi</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, ricotta, Monte Veronese stagionato, gorgonzola, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pancetta e cipolla caramellata</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pancetta arrotolata pepata, cipolla caramellata</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Misto funghi e pancetta stufata</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, misto funghi, pancetta stufata, grana padano a scaglie, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Radicchio e gorgonzola <span class="tag tag--season">invernale</span></p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, radicchio, gorgonzola, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pancetta e scamorza</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pancetta stufata, scamorza affumicata</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodorini e mozzarelline</p><p class="dish__desc">pomodoro San Marzano, pomodorini, mozzarelline di bufala, origano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Speck e Monte Veronese</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, speck del Trentino, Monte Veronese stagionato</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Patate e speck</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, patate, speck del Trentino, rosmarino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Gorgonzola e noci</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, gorgonzola, noci</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Carbonara</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pancetta al forno, grana padano, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Frutti di mare <span class="tag tag--season">solo nel weekend</span></p><p class="dish__desc">pomodoro San Marzano, salsa rosa, frutti di mare, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Speck, funghi e Philadelphia</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, speck del Trentino, funghi freschi, Philadelphia</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Stracciatella</p><p class="dish__desc">pomodoro San Marzano, stracciatella, emulsione di basilico, pomodorini confit, fiocco di pomodoro</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Patate, wurstel e salsiccia</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, patate, wurstel del Trentino, salsiccia</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prezzemolo</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, prezzemolo, aglio</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Crema di burrata</p><p class="dish__desc">pomodoro San Marzano, crema di burrata, emulsione di basilico, pomodorini confit</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Cipolla, salamino e gorgonzola</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, cipolla, salamino piccante Levoni, gorgonzola</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Scamorza, peperoni e salsiccia</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, scamorza affumicata, peperoni, salsiccia, grana padano a scaglie</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pancetta e pomodorini</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pancetta stufata, pomodorini confit, emulsione di basilico, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pancetta, porcini e gorgonzola</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte, pancetta arrotolata pepata, porcini, gorgonzola, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Acciughe</p><p class="dish__desc">pomodoro San Marzano, acciughe, olive taggiasche, capperi, origano, pomodorini confit</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Sfincione</p><p class="dish__desc">soffritto con pomodori pelati San Marzano, caciocavallo, pecorino, pangrattato, acciughe, origano</p></li>
+              </ul>
+            </section>
             <article class="cat spread" id="m-speciale" aria-labelledby="m-speciale-t">
               <div class="spread__grid">
                 <div class="spread__page spread__page--img">
                   <figure class="spread__fig">
                     <div class="spread__mask" data-mask>
-                      <img src="assets/img/slice-1200.webp" srcset="assets/img/slice-600.webp 600w, assets/img/slice-1200.webp 1200w" sizes="(min-width: 1100px) 36vw, 90vw" width="1200" height="865" alt="Trancio di pizza al taglio con broccoli, scaglie di formaggio e taralli" loading="lazy" decoding="async">
+                      <img class="is-photo" src="assets/img/ig/teglia-broccoli-1200.webp" srcset="assets/img/ig/teglia-broccoli-640.webp 640w, assets/img/ig/teglia-broccoli-1200.webp 1200w" sizes="(min-width: 1100px) 36vw, 90vw" width="1200" height="1200" alt="Teglia di pizza con broccoli di Novaglie, taralli, Monte Veronese e mozzarella, vista dall’alto" loading="lazy" decoding="async">
                     </div>
-                    <figcaption><span>Fig. 1</span> La Valpantena, al taglio.</figcaption>
+                    <figcaption><span>Fig. 1</span> La teglia ai broccoli di Novaglie, da Pizza Voglia.</figcaption>
                   </figure>
                   <img class="spread__ing spread__ing--a" data-speed=".9" src="assets/img/ing/broccoli.webp" alt="" width="360" height="387" loading="lazy" decoding="async" aria-hidden="true">
-                  <img class="spread__ing spread__ing--b" data-speed="-.5" src="assets/img/ing/basil-leaf.webp" alt="" width="310" height="408" loading="lazy" decoding="async" aria-hidden="true">
                 </div>
                 <div class="spread__page spread__page--text">
                   <header class="cat__head cat__head--spread">
-                    <span class="cat__n" aria-hidden="true">03</span>
+                    <span class="cat__n" aria-hidden="true">04</span>
                     <p class="cat__note">La speciale del territorio</p>
                   </header>
                   <h3 class="spread__title" id="m-speciale-t"><em>Valpantena</em></h3>
@@ -615,22 +657,83 @@
                 </div>
               </div>
             </article>
-
-            <section class="cat" id="m-forno" aria-labelledby="m-forno-t">
-              <header class="cat__head">
-                <span class="cat__n" aria-hidden="true">04</span>
-                <h3 class="cat__title" id="m-forno-t">Dal forno</h3>
-                <p class="cat__note">oltre la pizza</p>
-              </header>
-              <ul class="dishes">
-                <li class="dish" data-reveal><p class="dish__name">Calzoni</p><p class="dish__desc">ripieni, chiusi a mezzaluna e cotti in forno</p></li>
-                <li class="dish" data-reveal><p class="dish__name">Focacce</p><p class="dish__desc">dorate, da gustare da sole o in compagnia</p></li>
-              </ul>
-            </section>
-
-            <section class="cat" id="m-buffet" aria-labelledby="m-buffet-t">
+            <section class="cat" id="m-bianche" aria-labelledby="m-bianche-t">
               <header class="cat__head">
                 <span class="cat__n" aria-hidden="true">05</span>
+                <h3 class="cat__title" id="m-bianche-t">Bianche</h3>
+                <p class="cat__note">€ 19,00 al kg</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Porcini e panna</p><p class="dish__desc">mascarpone, mozzarella fior di latte, panna, grana padano, prezzemolo</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Misto funghi e speck</p><p class="dish__desc">Philadelphia, misto funghi, speck del Trentino a cubetti, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Melanzane, pomodorini confit e Monte Veronese</p><p class="dish__desc">mozzarella fior di latte, melanzane, pomodorini confit, Monte Veronese stagionato</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Funghi, olive e pomodorini confit</p><p class="dish__desc">mozzarella fior di latte, olive taggiasche, funghi freschi, pomodorini confit</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Zucchine, cipolla e salsiccia</p><p class="dish__desc">mozzarella fior di latte, zucchine, cipolla, salsiccia</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodoro, ricotta e pistacchio</p><p class="dish__desc">mozzarella fior di latte, pomodoro a fette, ricotta, granella di pistacchio</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Patate, prosciutto, cipolla e gorgonzola</p><p class="dish__desc">mozzarella fior di latte, prosciutto cotto, patate, cipolla caramellata, gorgonzola</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Asparagi <span class="tag tag--season">stagionale</span></p><p class="dish__desc">mozzarella fior di latte, asparagi, grana padano, pepe, olio EVO</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Porcini, salsiccia e zafferano</p><p class="dish__desc">crema di zafferano, mozzarella fior di latte, porcini, salsiccia, rosmarino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prosciutto cotto, zucchine e Monte Veronese</p><p class="dish__desc">mozzarella fior di latte, prosciutto cotto, zucchine, Monte Veronese stagionato</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prosciutto cotto e porcini</p><p class="dish__desc">mozzarella fior di latte, prosciutto cotto, crema di noci, porcini, gocce di peperoncino, rosmarino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Guanciale e friarielli</p><p class="dish__desc">mozzarella fior di latte, guanciale, stracciatella, friarielli, crema di ’nduja, taralli, pepe al limone</p></li>
+              </ul>
+            </section>
+            <section class="cat" id="m-fredde" aria-labelledby="m-fredde-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">06</span>
+                <h3 class="cat__title" id="m-fredde-t">Fredde</h3>
+                <p class="cat__note">€ 19,00 al kg</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Gamberetti</p><p class="dish__desc">pomodoro San Marzano, salsa rosa, insalata, gamberetti, pomodorini datterino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Tonno</p><p class="dish__desc">pomodoro San Marzano, salsa tonnata, insalata, tonno, capperi, pomodorini datterino</p></li>
+              </ul>
+            </section>
+            <section class="cat" id="m-tartufo" aria-labelledby="m-tartufo-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">07</span>
+                <h3 class="cat__title" id="m-tartufo-t">Tartufo</h3>
+                <p class="cat__note">€ 21,00 al kg</p>
+              </header>
+              <ul class="dishes dishes--single">
+                <li class="dish" data-reveal><p class="dish__name">Tartufo</p><p class="dish__desc">pomodoro San Marzano, mascarpone, tartufo della Lessinia</p></li>
+              </ul>
+            </section>
+            <section class="cat" id="m-imbottite" aria-labelledby="m-imbottite-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">08</span>
+                <h3 class="cat__title" id="m-imbottite-t">Imbottite</h3>
+                <p class="cat__note">€ 14,00 al kg</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Spinaci e speck</p><p class="dish__desc">spinaci, panna, speck del Trentino</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Speck e burrata</p><p class="dish__desc">speck del Trentino, burrata</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Prosciutto cotto, zucchine e ricotta</p><p class="dish__desc">mozzarella fior di latte, prosciutto cotto, zucchine, ricotta</p></li>
+              </ul>
+            </section>
+            <section class="cat" id="m-focacce" aria-labelledby="m-focacce-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">09</span>
+                <h3 class="cat__title" id="m-focacce-t">Focacce</h3>
+                <p class="cat__note">€ 19,00 al kg</p>
+              </header>
+              <ul class="dishes">
+                <li class="dish" data-reveal><p class="dish__name">Guanciale</p><p class="dish__desc">mozzarella fior di latte, guanciale, pecorino, pomodorini, peperoncino fresco, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Crescenza</p><p class="dish__desc">crescenza, olio EVO, sale</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Salvia</p><p class="dish__desc">mozzarella fior di latte, salvia impanata e gratinata</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodori gratinati</p><p class="dish__desc">mozzarella fior di latte, pomodori gratinati</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Zucchine gratinate</p><p class="dish__desc">mozzarella fior di latte, zucchine gratinate</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Radicchio e Amarone</p><p class="dish__desc">Monte Veronese stagionato, radicchio macerato nell’Amarone</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodorini e basilico</p><p class="dish__desc">mozzarella fior di latte, pomodorini, basilico</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Pomodorini e salsiccia</p><p class="dish__desc">mozzarella fior di latte, pomodorini, scamorza, salsiccia, basilico</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Patate e gorgonzola</p><p class="dish__desc">mozzarella fior di latte, patate, gorgonzola, salsiccia, grana padano</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Fiori di zucchina <span class="tag tag--season">estiva</span></p><p class="dish__desc">mozzarella fior di latte, fiori di zucchina impanati, grana padano, pepe</p></li>
+                <li class="dish" data-reveal><p class="dish__name">Tonno</p><p class="dish__desc">mozzarella fior di latte, tonno, cipolla, salamino piccante, gorgonzola, pomodorini, grana padano</p></li>
+              </ul>
+            </section>
+            <section class="cat" id="m-buffet" aria-labelledby="m-buffet-t">
+              <header class="cat__head">
+                <span class="cat__n" aria-hidden="true">10</span>
                 <h3 class="cat__title" id="m-buffet-t">Aperitivi &amp; buffet</h3>
                 <p class="cat__note">su prenotazione</p>
               </header>
@@ -646,6 +749,59 @@
       </div>
     </section>
 
+    <!-- ============ DAL NOSTRO INSTAGRAM (real photos, @pizzavoglia_denis) ============ -->
+    <section class="ig" id="foto" aria-labelledby="ig-title">
+      <div class="wrap">
+        <header class="sec-head sec-head--split">
+          <div>
+            <p class="kicker" data-reveal><span class="kicker__rule" aria-hidden="true"></span><span>Dal nostro Instagram</span></p>
+            <h2 class="display" id="ig-title">
+              <span class="ln"><span class="ln__i" data-line>Appena uscite</span></span>
+              <span class="ln"><span class="ln__i" data-line><em>dal forno.</em></span></span>
+            </h2>
+          </div>
+          <div class="sec-head__aside">
+            <p class="lead" data-reveal>Le teglie di Denis, il locale, le novità di stagione: le foto vere, così come escono dalla pizzeria.</p>
+            <a class="link-arrow" href="https://www.instagram.com/pizzavoglia_denis/" target="_blank" rel="noopener" data-reveal>Segui @pizzavoglia_denis
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
+              <span class="sr-only"> su Instagram (si apre in una nuova scheda)</span>
+            </a>
+          </div>
+        </header>
+
+        <div class="ig__grid">
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/zucca-tagliere-640.webp" srcset="assets/img/ig/zucca-tagliere-640.webp 640w, assets/img/ig/zucca-tagliere-1080.webp 1080w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="640" height="486" alt="Trancio di pizza con crema di zucca, pecorino, guanciale e noci su un tagliere, accanto a una zucca e a una forma di formaggio" loading="lazy" decoding="async">
+            <figcaption>Crema di zucca, pecorino stagionato, guanciale croccante e noci: l’autunno in forno.</figcaption>
+          </figure>
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/denis-teglia-fredda-480.webp" srcset="assets/img/ig/denis-teglia-fredda-480.webp 480w, assets/img/ig/denis-teglia-fredda-720.webp 720w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="480" height="640" alt="Denis mostra una teglia di pizza fredda con insalata, pomodorini e gamberetti" loading="lazy" decoding="async">
+            <figcaption>Con il caldo arrivano le pizze fredde.</figcaption>
+          </figure>
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/teglia-broccoli-640.webp" srcset="assets/img/ig/teglia-broccoli-640.webp 640w, assets/img/ig/teglia-broccoli-1200.webp 1200w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="640" height="640" alt="Teglia ai broccoli di Novaglie, taralli, Monte Veronese e mozzarella, vista dall’alto" loading="lazy" decoding="async">
+            <figcaption>Broccoli di Novaglie, taralli, Monte Veronese e mozzarella.</figcaption>
+          </figure>
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/ingresso-640.webp" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="640" height="966" alt="L’ingresso di Pizza Voglia, con il pavimento a scacchi color crema e terracotta" loading="lazy" decoding="async">
+            <figcaption>L’ingresso, in Via Valpantena 46.</figcaption>
+          </figure>
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/teglia-zucca-640.webp" srcset="assets/img/ig/teglia-zucca-640.webp 640w, assets/img/ig/teglia-zucca-1080.webp 1080w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="640" height="853" alt="Teglia di pizza alla zucca già divisa in tranci, vista dall’alto" loading="lazy" decoding="async">
+            <figcaption>Una teglia alla zucca, già divisa in tranci.</figcaption>
+          </figure>
+          <figure class="ig__item" data-reveal>
+            <img src="assets/img/ig/teglia-gamberetti-640.webp" srcset="assets/img/ig/teglia-gamberetti-640.webp 640w, assets/img/ig/teglia-gamberetti-1080.webp 1080w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="640" height="853" alt="Pizza fredda in teglia con insalata, pomodorini e gamberetti, vista dall’alto" loading="lazy" decoding="async">
+            <figcaption>Insalata, pomodorini e gamberetti, in teglia.</figcaption>
+          </figure>
+          <figure class="ig__item ig__item--wide" data-reveal>
+            <img src="assets/img/ig/sala-teglia-broccoli-800.webp" srcset="assets/img/ig/sala-teglia-broccoli-800.webp 800w, assets/img/ig/sala-teglia-broccoli-1440.webp 1440w" sizes="(min-width: 1000px) 30vw, (min-width: 600px) 45vw, 92vw" width="800" height="444" alt="Una teglia intera appoggiata su un tavolo di legno nella sala di Pizza Voglia" loading="lazy" decoding="async">
+            <figcaption>In sala, tra il legno e le teglie.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ N°04 — RECENSIONI ============ -->
     <section class="reviews" id="recensioni" aria-labelledby="reviews-title">
       <div class="wrap">
@@ -655,6 +811,7 @@
             <span class="ln"><span class="ln__i" data-line>Il passaparola,</span></span>
             <span class="ln"><span class="ln__i" data-line><em>in numeri.</em></span></span>
           </h2>
+          <p class="lead reviews__press" data-reveal>E non solo online: a dicembre 2025, durante il concorso «Pizzeria dell’anno» de L’Arena, il giornale ha dedicato a Denis e a Pizzavoglia un’intera pagina.</p>
         </header>
 
         <div class="reviews__grid">
@@ -798,7 +955,7 @@
                 <tr data-day="0"><th scope="row">Domenica</th><td><span class="hours__slot">17:00–20:30</span></td></tr>
               </tbody>
             </table>
-            <p class="fine" data-reveal>Orari da Google: nei giorni festivi possono variare, nel dubbio chiamaci.</p>
+            <p class="fine" data-reveal>Orario invernale. D’estate la sera chiudiamo alle 21:00. Nei giorni festivi gli orari possono variare: nel dubbio chiamaci.</p>
 
             <div class="visit__phone" data-reveal>
               <span class="mini-title">Per ordinare</span>
@@ -819,6 +976,7 @@
             <ul class="visit__extras" data-reveal>
               <li>Tavolini dentro e fuori, per mangiare sul posto.</li>
               <li>Partner di Too Good To Go, contro lo spreco.</li>
+              <li>Raccolta punti per i clienti affezionati: chiedi in pizzeria.</li>
             </ul>
 
             <ul class="socials socials--row" data-reveal>
@@ -832,8 +990,16 @@
           </div>
 
           <figure class="map" data-reveal>
-            <div class="map__frame">
-              <iframe src="https://www.google.com/maps?q=Pizzavoglia,+Via+Valpantena+46,+37142+Verona&amp;output=embed" title="Mappa: Pizza Voglia, Via Valpantena 46, Quinto di Valpantena (VR)" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+            <div class="map__frame" data-map data-map-src="https://www.google.com/maps?q=Pizzavoglia,+Via+Valpantena+46,+37142+Verona&amp;output=embed">
+              <img class="map__poster" src="assets/img/ig/ingresso-640.webp" width="640" height="966" alt="" loading="lazy" decoding="async">
+              <div class="map__consent">
+                <p class="map__consent-t">Via Valpantena 46, Quinto</p>
+                <button class="btn btn--cream btn--sm" type="button" data-map-load>
+                  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                  Mostra la mappa
+                </button>
+                <p class="map__consent-note">La mappa viene caricata da Google Maps solo se la apri. <a href="privacy.html">Privacy</a></p>
+              </div>
             </div>
             <figcaption class="map__cap">
               <span>Quinto di Valpantena · Verona</span>
@@ -865,7 +1031,7 @@
         </div>
         <div class="footer__col">
           <p class="mini-title">Orari</p>
-          <p>Lun–Ven 11:00–13:30 · 17:30–20:30<br>Sab–Dom 17:00–20:30</p>
+          <p>Lun–Ven 11:00–13:30 · 17:30–20:30<br>Sab–Dom 17:00–20:30<br><span class="footer__fine">D’estate la sera fino alle 21:00</span></p>
         </div>
         <div class="footer__col">
           <p class="mini-title">Seguici</p>
@@ -878,7 +1044,7 @@
       </div>
 
       <div class="footer__base">
-        <p>© <span data-year>2026</span> Pizza Voglia · Pizzeria a Quinto di Valpantena, Verona</p>
+        <p>© <span data-year>2026</span> Pizza Voglia di Denis Vecchi · Pizzeria a Quinto di Valpantena, Verona · <a href="privacy.html">Privacy</a></p>
         <a class="footer__top" href="#top">Torna su <span aria-hidden="true">↑</span></a>
       </div>
     </div>
