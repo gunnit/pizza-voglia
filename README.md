@@ -35,3 +35,10 @@ JS errors, failed requests, horizontal overflow, sideways-scrolled containers, b
 
 ## Assets
 `assets/img/` — AI-generated food imagery (Higgsfield, GPT Image 2.5), transparent WebP.
+
+## Content-Security-Policy
+`index.html` sets a CSP in a `<meta>` tag that allows the one inline `<script>` in `<head>` by its sha256 hash. If you edit that script, recompute the hash:
+
+```bash
+python3 -c "import re,hashlib,base64;s=open('index.html').read();print(base64.b64encode(hashlib.sha256(re.search(r'<script>(.*?)</script>',s,re.S).group(1).encode()).digest()).decode())"
+```

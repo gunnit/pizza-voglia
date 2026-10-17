@@ -983,7 +983,9 @@ button { font: inherit; }
 }
 
 /* Pre-intro hidden state (JS only; failsafe in <head> reveals it anyway) */
-.js:not(.is-ready) [data-intro] { opacity: 0; }
+/* Only the decorative layers wait for the intro: text, buttons and status paint at once. */
+.js:not(.is-ready) [data-intro="pizza"],
+.js:not(.is-ready) [data-intro="ing"] { opacity: 0; }
 .is-static [data-intro] { transition: opacity 1.1s var(--expo); }
 [tabindex="-1"]:focus { outline: none; }
 
@@ -1935,6 +1937,89 @@ button { font: inherit; }
 
 .footer__fine { color: rgba(246, 239, 227, .7); font-size: .85rem; }
 .footer__base a { color: var(--paper); }
+
+/* ==========================================================================
+   AUDIT FIXES (2026-10-17): accessibility, mobile UX, polish
+   ========================================================================== */
+:root { --muted: #5f5448; }
+
+/* Contrast: small red labels use the darker tomato; seasonal tags readable */
+.kicker__n, .panel__meta > span:first-child, .formats__n, .cat__n,
+.spread__fig figcaption span, .menu__index ol a span, .topics__n { color: var(--tomato-d); }
+.panel__of { opacity: 1; }
+.tag { font-size: .72rem; }
+.tag--season { color: #7d5216; box-shadow: inset 0 0 0 1px rgba(125, 82, 22, .55); }
+.tag--veg { color: #356b31; }
+@media (max-width: 959.98px) {
+  .buffet { background: radial-gradient(80% 80% at 0% 100%, rgba(80, 10, 0, .22), rgba(80, 10, 0, 0) 70%), #b32d19; }
+}
+
+/* Focus always visible */
+.overlay__links a:focus-visible { outline-offset: -4px; }
+.menu__index ol { padding: 4px; margin: -4px; }
+.call-fab:focus-visible { transform: none; }
+@media (max-width: 959.98px) { html { scroll-padding-bottom: 80px; } }
+
+/* Touch targets (44px) */
+.footer__col a, .footer .socials a { display: inline-flex; align-items: center; min-height: 44px; }
+.menu__index ol a { min-height: 44px; }
+.nav__links a { padding-block: 1rem; }
+
+/* Narrow screens: buttons wrap instead of being clipped */
+@media (max-width: 359.98px) {
+  .btn { white-space: normal; max-width: 100%; text-align: center; }
+}
+.spread__title { overflow-wrap: anywhere; }
+
+/* Pause switch for continuous animations */
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--hair-light);
+  border-radius: 999px;
+  background: none;
+  color: var(--paper);
+  font: 500 .82rem/1 var(--sans);
+  cursor: pointer;
+}
+.motion-toggle:hover { border-color: var(--paper); }
+.motion-paused .teglia__float,
+.motion-paused .teglia__pulse,
+.motion-paused .ing img,
+.motion-paused .hero__beam--core,
+.motion-paused .hero__cue i::after { animation-play-state: paused; }
+.footer__note { color: rgba(246, 239, 227, .6); font-size: .78rem; }
+
+/* Mobile hero: open/closed status under the buttons (desktop shows it in the aside) */
+.status--hero-m { margin-top: 1rem; }
+@media (min-width: 960px) and (min-aspect-ratio: 5/4) and (min-height: 560px) {
+  .status--hero-m { display: none; }
+}
+
+/* Menu index: price per kg always in view */
+.chip__price { margin-left: .35rem; color: var(--muted); font: 500 .72rem/1 var(--sans); letter-spacing: .02em; white-space: nowrap; }
+.menu__index ol a.is-active .chip__price { color: inherit; }
+
+/* Reviews: date/source line and write-review link */
+.score__date { max-width: 32ch; margin: .2rem 0 .6rem; color: var(--muted); font-size: .82rem; line-height: 1.45; }
+.score__write { margin-left: 1.2rem; }
+@media (min-width: 960px) { .stars { margin-top: 2.2rem; } }
+
+/* Gallery: two columns on phones */
+@media (max-width: 599.98px) {
+  .ig__grid { columns: 2; column-gap: 12px; }
+  .ig__item { margin-bottom: 16px; }
+  .ig__item figcaption { font-size: .92rem; }
+}
+
+/* Spread caption label on one line; map caption never under the sticky map */
+.spread__fig figcaption span { white-space: nowrap; }
+@media (min-width: 1000px) {
+  .map__frame { position: relative; top: auto; }
+  .map { position: sticky; top: calc(var(--nav-h) + 2rem); align-self: start; }
+}
 
 /* ==========================================================================
    FOOTER

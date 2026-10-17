@@ -200,5 +200,8 @@ if __name__ == "__main__":
         for c in range(3):
             box = (int(MARGIN + c * cw) - (MARGIN if c == 0 else 0), int(MARGIN + r * ch) - (MARGIN if r == 0 else 0),
                    int(MARGIN + (c + 1) * cw) + (MARGIN if c == 2 else 0), int(MARGIN + (r + 1) * ch) + (MARGIN if r == 1 else 0))
-            save(top.crop(box), OUT / f"teglia/slice-{r}-{c}.webp", 640, 84)
-    save(build_crumb(), OUT / "crumb-side.webp", None, 86)
+            sl = top.crop(box)
+            save(sl, OUT / f"teglia/slice-{r}-{c}.webp", 640, 84)
+            save(sl, OUT / f"teglia/slice-{r}-{c}-360.webp", 360, 80)   # phones (srcset)
+    crumb = build_crumb().resize((640, 94), Image.LANCZOS)               # shown 11-24 px tall
+    save(crumb, OUT / "crumb-side.webp", None, 82)

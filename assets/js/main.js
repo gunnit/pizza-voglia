@@ -24,7 +24,28 @@ const FINE = media('(hover: hover) and (pointer: fine)').matches;
 
 if (window.__pvFailsafe) clearTimeout(window.__pvFailsafe);
 
-const state = { lenis: null, heroActive: true };
+const state = { lenis: null, heroActive: true, paused: false, dust: null };
+
+/* Scroll-in effects only arm after the visitor's first wheel / touch / key / click.
+   Until then everything stays visible: crawlers that render without scrolling,
+   screen readers and keyboard users always get the full page. */
+const armCallbacks = [];
+let armed = false;
+function onFirstInteraction(cb) {
+  if (armed) { cb(); return; }
+  armCallbacks.push(cb);
+}
+function arm() {
+  if (armed) return;
+  armed = true;
+  ARM_EVENTS.forEach((t) => window.removeEventListener(t, arm, { passive: true }));
+  armCallbacks.splice(0).forEach((cb) => { try { cb(); } catch (err) { console.warn('[Pizza Voglia] arm', err); } });
+}
+// Only real user intent arms them: a programmatic scroll on load (hash, scroll restoration) must not.
+const ARM_EVENTS = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+ARM_EVENTS.forEach((t) => window.addEventListener(t, arm, { passive: true }));
+/** Elements still below the fold right now (the only ones worth animating in). */
+const belowFold = (els, k = 0.92) => els.filter((el) => el.getBoundingClientRect().top > window.innerHeight * k);
 
 function safe(label, fn) {
   try {
@@ -132,7 +153,16 @@ function initScrollUI() {
     const max = Math.max(1, root.scrollHeight - window.innerHeight);
     if (bar) bar.style.transform = `scaleX(${clamp(y / max, 0, 1).toFixed(4)})`;
     if (nav) nav.classList.toggle('is-scrolled', y > 8);
-    if (fab) fab.classList.toggle('is-visible', y > window.innerHeight * 0.55);
+    if (fab) {
+      // Shown after the hero, hidden again over the dark footer (which has its own phone link).
+      const footer = $('.footer');
+      const overFooter = footer && footer.getBoundingClientRect().top < window.innerHeight - 40;
+      const show = y > window.innerHeight * 0.55 && !overFooter;
+      fab.classList.toggle('is-visible', show);
+      // Never focusable while it is off-screen.
+      if (show) fab.removeAttribute('tabindex'); else fab.setAttribute('tabindex', '-1');
+      fab.toggleAttribute('aria-hidden', !show);
+    }
   };
   const request = () => {
     if (!queued) {
@@ -165,7 +195,7 @@ function initMenu() {
     open = value;
     clearTimeout(hideTimer);
     btn.setAttribute('aria-expanded', String(open));
-    if (label) label.textContent = open ? 'Chiudi' : 'Menu';
+    if (label) label.textContent = open ? 'Chiudi' : 'Indice';
     root.classList.toggle('menu-open', open);
     background.forEach((el) => { el.inert = open; });
 
@@ -471,14 +501,14 @@ function observeHero(dust) {
     state.heroActive = entry.isIntersecting;
     root.classList.toggle('hero-off', !entry.isIntersecting);
     if (!dust) return;
-    if (entry.isIntersecting && !doc.hidden) dust.start();
+    if (entry.isIntersecting && !doc.hidden && !state.paused) dust.start();
     else dust.stop();
   }).observe(hero);
 
   doc.addEventListener('visibilitychange', () => {
     if (!dust) return;
     if (doc.hidden) dust.stop();
-    else if (state.heroActive) dust.start();
+    else if (state.heroActive && !state.paused) dust.start();
   });
 }
 
@@ -486,7 +516,8 @@ function observeHero(dust) {
    Lenis smooth scroll, driven by the GSAP ticker
    -------------------------------------------------------------------------- */
 function initLenis() {
-  if (!LenisCtor) return null;
+  // Touch scrolling is already smooth: no Lenis there, so the ticker can rest.
+  if (!LenisCtor || !FINE) return null;
   const lenis = new LenisCtor({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1 });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -520,8 +551,6 @@ async function heroIntro() {
     );
   });
   tl.fromTo('.teglia__under', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, ease: 'power1.out' }, 1.35);
-  tl.fromTo('.w--pizza .w__i', { yPercent: 112, autoAlpha: 1 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0.22);
-  tl.fromTo('.w--voglia .w__i', { yPercent: 112, autoAlpha: 1 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0.4);
 
   const nearBox = $('.near');
   ings.forEach((el, i) => {
@@ -540,16 +569,13 @@ async function heroIntro() {
     );
   });
 
-  tl.fromTo('.nav', { autoAlpha: 0, y: -18 }, { autoAlpha: 1, y: 0, duration: 1.4 }, 0.5);
-  tl.fromTo('.hero__tagline .ln__i', { yPercent: 118, autoAlpha: 1 }, { yPercent: 0, autoAlpha: 1, duration: 1.4, stagger: 0.09 }, 0.75);
-  tl.fromTo('.hero [data-intro="fade"]', { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: 1.3, stagger: 0.06 }, 0.95);
 
   // All start states are now inline: safe to lift the CSS pre-hide.
   root.classList.add('is-ready');
 
+  // Text is already painted; only the decorative layers wait (briefly) for the slice images.
   const decoded = Promise.all($$('.slice__top').map((img) => (img.decode ? img.decode().catch(() => {}) : null)));
-  const fonts = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
-  await Promise.race([Promise.all([decoded, fonts]), sleep(1400)]);
+  await Promise.race([decoded, sleep(700)]);
   tl.play();
 }
 
@@ -585,7 +611,7 @@ function heroScroll(dust) {
   });
 
   // Copy leaves first, so nothing ever travels across it.
-  tl.to(['.hero__top', '.hero__aside', '.hero__bottom', '.hero__cue'], { y: -50, autoAlpha: 0, duration: 0.16, ease: 'power1.in' }, 0);
+  tl.to(['.hero__top', '.hero__aside', '.hero__bottom', '.hero__cue'], { y: -50, opacity: 0, duration: 0.16, ease: 'power1.in' }, 0);
   // The teglia recedes steadily for the whole sequence…
   tl.to('.teglia', { scale: 0.62, yPercent: -12, rotation: -5, duration: 1, ease: 'power1.inOut' }, 0);
   tl.to('.teglia__shade', { autoAlpha: 0.7, duration: 0.6, ease: 'power1.out' }, 0);
@@ -691,7 +717,7 @@ function initDepthParallax() {
   }
 
   gsap.ticker.add((time, deltaMs) => {
-    if (!state.heroActive) return;
+    if (!state.heroActive || state.paused) return;
     if (!FINE && !gyro) {
       tx = Math.sin(time * 0.33) * 0.5;
       ty = Math.cos(time * 0.26) * 0.35;
@@ -800,13 +826,16 @@ function initStoria() {
     });
     $$('.panel').forEach((panel) => {
       const targets = [$('.panel__big', panel), $('.panel__copy', panel)].filter(Boolean);
-      gsap.fromTo(targets, { autoAlpha: 0, y: 48 }, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 1.3,
-        ease: 'expo.out',
-        stagger: 0.12,
-        scrollTrigger: { trigger: panel, start: 'top 82%', once: true },
+      onFirstInteraction(() => {
+        if (panel.getBoundingClientRect().top < window.innerHeight * 0.82) return;
+        gsap.fromTo(targets, { opacity: 0, y: 48 }, {
+          opacity: 1,
+          y: 0,
+          duration: 1.3,
+          ease: 'expo.out',
+          stagger: 0.12,
+          scrollTrigger: { trigger: panel, start: 'top 82%', once: true },
+        });
       });
     });
     const p2 = $('.panel--2');
@@ -818,21 +847,31 @@ function initStoria() {
    Editorial reveals + generic vertical parallax
    -------------------------------------------------------------------------- */
 function initReveals() {
-  $$('.display, .footer__sign').forEach((heading) => {
-    const lines = $$('[data-line]', heading);
-    if (!lines.length) return;
-    gsap.fromTo(lines, { yPercent: 118 }, {
-      yPercent: 0,
-      duration: 1.5,
-      ease: 'expo.out',
-      stagger: 0.12,
-      scrollTrigger: { trigger: heading, start: 'top 88%', once: true },
+  onFirstInteraction(() => {
+    belowFold($$('.display, .footer__sign'), 0.88).forEach((heading) => {
+      const lines = $$('[data-line]', heading);
+      if (!lines.length) return;
+      gsap.fromTo(lines, { yPercent: 118 }, {
+        yPercent: 0,
+        duration: 1.5,
+        ease: 'expo.out',
+        stagger: 0.12,
+        scrollTrigger: { trigger: heading, start: 'top 88%', once: true },
+      });
     });
   });
 
   const reveals = $$('[data-reveal]');
-  gsap.set(reveals, { autoAlpha: 0, y: 34 });
-  ScrollTrigger.batch(reveals, {
+  // Anything that receives keyboard focus is shown at once.
+  doc.addEventListener('focusin', (e) => {
+    const r = e.target.closest && e.target.closest('[data-reveal]');
+    if (r) gsap.set(r, { opacity: 1, y: 0, overwrite: true });
+  });
+  onFirstInteraction(() => {
+  const pending = belowFold(reveals);
+  if (!pending.length) return;
+  gsap.set(pending, { opacity: 0, y: 34 });
+  ScrollTrigger.batch(pending, {
     start: 'top 90%',
     once: true,
     onEnter: (els) => {
@@ -841,10 +880,10 @@ function initReveals() {
       const passed = [];
       const visible = [];
       els.forEach((el) => (el.getBoundingClientRect().bottom < 0 ? passed : visible).push(el));
-      if (passed.length) gsap.set(passed, { autoAlpha: 1, y: 0, overwrite: true });
+      if (passed.length) gsap.set(passed, { opacity: 1, y: 0, overwrite: true });
       if (visible.length) {
         gsap.to(visible, {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           duration: 1.2,
           ease: 'expo.out',
@@ -854,23 +893,24 @@ function initReveals() {
       }
     },
   });
+  });
 
   $$('.kicker__rule').forEach((rule) => {
     gsap.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 1.6, ease: 'expo.out', scrollTrigger: { trigger: rule, start: 'top 92%', once: true } });
   });
 
-  $$('[data-mask]').forEach((mask) => {
+  onFirstInteraction(() => belowFold($$('[data-mask]'), 0.85).forEach((mask) => {
     const img = $('img', mask);
     if (!img) return;
-    gsap.fromTo(img, { yPercent: 22, scale: 1.1, autoAlpha: 0 }, {
+    gsap.fromTo(img, { yPercent: 22, scale: 1.1, opacity: 0 }, {
       yPercent: 0,
       scale: 1,
-      autoAlpha: 1,
+      opacity: 1,
       duration: 1.9,
       ease: 'expo.out',
       scrollTrigger: { trigger: mask, start: 'top 85%', once: true },
     });
-  });
+  }));
 
   $$('[data-speed]').forEach((el) => {
     if (el.closest('.hx')) return; // handled per layout in initStoria
@@ -897,14 +937,17 @@ function initAtlas() {
   const road = $('#atlas-hairpins', plate);
   const car = $('.atlas__car', plate);
 
-  gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 });
-  gsap.set(soft, { autoAlpha: 0 });
-  gsap.set(labels, { autoAlpha: 0, y: 12 });
-  const draw = gsap.timeline({ paused: true });
-  draw.to(lines, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', stagger: 0.045 }, 0)
-    .to(soft, { autoAlpha: 1, duration: 1.2, ease: 'power1.out', stagger: 0.04 }, 0.5)
-    .to(labels, { autoAlpha: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.05 }, 0.9);
-  ScrollTrigger.create({ trigger: plate, start: 'top 78%', once: true, onEnter: () => draw.play() });
+  onFirstInteraction(() => {
+    if (plate.getBoundingClientRect().top < window.innerHeight * 0.78) return;
+    gsap.set(lines, { strokeDasharray: 1, strokeDashoffset: 1 });
+    gsap.set(soft, { opacity: 0 });
+    gsap.set(labels, { opacity: 0, y: 12 });
+    const draw = gsap.timeline({ paused: true });
+    draw.to(lines, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut', stagger: 0.045 }, 0)
+      .to(soft, { opacity: 1, duration: 1.2, ease: 'power1.out', stagger: 0.04 }, 0.5)
+      .to(labels, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.05 }, 0.9);
+    ScrollTrigger.create({ trigger: plate, start: 'top 78%', once: true, onEnter: () => draw.play() });
+  });
 
   if (!road || !car) return;
   const len = road.getTotalLength();
@@ -934,19 +977,24 @@ function initReviews() {
     const target = parseFloat(scoreEl.dataset.count) || 0;
     const decimals = parseInt(scoreEl.dataset.decimals || '0', 10);
     const show = (v) => { scoreEl.textContent = v.toFixed(decimals).replace('.', ','); };
-    show(0);
-    const o = { v: 0 };
-    ScrollTrigger.create({
-      trigger: scoreEl,
-      start: 'top 85%',
-      once: true,
-      onEnter: () => gsap.to(o, { v: target, duration: 2.2, ease: 'expo.out', onUpdate: () => show(o.v) }),
+    onFirstInteraction(() => {
+      if (scoreEl.getBoundingClientRect().top < window.innerHeight * 0.85) return;
+      show(0);
+      const o = { v: 0 };
+      ScrollTrigger.create({
+        trigger: scoreEl,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => gsap.to(o, { v: target, duration: 2.2, ease: 'expo.out', onUpdate: () => show(o.v) }),
+      });
     });
   }
 
   const bars = $$('.dist__bar');
   const counts = $$('.dist__count');
-  if (bars.length) {
+  if (bars.length) onFirstInteraction(() => {
+    const dist = $('.dist');
+    if (dist && dist.getBoundingClientRect().top < window.innerHeight * 0.82) return;
     gsap.set(bars, { scaleX: 0 });
     const finals = counts.map((c) => parseInt(c.textContent, 10) || 0);
     counts.forEach((c) => { c.textContent = '0'; });
@@ -962,19 +1010,21 @@ function initReviews() {
         });
       },
     });
-  }
+  });
 
   const topics = $$('.topics__list li');
-  if (topics.length) {
-    gsap.fromTo(topics, { autoAlpha: 0, y: 18 }, {
-      autoAlpha: 1,
+  if (topics.length) onFirstInteraction(() => {
+    const pending = belowFold(topics, 0.85);
+    if (!pending.length) return;
+    gsap.fromTo(pending, { opacity: 0, y: 18 }, {
+      opacity: 1,
       y: 0,
       duration: 1,
       ease: 'expo.out',
       stagger: 0.06,
       scrollTrigger: { trigger: '.topics', start: 'top 85%', once: true },
     });
-  }
+  });
 }
 
 /* --------------------------------------------------------------------------
@@ -989,6 +1039,7 @@ function initMarquees() {
     lastY = y;
   });
 
+  if (window.innerWidth < 760) return; // phones keep the readable static list
   $$('[data-marquee]').forEach((marquee) => {
     const track = $('.marquee__track', marquee);
     const group = $('.marquee__group', marquee);
@@ -1012,11 +1063,13 @@ function initMarquees() {
     } else {
       visible = true;
     }
-    marquee.addEventListener('mouseenter', () => { hoverTarget = 0.12; });
+    marquee.addEventListener('mouseenter', () => { hoverTarget = 0; });
     marquee.addEventListener('mouseleave', () => { hoverTarget = 1; });
+    marquee.addEventListener('focusin', () => { hoverTarget = 0; });
+    marquee.addEventListener('focusout', () => { hoverTarget = 1; });
 
     gsap.ticker.add((time, deltaMs) => {
-      if (!visible || !width) return;
+      if (!visible || !width || state.paused) return;
       const dt = Math.min(deltaMs, 64) / 1000;
       hover += (hoverTarget - hover) * Math.min(1, dt * 4);
       const boost = 1 + Math.min(velocity * 0.12, 5);
@@ -1025,6 +1078,30 @@ function initMarquees() {
       if (x > 0) x -= width;
       track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
     });
+  });
+}
+
+/* --------------------------------------------------------------------------
+   "Ferma animazioni": one switch stops every continuous loop (WCAG 2.2.2)
+   -------------------------------------------------------------------------- */
+function initPauseSwitch() {
+  const btn = $('[data-motion-toggle]');
+  if (!btn) return;
+  let saved = null;
+  try { saved = localStorage.getItem('pv-motion'); } catch (err) { saved = null; }
+  const apply = (paused) => {
+    state.paused = paused;
+    root.classList.toggle('motion-paused', paused);
+    btn.setAttribute('aria-pressed', String(paused));
+    btn.textContent = paused ? 'Riprendi animazioni' : 'Ferma animazioni';
+    if (state.dust) { if (paused) state.dust.stop(); else if (state.heroActive) state.dust.start(); }
+  };
+  btn.hidden = false;
+  apply(saved === 'paused');
+  btn.addEventListener('click', () => {
+    const next = !state.paused;
+    try { localStorage.setItem('pv-motion', next ? 'paused' : 'on'); } catch (err) { /* private mode */ }
+    apply(next);
   });
 }
 
@@ -1039,7 +1116,10 @@ if (MOTION) {
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
   root.classList.add('has-motion');
+  window.__pvBooted = true;
   state.lenis = safe('lenis', initLenis) || null;
+} else {
+  root.classList.remove('has-motion');
 }
 
 const menu = safe('menu', initMenu) || { close() {}, isOpen: () => false };
@@ -1052,7 +1132,9 @@ const heroEl = $('.hero');
 
 if (MOTION) {
   const dust = canvas && heroEl ? safe('dust', () => new Dust(canvas, heroEl)) : null;
+  state.dust = dust;
   safe('hero-observer', () => observeHero(dust));
+  safe('pause-switch', initPauseSwitch);
   safe('hero-intro', () => { heroIntro().catch((err) => { console.warn('[Pizza Voglia] intro', err); root.classList.add('is-ready'); }); });
   safe('hero-scroll', () => {
     const mm = gsap.matchMedia();
@@ -1071,7 +1153,8 @@ if (MOTION) {
 
   // If the page was opened on a hash, land there once layout is final.
   if (location.hash && location.hash.length > 1) {
-    const target = doc.getElementById(decodeURIComponent(location.hash.slice(1)));
+    let target = null;
+    try { target = doc.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (err) { target = null; }
     if (target && state.lenis) {
       window.addEventListener('load', () => requestAnimationFrame(() => state.lenis.scrollTo(target, { immediate: true, force: true })), { once: true });
     }
