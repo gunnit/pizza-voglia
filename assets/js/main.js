@@ -313,21 +313,38 @@ function initActiveStates() {
   const catLinks = $$('[data-cat]');
   const list = $('.menu__index ol');
   const cats = catLinks.map((a) => doc.getElementById(a.dataset.cat)).filter(Boolean);
-  const catIO = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      const id = entry.target.id;
-      catLinks.forEach((a) => {
-        const active = a.dataset.cat === id;
-        a.classList.toggle('is-active', active);
-        if (active && list && list.scrollWidth > list.clientWidth + 4) {
-          const left = a.offsetLeft - (list.clientWidth - a.offsetWidth) / 2;
-          list.scrollTo({ left, behavior: REDUCED ? 'auto' : 'smooth' });
-        }
-      });
+  // The active family is the last one whose top has passed a line a third of the way down the
+  // screen: short families (Margherita, Tartufo) get their turn too, which a band observer skipped.
+  let current = '';
+  let queued = false;
+  const spy = () => {
+    queued = false;
+    const line = window.innerHeight * 0.35;
+    let id = '';
+    for (const c of cats) {
+      if (c.getBoundingClientRect().top <= line) id = c.id;
+      else break;
+    }
+    if (id === current) return;
+    current = id;
+    catLinks.forEach((a) => {
+      const active = a.dataset.cat === id;
+      a.classList.toggle('is-active', active);
+      if (active && list && list.scrollWidth > list.clientWidth + 4) {
+        const left = a.offsetLeft - (list.clientWidth - a.offsetWidth) / 2;
+        list.scrollTo({ left, behavior: REDUCED ? 'auto' : 'smooth' });
+      }
     });
-  }, { rootMargin: '-35% 0px -55% 0px' });
-  cats.forEach((c) => catIO.observe(c));
+  };
+  const request = () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(spy);
+    }
+  };
+  window.addEventListener('scroll', request, { passive: true });
+  window.addEventListener('resize', request);
+  spy();
 }
 
 /* --------------------------------------------------------------------------

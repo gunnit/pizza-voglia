@@ -399,14 +399,16 @@
               <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
             </a>
           </div>
-          <p class="status status--hero-m" data-open-status><span class="status__dot" aria-hidden="true"></span><span class="status__text">Lun–Ven 11:00–13:30 · 17:30–20:30 · Sab–Dom 17:00–20:30</span></p>
-          <a class="gchip gchip--mobile" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener" data-intro="fade">
-            <span class="gchip__star" aria-hidden="true">★</span>
-            <span class="gchip__score">4,8</span>
-            <span class="gchip__sep" aria-hidden="true">·</span>
-            <span class="gchip__count">81 recensioni</span>
-            <span class="sr-only"> su Google (si apre in una nuova scheda)</span>
-          </a>
+          <div class="hero__meta-m">
+            <p class="status status--hero-m" data-open-status><span class="status__dot" aria-hidden="true"></span><span class="status__text">Lun–Ven 11:00–13:30 · 17:30–20:30 · Sab–Dom 17:00–20:30</span></p>
+            <a class="gchip gchip--mobile" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener" data-intro="fade">
+              <span class="gchip__star" aria-hidden="true">★</span>
+              <span class="gchip__score">4,8</span>
+              <span class="gchip__sep" aria-hidden="true">·</span>
+              <span class="gchip__count">81 recensioni</span>
+              <span class="sr-only"> su Google (si apre in una nuova scheda)</span>
+            </a>
+          </div>
         </div>
 
         <div class="hero__cue" aria-hidden="true"><div class="hero__cue-in" data-intro="fade"><span>Scorri</span><i></i></div></div>
@@ -665,9 +667,7 @@
                 <h3 class="cat__title" id="m-margherita-t">Margherita</h3>
                 <p class="cat__note">€ 16,00 al kg</p>
               </header>
-              <ul class="dishes dishes--single">
-                <li class="dish" data-reveal><p class="dish__name">Margherita</p><p class="dish__desc">pomodoro San Marzano, mozzarella fior di latte</p></li>
-              </ul>
+              <p class="cat__desc" data-reveal>pomodoro San Marzano, mozzarella fior di latte</p>
             </section>
             <section class="cat" id="m-classiche">
               <header class="cat__head">
@@ -783,9 +783,7 @@
                 <h3 class="cat__title" id="m-tartufo-t">Tartufo</h3>
                 <p class="cat__note">€ 21,00 al kg</p>
               </header>
-              <ul class="dishes dishes--single">
-                <li class="dish" data-reveal><p class="dish__name">Tartufo</p><p class="dish__desc">pomodoro San Marzano, mascarpone, tartufo della Lessinia</p></li>
-              </ul>
+              <p class="cat__desc" data-reveal>pomodoro San Marzano, mascarpone, tartufo della Lessinia</p>
             </section>
             <section class="cat" id="m-imbottite">
               <header class="cat__head">
@@ -893,13 +891,17 @@
     <!-- ============ N°04 — RECENSIONI ============ -->
     <section class="reviews" id="recensioni" aria-labelledby="reviews-title">
       <div class="wrap">
-        <header class="sec-head">
-          <p class="kicker" data-reveal><span class="kicker__n">N°04</span><span class="kicker__rule" aria-hidden="true"></span><span>Recensioni</span></p>
-          <h2 class="display" id="reviews-title"><span class="sr-only">Recensioni: </span>
-            <span class="ln"><span class="ln__i" data-line>Il passaparola,</span></span>
-            <span class="ln"><span class="ln__i" data-line><em>in numeri.</em></span></span>
-          </h2>
-          <p class="lead reviews__press" data-reveal>Anche sulla carta: a dicembre 2025, durante il concorso «Pizzeria dell’anno 2025/26», L’Arena ha dedicato a Denis e a Pizza Voglia <a href="https://www.larena.it/iniziative/pizzeria-dell-anno/pizzeria-dell-anno-2025-2026/cura-del-dettaglio-e-autenticita-per-pizzavoglia-sono-al-primo-posto-1.12874520" target="_blank" rel="noopener">un lungo articolo<span class="sr-only"> (si apre in una nuova scheda)</span></a>.</p>
+        <header class="sec-head sec-head--split">
+          <div>
+            <p class="kicker" data-reveal><span class="kicker__n">N°04</span><span class="kicker__rule" aria-hidden="true"></span><span>Recensioni</span></p>
+            <h2 class="display" id="reviews-title"><span class="sr-only">Recensioni: </span>
+              <span class="ln"><span class="ln__i" data-line>Il passaparola,</span></span>
+              <span class="ln"><span class="ln__i" data-line><em>in numeri.</em></span></span>
+            </h2>
+          </div>
+          <div class="sec-head__aside">
+            <p class="lead reviews__press" data-reveal>Anche sulla carta: a dicembre 2025, durante il concorso «Pizzeria dell’anno 2025/26», L’Arena ha dedicato a Denis e a Pizza Voglia <a href="https://www.larena.it/iniziative/pizzeria-dell-anno/pizzeria-dell-anno-2025-2026/cura-del-dettaglio-e-autenticita-per-pizzavoglia-sono-al-primo-posto-1.12874520" target="_blank" rel="noopener">un lungo articolo<span class="sr-only"> (si apre in una nuova scheda)</span></a>.</p>
+          </div>
         </header>
 
         <div class="reviews__grid">
@@ -915,14 +917,16 @@
             </svg>
             <p class="score__caption">su <strong>81 recensioni</strong> Google</p>
             <p class="score__date">Dati della scheda Google al 16 ottobre 2026. Le recensioni sono pubblicate e gestite da Google; i temi qui sotto sono una nostra sintesi.</p>
-            <a class="link-arrow score__write" href="https://search.google.com/local/writereview?placeid=ChIJlZ4humdYf0cR0HBibJQr4KE" target="_blank" rel="noopener">Lascia una recensione
-              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
-              <span class="sr-only"> (si apre in una nuova scheda)</span>
-            </a>
-            <a class="link-arrow" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Leggi tutte le recensioni su Google
-              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
-              <span class="sr-only"> (si apre in una nuova scheda)</span>
-            </a>
+            <div class="score__links">
+              <a class="link-arrow" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Leggi tutte le recensioni su Google
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
+                <span class="sr-only"> (si apre in una nuova scheda)</span>
+              </a>
+              <a class="link-arrow" href="https://search.google.com/local/writereview?placeid=ChIJlZ4humdYf0cR0HBibJQr4KE" target="_blank" rel="noopener">Lascia una recensione
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
+                <span class="sr-only"> (si apre in una nuova scheda)</span>
+              </a>
+            </div>
           </div>
 
           <div class="reviews__data">
@@ -974,12 +978,6 @@
               <li><em>Perfetta per l’aperitivo e per i buffet delle feste</em></li>
             </ul>
           </div>
-        </div>
-        <div class="wrap themes__cta">
-          <a class="btn btn--ghost" href="https://maps.google.com/?cid=11664370951363129552" target="_blank" rel="noopener">Leggi tutte le recensioni su Google
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9"/></svg>
-            <span class="sr-only"> (si apre in una nuova scheda)</span>
-          </a>
         </div>
       </section>
     </section>
@@ -1083,7 +1081,7 @@
 
           <figure class="map" data-reveal>
             <div class="map__frame" data-map data-map-src="https://www.google.com/maps?q=Pizzavoglia,+Via+Valpantena+46,+37142+Verona&amp;output=embed">
-              <img class="map__poster" src="assets/img/ig/sala-teglia-broccoli-1440.webp" srcset="assets/img/ig/sala-teglia-broccoli-800.webp 800w, assets/img/ig/sala-teglia-broccoli-1440.webp 1440w" sizes="(min-width: 1000px) 50vw, 92vw" width="1440" height="800" alt="" loading="lazy" decoding="async">
+              <img class="map__poster" src="assets/img/ig/ingresso-640.webp" width="640" height="966" alt="" loading="lazy" decoding="async">
               <div class="map__consent">
                 <p class="map__consent-t">Via Valpantena 46, Quinto</p>
                 <button class="btn btn--cream btn--sm" type="button" data-map-load>
