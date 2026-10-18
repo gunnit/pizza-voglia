@@ -64,8 +64,14 @@ and **real photos**. Sources, all public and published by Denis or about him:
   classiche 18 €, speciali / bianche / fredde / focacce 19 €, tartufo (della Lessinia) 21 €, imbottite 14 €.
   Seasonal items marked estiva / invernale / stagionale / solo il weekend. The full list lives in `index.html` (#menu).
   **Ask Denis to confirm the prices are current**; the site says the in-store listino prevails.
-- **Hours**: winter Mon–Fri 11:00–13:30 / 17:30–20:30, Sat–Sun 17:00–20:30; summer evenings close at 21:00
-  (same Instagram post). Google still shows the winter hours (checked 2026-10-16).
+- **Hours**: Mon–Fri 11:00–13:30 / 17:30–20:30, Sat–Sun 17:00–20:30 with winter time (ora solare); with
+  summer time (ora legale) the evenings close at 21:00. Denis (WhatsApp, 2026-10-17): the switch happens with
+  the clock change (last Sunday of March / October). `main.js` picks the season from Rome's UTC offset; the HTML
+  ships winter times and JSON-LD has dated 21:00 specs for summer 2027 (add the next summer each autumn).
+  Google still shows the winter hours (checked 2026-10-16).
+- **Voice**: Denis asked (WhatsApp, 2026-10-17) for the site to speak in the first person, as if he made it:
+  "io" (Sono Denis, la mia pizzeria, chiamami), addressing visitors with "tu". Alt text, JSON-LD and
+  `llms.txt` stay in the third person.
 - **Story** (L'Arena, full-page article by Andrea Marchiori, Dec 2025, "Il contest di Athesis"): Denis started
   with pizza at 13; in 2002 opened a pizza-al-taglio shop in Negrar with his mother and sister; later moved to
   Quinto (took over from a cousin), rebuilt the shop, studied, switched to a "stirata romana in teglia", added

@@ -57,41 +57,52 @@ function safe(label, fn) {
 }
 
 /* --------------------------------------------------------------------------
-   Opening hours — computed in Europe/Rome time
+   Opening hours — computed in Europe/Rome time.
+   The evening closing follows the clock change (Denis, 2026-10-17):
+   21:00 with summer time (ora legale), 20:30 with winter time (ora solare).
    -------------------------------------------------------------------------- */
 const H = (h, m = 0) => h * 60 + m;
-const WEEKDAY = [[H(11), H(13, 30)], [H(17, 30), H(20, 30)]];
-const WEEKEND = [[H(17), H(20, 30)]];
-const HOURS = { 0: WEEKEND, 1: WEEKDAY, 2: WEEKDAY, 3: WEEKDAY, 4: WEEKDAY, 5: WEEKDAY, 6: WEEKEND };
+const EVENING_CLOSE = { summer: H(21), winter: H(20, 30) };
 const fmt = (mins) => `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
 
+function hoursFor(summer) {
+  const close = summer ? EVENING_CLOSE.summer : EVENING_CLOSE.winter;
+  const weekday = [[H(11), H(13, 30)], [H(17, 30), close]];
+  const weekend = [[H(17), close]];
+  return { 0: weekend, 1: weekday, 2: weekday, 3: weekday, 4: weekday, 5: weekday, 6: weekend };
+}
+
 function romeNow() {
+  const now = new Date();
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Rome',
     weekday: 'short',
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
-  }).formatToParts(new Date());
+  }).formatToParts(now);
   const get = (type) => (parts.find((p) => p.type === type) || {}).value;
   const days = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
   const hour = parseInt(get('hour'), 10) % 24;
-  return { day: days[get('weekday')], mins: hour * 60 + parseInt(get('minute'), 10) };
+  // Rome is UTC+1 in winter and UTC+2 with summer time.
+  const summer = (hour - now.getUTCHours() + 24) % 24 === 2;
+  return { day: days[get('weekday')], mins: hour * 60 + parseInt(get('minute'), 10), summer };
 }
 
 function computeStatus() {
-  const { day, mins } = romeNow();
+  const { day, mins, summer } = romeNow();
+  const HOURS = hoursFor(summer);
   const today = HOURS[day] || [];
   for (const [open, close] of today) {
     if (mins >= open && mins < close) {
       const text = close - mins <= 30 ? `Aperto ora · chiude alle ${fmt(close)}` : `Aperto ora · fino alle ${fmt(close)}`;
-      return { open: true, text, day };
+      return { open: true, text, day, summer };
     }
   }
   const later = today.find(([open]) => open > mins);
-  if (later) return { open: false, text: `Chiuso ora · apre alle ${fmt(later[0])}`, day };
+  if (later) return { open: false, text: `Chiuso ora · apre alle ${fmt(later[0])}`, day, summer };
   const tomorrow = HOURS[(day + 1) % 7];
-  return { open: false, text: `Chiuso ora · apre domani alle ${fmt(tomorrow[0][0])}`, day };
+  return { open: false, text: `Chiuso ora · apre domani alle ${fmt(tomorrow[0][0])}`, day, summer };
 }
 
 function initStatus() {
@@ -102,6 +113,12 @@ function initStatus() {
       el.classList.toggle('is-closed', !s.open);
       const text = $('.status__text', el);
       if (text) text.textContent = s.text;
+    });
+    // The HTML ships winter times; switch the evening closing to the current season.
+    const close = fmt(s.summer ? EVENING_CLOSE.summer : EVENING_CLOSE.winter);
+    $$('[data-eve-close]').forEach((el) => { el.textContent = close; });
+    $$('[data-season]').forEach((el) => {
+      el.textContent = s.summer ? el.dataset.seasonSummer : el.dataset.seasonWinter;
     });
     $$('.hours tr[data-day]').forEach((tr) => {
       const isToday = Number(tr.dataset.day) === s.day;
